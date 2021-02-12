@@ -43,8 +43,10 @@ grSim = psl.SSLgrSimClient('127.0.0.1', 20011)
 grSim.connect()
 
 
+#%% Paramètres
 
 
+#TERRAIN
 longueur=1350
 largeur=1000
 xmin=-longueur
@@ -52,15 +54,23 @@ xmax=longueur
 ymin=-largeur
 ymax=largeur
 
+
+
+##ROBOT
 r_robot=115
+K_max=0.6 #facteur prop vitesse
+seuil_distance=250
+sat_vitesse_angulaire=5
+K_angulaire=10
+sat_orientation_balle=3
+K_orientation_balle=10
 
+##REPULSION
 nbPoints=80
-
 r_evit=120
 k=4 #facteur de repulsion
 
-K=0.3 #facteur prop vitesse
-seuil_distance=250
+
 
 X = np.linspace(xmin,xmax,nbPoints)
 Y = np.linspace(ymin,ymax,nbPoints)
@@ -191,7 +201,7 @@ class Robot():
                 Ey_autre+=Ey
         self.Ex_autre,self.Ey_autre=Ex_autre,Ey_autre
         
-    def commande_position(self,x,y,o,spin=False): #commande vers une position avec orientation
+    def commande_position(self,x,y,xo,yo,spin=False): #commande vers une position avec orientation
         position_arrivee=Balle(x,y)     
         Exb,Eyb=pt.Gradient(position_arrivee.potentiel)
         
@@ -205,10 +215,17 @@ class Robot():
         Ex,Ey=pt.norme(Ex,Ey)
         vecteur=position_arrivee.position-self.positionc
         distance,phi=c.polar(vecteur)
-        delta=o-self.orientation
         
-        vitesse_tangente=K*(np.sin(self.orientation)*Ey[yd,xd]+np.cos(self.orientation)*Ex[yd,xd])
-        vitesse_normale=K*(-np.sin(self.orientation)*Ex[yd,xd]+np.cos(self.orientation)*Ey[yd,xd])
+        o=c.polar(complex(xo,yo)-self.positionc)[1]
+        delta=(o-self.orientation)
+        delta+=np.pi
+        delta=delta%(2*np.pi)
+        delta-=np.pi
+        
+        vitesse_angulaire=min(sat_vitesse_angulaire,abs(delta)*K_angulaire)*np.sign(delta)
+        
+        vitesse_tangente=K_max*(np.sin(self.orientation)*Ey[yd,xd]+np.cos(self.orientation)*Ex[yd,xd])
+        vitesse_normale=K_max*(-np.sin(self.orientation)*Ex[yd,xd]+np.cos(self.orientation)*Ey[yd,xd])
        
         if (abs(distance)>35)|(abs(delta)>0.05):
             
@@ -219,7 +236,7 @@ class Robot():
                               id=self.id, 
                               veltangent=vitesse_tangente, 
                               velnormal=vitesse_normale, 
-                              velangular=delta,
+                              velangular=vitesse_angulaire,
                               spinner=spin)
             grSim.send(p)
         
@@ -244,68 +261,27 @@ class Robot():
         
     def commande_balle(self): #permet de recuperer la balle
         ballon=self.match.balle
-          
-        Exb,Eyb=pt.Gradient(ballon.potentiel)
+        self.commande_position(ballon.x,ballon.y,ballon.x,ballon.y) 
         
-        a,b=np.polyfit([ballon.x,self.x],[ballon.y,self.y],1)
-        self.champ_autre(self.x,ballon.x,a,b)
-        Ex,Ey=Exb+k*self.Ex_autre,Eyb+k*self.Ey_autre
-        Ex,Ey=pt.norme(Ex,Ey)
-                       
-        vecteur=ballon.position-self.positionc
-        distance,phi=c.polar(vecteur)
-        delta=phi-self.orientation
-        
-        xd=int((self.x+longueur)/(2*longueur)*nbPoints)
-        yd=int((self.y+largeur)/(2*largeur)*nbPoints)
-        
-        spin=False
-        
-               
-        vitesse_tangente=K*(np.sin(self.orientation)*Ey[yd,xd]+np.cos(self.orientation)*Ex[yd,xd])
-        vitesse_normale=K*(-np.sin(self.orientation)*Ex[yd,xd]+np.cos(self.orientation)*Ey[yd,xd])
-            
-        if not self.hasTheBall():
-            
-            if distance<seuil_distance:
-                vitesse_tangente=vitesse_tangente*distance/seuil_distance
-                vitesse_normale=vitesse_normale*distance/seuil_distance
-                spin=True
-            
-            p = psl.packetCommandBot(self.team=='Y', 
-                                  id=self.id, 
-                                  veltangent=vitesse_tangente, 
-                                  velnormal=vitesse_normale, 
-                                  velangular=delta/0.2,
-                                  spinner=spin)
-            grSim.send(p)
-            return 'EN COURS'
-          
-        else:
-            p = psl.packetCommandBot(self.team=='Y', 
-                                      id=self.id, 
-                                      veltangent=0, 
-                                      velnormal=0, 
-                                      velangular=0,
-                                      spinner=True)
-            grSim.send(p)
-            return 'DONE'
-           
         
         
     
-    def orientation_with_ball(self,o):
+    def orientation_with_ball(self,xo,yo):
         
         o_bot=self.orientation
-        delta=o-o_bot
-        
+        o=c.polar(complex(xo,yo)-self.positionc)[1]
+        delta=(o-o_bot)
+        delta+=np.pi
+        delta=delta%(2*np.pi)
+        delta-=np.pi
+        vitesse_angulaire=min(sat_orientation_balle,abs(delta)*K_orientation_balle)*np.sign(delta)
         if (abs(delta)>.05):
             p = psl.packetCommandBot(self.team=='Y', 
                          id=self.id, 
                          veltangent=0., 
-                         velnormal=-delta/8.75, 
+                         velnormal=-vitesse_angulaire/9.25, 
                          spinner=True,
-                         velangular=delta)
+                         velangular=vitesse_angulaire)
         
         else :
             p = psl.packetCommandBot(self.team=='Y', 
@@ -328,7 +304,7 @@ class Robot():
         vecteur=posbut-posbot
         distance,phi=c.polar(vecteur)
         # print(phi)
-        self.orientation_with_ball(phi)
+        self.orientation_with_ball(xbut,ybut)
 
         delta=phi-self.orientation
         
@@ -351,13 +327,13 @@ class Robot():
         direction=receveur-passeur
         distance,phi=c.polar(direction)
         
-        self.orientation_with_ball(phi)
+        self.orientation_with_ball(mate.x,mate.y)
         angle=(phi+np.pi)%(2*np.pi)
         if angle>np.pi:
             angle-=2*np.pi
         
         
-        mate.commande_position(mate.x, mate.y,angle )
+        mate.commande_position(mate.x, mate.y,self.x,self.y )
         
         delta=phi-self.orientation
         delta1=angle-mate.orientation
@@ -394,7 +370,7 @@ class Robot():
         dU=complex(-direction.imag,direction.real)
         dU=10*np.sin(theta)*dU
         # print(dU)
-        self.commande_position(self.x+dU.real, self.y+dU.imag,angle )
+        self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y )
         
 
         
@@ -422,8 +398,8 @@ class Robot():
         if abs(yg)>190:
             yg=np.sign(yg)*400
             xg=(yg-b)/a
-        distance,phi=c.polar(balle.position-complex(x,y))
-        self.commande_position(xg, yg, phi)
+        # distance,phi=c.polar(balle.position-complex(x,y))
+        self.commande_position(xg, yg, balle.x,balle.y)
         
         
 class Balle():
@@ -460,7 +436,7 @@ class Balle():
         
     
 
-class Equipe():
+class Coach():
     
     def __init__(self,joueurs,couleur,side):
         self.side=side
@@ -545,7 +521,7 @@ class Equipe():
                         else:
                         
                             baller.goto=final_pos_baller
-                            baller.status=baller.commande_position(baller.goto[0], baller.goto[1], 0,spin=True)
+                            baller.status=baller.commande_position(baller.goto[0], baller.goto[1], 0,50,spin=True)
                             
                             baller.defPoste('DRIBBLE')
                             baller.status='EN COURS'
@@ -636,7 +612,7 @@ class Equipe():
                 # time.pause(5)
             
             elif joueur.poste[-1]=='DRIBBLE':
-                joueur.status=joueur.commande_position(joueur.goto[0], joueur.goto[1], 0,spin=True)
+                joueur.status=joueur.commande_position(joueur.goto[0], joueur.goto[1], 0,50,spin=True)
                 joueur.defPoste('DRIBBLE')
             
             elif (joueur.poste[-1]=='PASSEUR') & (joueur.teammate().poste[-1]=='RECEVEUR'):
@@ -664,7 +640,7 @@ class Equipe():
                     o=np.pi
                     
                 
-                joueur.commande_position(x, 0, o)     
+                joueur.commande_position(x, 0, 50,0)     
                 
             elif joueur.poste[-1]=='TACKLE':
                 joueur.commande_balle()
@@ -731,8 +707,8 @@ class Match():
         
         
         self.joueurs=[Y0,Y1,B0,B1]
-        Yellow=Equipe([self.joueurs[0],self.joueurs[1]],'Y','R')
-        Blue=Equipe([self.joueurs[2],self.joueurs[3]],'B','L')
+        Yellow=Coach([self.joueurs[0],self.joueurs[1]],'Y','R')
+        Blue=Coach([self.joueurs[2],self.joueurs[3]],'B','L')
         self.balle=Balle(0,0)
         self.blue=Blue
         self.yellow=Yellow
@@ -811,6 +787,9 @@ while True:
     # print(match_test.joueurs[3].hasTheBall())
     match_test.blue.whereIstheBall()
     match_test.blue.action()
+    # xb=match_test.balle.x
+    # yb=match_test.balle.y
+    # match_test.blue.joueurs[0].commande_position(0,0,xb,yb)
     # break
     
     # plt.pause(0.3)
