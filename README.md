@@ -21,7 +21,10 @@ De plus, le score des parties augmentent jusqu'à atteindre quasiment 8, cela co
 
 Exemple de génération de partie :  
 ![Partie](img/ini_pos.png)
-* X représentant l'attaquant qui veut marquer, c'est lui qui est controler par notre agent.
+* X représentant l'attaquant qui veut marquer, c'est lui qui est controlé par notre agent.
 * M représentant son coéquipier.
 * G représentant le gardien
 * D représentatn le 2ème defenseur.
+
+Sur cette situation, on obtient au final cette position pour l'attaquant :
+![Position finale](img/final_pos.png)
