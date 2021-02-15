@@ -15,6 +15,8 @@ De plus, on prend sigma du potentiel pour le champ tournant plus grand donc son 
 Ainsi, on obtient :  
 ![champ tournant](img/champ.png)  
 
+Ainsi, pour la commande du robot on utilise la direction du vecteur à la position du robot.
+
 
 --------------
 ## Partie intelligence artificielle
