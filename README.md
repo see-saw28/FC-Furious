@@ -92,7 +92,7 @@ Exemple de génération de partie :
 * X représentant l'attaquant qui veut marquer, c'est lui qui est controlé par notre agent.
 * M représentant son coéquipier.
 * G représentant le gardien
-* D représentatn le 2ème defenseur.
+* D représentant le 2ème defenseur.
 
 Sur cette situation, on obtient au final cette position pour l'attaquant :
 ![Position finale](img/final_pos.png)  
