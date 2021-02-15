@@ -43,7 +43,7 @@ Il peut être simplifié sous la forme suivante :
 
 ![Deep q simplifie](img/algo_simplifie1.png)  
 
-On calcule une fonction d'erreur *[(r+&gamma;max Q'<sub>a'</sub>(s',a';&theta;<sub>i</sub>)) - Q(s,a;&theta;<sub>i</sub>]²* à partir d'un batch de transistions enregistrées grâce aux 2 réseaux de neurones. L'objectif étant de diminuer cette erreur, on utilise une descente de gradient.  
+On calcule une fonction d'erreur *[(r+&gamma;max Q'<sub>a'</sub>(s',a';&theta;<sub>i</sub>)) - Q(s,a;&theta;<sub>i</sub>]²* à partir d'un batch de transitions enregistrées grâce aux 2 réseaux de neurones. L'objectif étant de diminuer cette erreur, on utilise une descente de gradient. Comme ça,on peut espérer converger vers une solution.  
 
 #### Mise en pratique :  
 Tout d'abord, il a fallu coder une Classe pour représenter l'environnement dans lequel l'agent va évoluer.  
