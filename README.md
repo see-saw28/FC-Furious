@@ -1,6 +1,7 @@
 # FC Furious
  
-bonjour
+## Partie Coach
+
 ## Partie intelligence artificielle
 
 ### Agent :
