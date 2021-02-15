@@ -28,3 +28,6 @@ Exemple de génération de partie :
 
 Sur cette situation, on obtient au final cette position pour l'attaquant :
 ![Position finale](img/final_pos.png)
+
+De même, on obtient ce résultat :
+![Partie 2](img/partie_2.png)
