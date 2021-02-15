@@ -5,6 +5,9 @@
 --------------
 ## Partie intelligence artificielle
 
+## Objectif :
+Le but de cette intelligence artificielle est de déplacer un attaquant vers un endroit où le but est ouvert en un minimum de déplacements.
+
 ### Agent :
 Dans ce cas, on traité un réseau de neurone profond, c'est à dire avec plusieurs couches. On peut le representer sous cette forme :
 ![Reseau](img/reseau.png)
