@@ -20,7 +20,7 @@
 
 
 ### Création d'un champ pour aller à l'objectif en évitant les autres robots :
-L'idée de base est de créer un champ répulsif en faisant le gradient de la somme des potentiels, avec un potentiel positif pour les robots à éviter et un potentiel négatif pour l'objectif. Le potentiel étant calculé avec une loi normale :  P(M)=Pt.e<sup>(||M-M<sub>0</sub>||²/&sigma;²)</sup>
+L'idée de base est de créer un champ répulsif en faisant le gradient de la somme des potentiels, avec un potentiel positif pour les robots à éviter et un potentiel négatif pour l'objectif. Le potentiel étant calculé avec une loi normale :  P(M)=Pt.e<sup>(||M-M<sub>0</sub>||²/&sigma;²)</sup> avec M<sub>0</sub> le point d'origine du potentiel  
 On peut observer les potentiels :  
 ![potentiel](img/potentiel.png)  
 On obtient un champ de cette forme :
