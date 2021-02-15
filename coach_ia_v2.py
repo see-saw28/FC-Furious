@@ -593,13 +593,13 @@ class Coach():
                         print('here')
                         
                         field=baller.create_game()
-                        final_pos_baller,score_baller=ia.play_game_3('ia3',game=field)
+                        final_pos_baller,score_baller,fail=ia.play_game_3('ia3',game=field)
                         
                         # print(field)
                         # ia.Game(9,9,terrain=field).print()
                         
                         field=baller.teammate().create_game()
-                        final_pos_mate,score_mate=ia.play_game_3('ia3',game=field)
+                        final_pos_mate,score_mate,fail=ia.play_game_3('ia3',game=field)
                         
                         
                         if score_mate>score_baller+2:
@@ -699,7 +699,7 @@ class Coach():
             elif joueur.poste[-1]=='AT2':
                 if joueur.status!='EN COURS':
                     field=joueur.create_game()
-                    final_pos_joueur,score_joueur=ia.play_game_3('ia3',game=field)
+                    final_pos_joueur,score_joueur,fail=ia.play_game_3('ia3',game=field)
                     if self.side=='L':
                         joueur.goto=final_pos_joueur
                     else:
