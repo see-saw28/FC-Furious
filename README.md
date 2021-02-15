@@ -5,9 +5,10 @@
 --------------
 ## Partie intelligence artificielle
 
-## Objectif :
+### Objectif :
 Le but de cette intelligence artificielle est de déplacer un attaquant vers un endroit où le but est ouvert en un minimum de déplacements.
 
+-----
 ### Agent :
 Dans ce cas, on traité un réseau de neurone profond, c'est à dire avec plusieurs couches. On peut le representer sous cette forme :
 ![Reseau](img/reseau.png)
@@ -67,4 +68,10 @@ Après plusieurs séries de tests sur 10000 générations de parties aléatoires
 Les résultats sont très satisfaisants et donc utilisables pour le coach.   
 De plus le temps d'execution de 10000 parties est seulement d'une cinquantaine de seconde donc assez rapide pour être implémenté.
 
-
+-----
+### Implémentation dans le code du coach :
+Cette ia intervient lorsque un des attaquants n'a pas le but libre devant lui. Dans ce cas, on fait appel à cette ia qui calcule la position finale et le score pour s'ouvrir le chemin du but. Ainsi, on peut commander le robot vers cette position.  
+La limite de cette ia c'est qu'elle ne prend pas en compte les déplacements des joueurs et donc la solution ne menera pas toujours à un but.  
+On verra par la suite comment l'utiliser :
+* Prédiction de la position finale
+* Prédiction d'un déplcement par un déplacement pour ainsi actualiser l'état du terrain entre deux déplacements.
