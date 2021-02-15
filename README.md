@@ -74,4 +74,4 @@ Cette ia intervient lorsque un des attaquants n'a pas le but libre devant lui. D
 La limite de cette ia c'est qu'elle ne prend pas en compte les déplacements des joueurs et donc la solution ne menera pas toujours à un but.  
 On verra par la suite comment l'utiliser :
 * Prédiction de la position finale
-* Prédiction dese déplacements un par un pour ainsi actualiser l'état du terrain entre deux déplacements.
+* Prédiction des déplacements un par un pour ainsi actualiser l'état du terrain entre deux déplacements.
