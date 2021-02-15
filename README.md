@@ -4,14 +4,14 @@
 
 ### Création d'un champ pour aller à l'objectif en évitant les autres robots :
 L'idée de base est de créer un champ répulsif en faisant le gradient de la somme des potentiels, avec un potentiel positif pour les robots à éviter et un potentiel négatif pour l'objectif. Le potentiel étant calculé avec une loi normale :  
-On peut observer les potentiels :
-![potentiel](img/potentiel.png)
+On peut observer les potentiels :  
+![potentiel](img/potentiel.png)  
 On obtient un champ de cette forme :
 ![grad](img/grad.png) 
 On voit que le champ répulsif ne permet que d'éviter le robot mais pas de le contourner, de plus il y a des changements brusques de directions.  
 
-On a alors créé un mix d'un champ tournant (rotation de 90° du champ répulsif) et du champ répulsif Erobot=Etournant+k*Erepulsif avec sigma du potentiel pour le champ tournant plus grand donc son effet apparait en premier. Ainsi, on obtient :
-
+On a alors créé un mix d'un champ tournant (rotation de 90° du champ répulsif) et du champ répulsif Erobot=Etournant+k*Erepulsif avec sigma du potentiel pour le champ tournant plus grand donc son effet apparait en premier. Ainsi, on obtient :  
+![champ tournant](img/champ.png)  
 
 
 --------------
