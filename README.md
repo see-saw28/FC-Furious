@@ -2,6 +2,8 @@
  
 bonjour
 ## Partie intelligence artificielle
+
+### Agent
 Dans ce cas, on traité un réseau de neurone profond, c'est à dire avec plusieurs couches. On peut le representer sous cette forme :
 ![Reseau](img/reseau.png)
 * En entrée, on rentre un état représentatif de la position des robots sous la forme d'un vecteur de dimension 4x9x9.  
