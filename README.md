@@ -14,7 +14,16 @@ Voici l'algorithme général d'apprentissage dans le cas du deep Q learning :
 ![Deep Q learning](img/algo.png)
 
 Il peut être simplifié sous la forme suivante :
-![Deep q simplifie](img/algo_simplifie.png)
+![Deep q simplifie](img/algo_simplifie.png)  
+
+Tout d'abord, il a fallu coder une Classe pour représenter l'environnement dans lequel l'agent va évoluer.  
+* Les actions possibles : HAUT, BAS, DROITE, GAUCHE
+* Le terrain avec ses limites
+* L'objectif pour finir une partie : but ouvert
+* Les récompenses : 
+'* -1 par déplacement effectué pour forcer l'agent à trouver le plus court chemin
+'* -3 s'il sort du terrain ou s'il se prend un autre robot (la valeur étant plus élévé, l'agent devrait éviter les robots plus facilement)
+'* +10 si l'objectif est accompli
 
 Résultats de l'entrainement (pour 10000 parties jouées) :
 ![Entrainement](img/training.png)
