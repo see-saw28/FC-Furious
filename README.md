@@ -8,13 +8,13 @@
 * Réception : calcul du vecteur directeur de la balle et ajustement de la position
 * Orientation avec la balle : tourner autour de la balle (CIR) pour s'orienter
 * Tir
-* Etre goal : être entre la balle et le but, devant la surface
+
 
 ### Postes :
 * Shooter : on tire si le but est ouvert
 * Dribble : utilisation de l'ia pour avoir le but ouvert
-* Passeur/receveur
-* Goal
+* Passeur/receveur : réalisation d'une passe statique avec ajustement du receveur
+* Goal : être entre la balle et le but, devant la surface
 * Tackle : récupération de la balle
 
 
@@ -34,6 +34,7 @@ Ainsi, on obtient :
 
 Ainsi, pour la commande du robot on utilise la direction du vecteur à la position du robot.
 
+Inconvénient : si on proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences ->solution : dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.
 
 --------------
 ## Partie intelligence artificielle
