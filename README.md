@@ -55,7 +55,7 @@ Tout d'abord, il a fallu coder une Classe pour représenter l'environnement dans
   * -3 s'il sort du terrain ou s'il se prend un autre robot (la valeur étant plus élévé, l'agent devrait éviter les robots plus facilement)
   * +10 si l'objectif est accompli  
   
-Ensuite, il a fallu coder une Classe pour l'agent avec :
+Ensuite, il a fallu coder une Classe pour l'agent grâce à la bibliothèque TensorFlow avec :
 * Les deux réseaux de neurone Q et Q' (noté q_network et target_network dans le code)
 * Une fonction qui choisit la meilleure action
 * Les fonctions nécéssaires pour entrainer l'agent
