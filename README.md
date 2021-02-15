@@ -34,9 +34,12 @@ Dans ce cas, on traité un réseau de neurone profond, c'est à dire avec plusie
 ---
 ### Entrainement :
 Voici l'algorithme général d'apprentissage dans le cas du deep Q learning :
+
 ![Deep Q learning](img/algo_600x480.png)  
 
+
 Il peut être simplifié sous la forme suivante :  
+
 ![Deep q simplifie](img/algo_simplifie1.png)  
 
 Tout d'abord, il a fallu coder une Classe pour représenter l'environnement dans lequel l'agent va évoluer.  
