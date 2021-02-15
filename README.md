@@ -2,4 +2,4 @@
  
 bonjour
 
-[My image](mathisriera.github.com/FC-Furious/img/algo.png)
+![My image](mathisriera.github.com/FC-Furious/img/algo.png)
