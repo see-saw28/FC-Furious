@@ -28,10 +28,14 @@ Exemple de génération de partie :
 
 Sur cette situation, on obtient au final cette position pour l'attaquant :
 ![Position finale](img/final_pos.png)  
-Mouvements : 2  
-Score : 9
+* Mouvements : 2  
+* Score : 9
 
 De même, on obtient ce résultat :  
 ![Partie 2](img/partie_2.png)  
-Mouvements :5  
-Score :6
+* Mouvements : 5  
+* Score : 6  
+
+La génération étant aléatoire pour couvrir toutes les configurations de terrains possibles, parfois l'issue est très simple (1 mouvement suffit), d'autres fois elle l'est beaucoup moins.  
+Après plusieurs séries de tests sur 10000 générations de parties aléatoires. Le score moyen est de 8.6 avec un taux d'échec inférieur à 0.6%. Un échec est comptabilisé si l'agent n'atteint pas l'objectif en moins de 20 coups.  
+Les résultats sont très satisfaisants et donc utilisables pour le coach. De plus le temps d'execution de 10000 parties est seulement d'une cinquantaine de seconde donc assez rapide pour être implémenté.
