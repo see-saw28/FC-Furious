@@ -7,7 +7,7 @@ L'idée de base est de créer un champ répulsif en faisant le gradient de la so
 On peut observer les potentiels :  
 ![potentiel](img/potentiel.png)  
 On obtient un champ de cette forme :
-![grad](img/grad.png) 
+![grad](img/grad.png)  
 On voit que le champ répulsif ne permet que d'éviter le robot mais pas de le contourner, de plus il y a des changements brusques de directions.  
 
 On a alors créé un mix d'un champ tournant (rotation de +/-90° du champ répulsif en fonction de la position du robot répulsif) et du champ répulsif E<sub>robot</sub>=E<sub>tournant</sub>+k*E<sub>répulsif</sub> avec k=facteur de répulsion.  
