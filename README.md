@@ -30,7 +30,7 @@ Ensuite, il a fallu coder une Classe pour l'agent avec :
 * Une fonction qui choisit la meilleure action
 * Les fonctions nécéssaires pour entrainer l'agent
 
-Après de nombreux tests, modifications du programm d'entrainement etc.. Voici les résultats du meilleur entrainement (pour 10000 parties jouées) :
+Après de nombreux tests, modifications du programme d'entrainement etc.. Voici les résultats du meilleur entrainement (pour 10000 parties jouées) :
 ![Entrainement](img/training.png)
 
 On observe effectivement que la fonction Loss function *[(r+&gamma;max Q'<sub>a'</sub>(s',a';&theta;<sub>i</sub>)) - Q(s,a;&theta;<sub>i</sub>]²* diminue bien sur le graphique du bas.  
