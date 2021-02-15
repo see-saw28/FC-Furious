@@ -28,7 +28,7 @@ Tout d'abord, il a fallu coder une Classe pour représenter l'environnement dans
 Résultats de l'entrainement (pour 10000 parties jouées) :
 ![Entrainement](img/training.png)
 
-On observe effectivement que la fonction Loss function [(r+&gamma;max Q'<sub>a'</sub>(s',a';&theta;<sub>i</sub>)) - Q(s,a;&theta;<sub>i</sub>]² diminue bien sur le graphique du bas.  
+On observe effectivement que la fonction Loss function *[(r+&gamma;max Q'<sub>a'</sub>(s',a';&theta;<sub>i</sub>)) - Q(s,a;&theta;<sub>i</sub>]²* diminue bien sur le graphique du bas.  
 De plus, le score des parties augmentent jusqu'à atteindre quasiment 8, cela correspond à atteindre l'objectif en 3 mouvements seulement. C'est très bon, l'algorithme d'entrainement est éfficace et on a obtenu un bon agent.
 
 Exemple de génération de partie :  
@@ -54,6 +54,4 @@ Après plusieurs séries de tests sur 10000 générations de parties aléatoires
 Les résultats sont très satisfaisants et donc utilisables pour le coach.   
 De plus le temps d'execution de 10000 parties est seulement d'une cinquantaine de seconde donc assez rapide pour être implémenté.
 
-* Une autre puce
 
-`* Une sous-puce`
