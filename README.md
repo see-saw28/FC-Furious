@@ -23,9 +23,14 @@ Tout d'abord, il a fallu coder une Classe pour représenter l'environnement dans
 * Les récompenses :   
   * -1 par déplacement effectué pour forcer l'agent à trouver le plus court chemin
   * -3 s'il sort du terrain ou s'il se prend un autre robot (la valeur étant plus élévé, l'agent devrait éviter les robots plus facilement)
-  * +10 si l'objectif est accompli
+  * +10 si l'objectif est accompli  
+  
+Ensuite, il a fallu coder une Classe pour l'agent avec :
+* Les deux réseaux de neurone Q et Q' (noté q_network et target_network dans le code)
+* Une fonction qui choisit la meilleure action
+* Les fonctions nécéssaires pour entrainer l'agent
 
-Résultats de l'entrainement (pour 10000 parties jouées) :
+Après de nombreux tests, modifications du programm d'entrainement etc.. Voici les résultats du meilleur entrainement (pour 10000 parties jouées) :
 ![Entrainement](img/training.png)
 
 On observe effectivement que la fonction Loss function *[(r+&gamma;max Q'<sub>a'</sub>(s',a';&theta;<sub>i</sub>)) - Q(s,a;&theta;<sub>i</sub>]²* diminue bien sur le graphique du bas.  
