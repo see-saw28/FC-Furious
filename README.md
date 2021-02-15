@@ -2,6 +2,10 @@
  
 ## Partie Coach
 
+### Création d'un champ pour aller à l'objectif en évitant les autres robots :
+L'idée de base est de créer un champ répulsif en faisant le gradient de la somme des potentiels, avec un potentiel positif pour les robots à éviter et un potentiel négatif pour l'objectif. Le potentiel étant calculé avec une loi normale :  
+
+
 --------------
 ## Partie intelligence artificielle
 
