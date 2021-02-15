@@ -12,3 +12,6 @@ Voici l'algorithme général d'apprentissage dans le cas du deep Q learning :
 
 Il peut être simplifié sous la forme suivante :
 ![Deep q simplifie](img/algo_simplifie.png)
+
+Résultats de l'entrainement (pour 10000 parties jouées) :
+![Entrainement](img/training.png)
