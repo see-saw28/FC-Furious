@@ -1,5 +1,5 @@
 # FC Furious
  
 bonjour
-
-![My image](img/algo.png)
+##Partie intelligence artificielle
+![Deep Q learning](img/algo.png)
