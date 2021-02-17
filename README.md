@@ -41,10 +41,13 @@ Inconvénient : si on proche de l'objectif et qu'il y a un robot proche aussi, c
 Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions :    
 * mode 0: affichage dans la console des changements de postes  
 * mode 1: affichage sur un graphique des postes et du status des robots
-* mode 2: affichage sur un graphique d'une rreproduction du terrain 
+* mode 2: affichage sur un graphique d'une reproduction du terrain 
 
 ### Stratégie:
-
+Pas encore totalement définie.  
+Pour le moment, le coach réalise 2 actions:  
+* Lecture des données du terrain et attribution des postes
+* Ordre aux robots en fonction du poste
 
 --------------
 ## Partie intelligence artificielle
