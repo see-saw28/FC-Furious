@@ -122,12 +122,12 @@ Animation :
 ### Validation de l'agent obtenu :
 Après plusieurs séries de tests sur 10000 générations de parties aléatoires. Le score moyen est de 8.6 avec un taux d'échec inférieur à 0.6%. Un échec est comptabilisé si l'agent n'atteint pas l'objectif en moins de 20 coups.  
 Les résultats sont très satisfaisants et donc utilisables pour le coach.   
-De plus le temps d'execution de 10000 parties est seulement d'une cinquantaine de seconde donc assez rapide pour être implémenté.
+De plus le temps d'execution de 10000 parties est seulement d'une cinquantaine de seconde donc assez rapide pour être implémenté. (Sur ma machine)
 
 ---
 ### Implémentation dans le code du coach :
 Cette ia intervient lorsque un des attaquants n'a pas le but libre devant lui. Dans ce cas, on fait appel à cette ia qui calcule la position finale et le score pour s'ouvrir le chemin du but. Ainsi, on peut commander le robot vers cette position.  
-La limite de cette ia c'est qu'elle ne prend pas en compte les déplacements des joueurs et donc la solution ne menera pas toujours à un but. De plus, pour le moment l'appel de cette ia génère un ralentissement du programme.   
+La limite de cette ia c'est qu'elle ne prend pas en compte les déplacements des joueurs et donc la solution ne menera pas toujours à un but. De plus, pour le moment l'appel de cette ia génère un ralentissement du programme (l'appel se fait sur la VM qui fait tourner le simulateur en plus, c'est peut être la cause).   
 On verra par la suite comment l'utiliser :
 * Prédiction de la position finale
 * Prédiction des déplacements un par un pour ainsi actualiser l'état du terrain entre deux déplacements.
