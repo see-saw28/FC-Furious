@@ -68,7 +68,7 @@ Dans ce cas, on traité un réseau de neurone profond, c'est à dire avec plusie
 #### Théorie :  
 Voici l'algorithme général d'apprentissage dans le cas du deep Q learning :
 
-![Deep Q learning](img/algo_600x480.png){:height="50%" width="50%"} 
+![Deep Q learning](img/algo_600x480.png){:height="700px" width="400px"} 
 
 
 Il peut être simplifié sous la forme suivante :  
