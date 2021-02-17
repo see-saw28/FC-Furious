@@ -38,8 +38,10 @@ Ainsi, pour la commande du robot on utilise la direction du vecteur à la positi
 Inconvénient : si on proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences ->solution : dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.
 
 ### Méthode de visualisation :
-Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions mais souvent gourmande en ressource.  
--> Recherche d'une solution   
+Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions :    
+* mode 0: affichage dans la console des changements de postes  
+* mode 1: affichage sur un graphique des postes et du status des robots
+* mode 2: affichage sur un graphique d'une rreproduction du terrain 
 
 ### Stratégie:
 
@@ -122,7 +124,7 @@ De plus le temps d'execution de 10000 parties est seulement d'une cinquantaine d
 ---
 ### Implémentation dans le code du coach :
 Cette ia intervient lorsque un des attaquants n'a pas le but libre devant lui. Dans ce cas, on fait appel à cette ia qui calcule la position finale et le score pour s'ouvrir le chemin du but. Ainsi, on peut commander le robot vers cette position.  
-La limite de cette ia c'est qu'elle ne prend pas en compte les déplacements des joueurs et donc la solution ne menera pas toujours à un but.  
+La limite de cette ia c'est qu'elle ne prend pas en compte les déplacements des joueurs et donc la solution ne menera pas toujours à un but. De plus, pour le moment l'appel de cette ia génère un ralentissement du programme.   
 On verra par la suite comment l'utiliser :
 * Prédiction de la position finale
 * Prédiction des déplacements un par un pour ainsi actualiser l'état du terrain entre deux déplacements.
