@@ -37,6 +37,10 @@ Ainsi, pour la commande du robot on utilise la direction du vecteur à la positi
 
 Inconvénient : si on proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences ->solution : dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.
 
+### Méthode de visualisation :
+Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions mais souvent gourmande en ressource.  
+-> Recherche d'une solution   
+
 ### Stratégie:
 
 
