@@ -210,15 +210,17 @@ class Robot():
         self.Ex,self.Ey=k*Ex10+Ex1,k*Ey10+Ey1
     
     #Calcule le champ provoquer par les autres joueurs    
-    def champ_autre(self,x_depart,x_arrivee,a,b):  
+    def champ_autre(self,x_depart,x_arrivee,y_arrivee,a,b):
         Ex_autre=0
         Ey_autre=0
         for robot in self.match.joueurs:
             if robot!=self:
-                robot.champ_perso(x_depart, x_arrivee, a, b)
-                Ex,Ey=robot.Ex,robot.Ey
-                Ex_autre+=Ex
-                Ey_autre+=Ey
+                #On ne prend pas en compte le champ créé par les robots derrière nous
+                if (x_arrivee-self.x)*(robot.x-self.x) + (y_arrivee-self.y)*(robot.y-self.y) > 0:
+                    robot.champ_perso(x_depart, x_arrivee, a, b)
+                    Ex,Ey=robot.Ex,robot.Ey
+                    Ex_autre+=Ex
+                    Ey_autre+=Ey
         self.Ex_autre,self.Ey_autre=Ex_autre,Ey_autre
     
     #Commande vers une position avec orientation vers un point donné (xo,yo)
@@ -237,12 +239,18 @@ class Robot():
         vitesse_angulaire=min(sat_vitesse_angulaire,abs(delta)*K_angulaire)*np.sign(delta)
         
         distance_autres_joueurs=[]
+        distance_autres_joueurs_balle=[]
         for robot in self.match.joueurs:
             if robot!=self:
                 distance_autres_joueurs.append(self.distanceToXY(robot.positionc))
+                distance_autres_joueurs_balle.append(robot.distanceToXY(robot.match.balle.position))
+        
+        
         
         #si l'objectif est proche mais un autre robot aussi alors on fait abstraction des champs repulsifs
-        if (min(distance_autres_joueurs)<R_non_evitement) & (distance<250)&balle:
+        if (min(distance_autres_joueurs)>distance) & (min(distance_autres_joueurs_balle)<300) & (distance<300) & balle:
+            print("oui")
+            
             p = psl.packetCommandBot(self.team=='Y', 
                          id=self.id, 
                          veltangent=K_proche*np.cos(delta), 
@@ -264,9 +272,16 @@ class Robot():
             # print(Ex[yd,xd],xd,self.x,self.y)
             
             a,b=np.polyfit([x,self.x],[y,self.y],1)
-            self.champ_autre(self.x,x,a,b)
+            
+            self.champ_autre(self.x,x,y,a,b)
             Ex,Ey=Exb+k*self.Ex_autre,Eyb+k*self.Ey_autre
             Ex,Ey=pt.norme(Ex,Ey)
+            
+            # #Affichage du champ
+            # fig = plt.figure()
+            # ax1 = fig.add_subplot(1, 1, 1)
+            # ax1.quiver(x_grid,y_grid,Ex,Ey,width=0.0008)
+            
             
             vitesse_tangente=min(saturation_vitesse_tangente,K_max*(np.sin(self.orientation)*Ey[yd,xd]+np.cos(self.orientation)*Ex[yd,xd]))
             vitesse_normale=min(saturation_vitesse_normale,K_max*(-np.sin(self.orientation)*Ex[yd,xd]+np.cos(self.orientation)*Ey[yd,xd]))
@@ -583,7 +598,7 @@ class Coach():
                 #     baller.defPoste('AT2')
                 
                 
-                self.baller=baller
+                # self.baller=baller
                 if self.openGoal(baller):
                     baller.defPoste('SHOOTER')
                     baller.teammate().defPoste('AT2')
@@ -644,14 +659,7 @@ class Coach():
                             
                             baller.defPoste('DRIBBLE')
                             
-                            
-                            
-                        
-                    
-                
-                 
-            
-          
+
                     
                 
             elif baller.team!=self.nom :
@@ -659,11 +667,14 @@ class Coach():
                 goal=self.whoIsTheGoal()
                 goal.defPoste('GOAL')
                 
-                if ((baller.x<0)&(self.side=='L'))|((baller.x>0)&(self.side=='R')):
+                if ((baller.x<0)&(self.side=='L'))|((baller.x>0)&(self.side=='R')): #Baller de notre coté
                     goal.teammate().defPoste('TACKLE')
                     
                 else :
                     goal.teammate().defPoste('DEF')
+                    
+                    
+                    
                     
         elif (not ball):
             closer=self.joueurs[0].match.joueurs[distance.index(min(distance))]
@@ -684,10 +695,10 @@ class Coach():
                 goal=self.whoIsTheGoal()
                 goal.defPoste('GOAL')
                 
-                if ((self.side=='L')&(balle.x<0))|((self.side=='R')&(balle.x>0)):
+                if ((self.side=='L')&(balle.x<0))|((self.side=='R')&(balle.x>0)): #Balle de notre coté
                     goal.teammate().defPoste('CHASER')
                 else :
-                    if (min(distance)/goal.teammate().distanceToXY(balle.position))>0.7:
+                    if (min(distance)/goal.teammate().distanceToXY(balle.position))>0.7: #Rapport de décision def/chaser
                         goal.teammate().defPoste('DEF')
                     else:
                         goal.teammate().defPoste('CHASER')
@@ -938,7 +949,7 @@ class Match():
 #%%Création match
 
 
-match_test=Match('test',disp=1)
+match_test=Match('test',disp=0)
 
 if match_test.disp==2:
     fig = plt.figure()
@@ -982,12 +993,13 @@ while True:
         #     ax.set_xlim(-longueur,longueur)
         #     ax.set_ylim(-largeur,largeur)
 
+
+        #Match 2v2
         match_test.Vision()
-        # print(match_test.joueurs[3].hasTheBall())
         match_test.blue.whereIstheBall()
         match_test.blue.action()
-        # match_test.yellow.whereIstheBall()
-        # match_test.yellow.action()
+        match_test.yellow.whereIstheBall()
+        match_test.yellow.action()
         
         if match_test.disp>0:
             
@@ -1007,7 +1019,24 @@ while True:
         # match_test.blue.joueurs[0].commande_position(0,0,xb,yb)
     # break
         
+
+
+        # match_test.Vision()
         
+        
+        # if match_test.joueurs[2].hasTheBall() :
+            
+        #     print("balle atteinte")
+        #     p = psl.packetCommandBot(False, 
+        #                   id=0, 
+        #                   veltangent=0., 
+        #                   velnormal=0, 
+        #                   velangular=0.)
+        #     grSim.send(p)
+        # else :
+        #     match_test.joueurs[2].commande_balle()
+        
+        # break
             
             
     except KeyboardInterrupt :#mise à zéro de tous les robots lors de l'intérruption du programme
