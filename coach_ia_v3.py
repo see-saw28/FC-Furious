@@ -21,14 +21,13 @@ Created on Mon Dec 21 17:14:26 2020
 
 @author: psl
 """
-import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.patches as patches
 import matplotlib.lines as lines
 import potentiel as pt
 
-# import asservissement as ass
+
 from psl_package import paris_saclay_league as psl
 import cmath as c
 import time
@@ -39,7 +38,7 @@ import ia_v3 as ia
 
 
 
-
+#Connexion au simulateur
 vision = psl.SSLVisionClient(ip='224.5.23.2', port=10020)
 vision.connect()
 grSim = psl.SSLgrSimClient('127.0.0.1', 20011)
@@ -157,7 +156,7 @@ class Robot():
         self.x,self.y,self.orientation=botInfo[6],botInfo[7],botInfo[8]
         self.positionc=complex(self.x,self.y)
         
-    
+    ##Ancienne version
     # def hasTheBall(self):
     #     pos_ball=self.match.balle.position
     #     pos_rob=self.positionc
@@ -186,7 +185,6 @@ class Robot():
    
     #Calcul de la distance entre le robot et un point du terrain
     def distanceToXY(self,pos_target):
-        
         # pos_vitual=pos_rob+complex(r_robot*np.cos(self.orientation),r_robot*np.sin(self.orientation))
         distance,phi=c.polar(self.positionc-pos_target)
         # print(distance)
@@ -194,7 +192,6 @@ class Robot():
     
     #Calcul du potentiel créé par le robot  
     def Potentiel(self):       
-        
         self.potentiel=pt.Potentiel(10,[self.x,self.y],x_grid,y_grid,r_evit)
     
         
@@ -249,7 +246,7 @@ class Robot():
         
         #si l'objectif est proche mais un autre robot aussi alors on fait abstraction des champs repulsifs
         if (min(distance_autres_joueurs)>distance) & (min(distance_autres_joueurs_balle)<300) & (distance<300) & balle:
-            print("oui")
+            # print("oui")
             
             p = psl.packetCommandBot(self.team=='Y', 
                          id=self.id, 
@@ -263,10 +260,10 @@ class Robot():
             return 'EN COURS'
         
         elif (abs(distance)>35)|(abs(delta)>0.05):
-            
-            
+            #champ créé par l'objectif
             Exb,Eyb=pt.Gradient(position_arrivee.potentiel)
-        
+            
+            #Calcul des positions x,y discrètes sur la grille
             xd=int((self.x+longueur)/(2*longueur)*nbPoints)
             yd=int((self.y+largeur)/(2*largeur)*nbPoints)
             # print(Ex[yd,xd],xd,self.x,self.y)
@@ -282,7 +279,7 @@ class Robot():
             # ax1 = fig.add_subplot(1, 1, 1)
             # ax1.quiver(x_grid,y_grid,Ex,Ey,width=0.0008)
             
-            
+            #Saturation
             vitesse_tangente=min(saturation_vitesse_tangente,K_max*(np.sin(self.orientation)*Ey[yd,xd]+np.cos(self.orientation)*Ex[yd,xd]))
             vitesse_normale=min(saturation_vitesse_normale,K_max*(-np.sin(self.orientation)*Ex[yd,xd]+np.cos(self.orientation)*Ey[yd,xd]))
             
@@ -290,10 +287,6 @@ class Robot():
                 vitesse_tangente=vitesse_tangente*distance/seuil_distance
                 vitesse_normale=vitesse_normale*distance/seuil_distance
                 spin=True
-                
-            # if distance<seuil_distance:
-            #     vitesse_tangente=vitesse_tangente*distance/seuil_distance
-            #     vitesse_normale=vitesse_normale*distance/seuil_distance
             
             
             p = psl.packetCommandBot(self.team=='Y', 
@@ -305,13 +298,10 @@ class Robot():
             grSim.send(p)
         
             return 'EN COURS'
-        
-            
-            # time.sleep(0.05)
             
             
             
-            
+        #Objectif atteint    
         else :    
             p = psl.packetCommandBot(self.team=='Y', 
                                  id=self.id, 
@@ -394,17 +384,20 @@ class Robot():
         direction=receveur-passeur
         distance,phi=c.polar(direction)
         
+        #orientation du passeur vers le receveur
         self.orientation_with_ball(mate.x,mate.y)
+        
         angle=(phi+np.pi)%(2*np.pi)
         if angle>np.pi:
             angle-=2*np.pi
         
-        
+        #orientation du receveur vers le passeur
         mate.commande_position(mate.x, mate.y,self.x,self.y )
         
         delta=phi-self.orientation
         delta1=angle-mate.orientation
-    
+        
+        #Alignement réussi IDEE arrêt lors du changement de signe
         if (abs(delta)<.05)&(abs(delta1)<0.05):
             
             p = psl.packetCommandBot(self.team=='Y', 
@@ -415,6 +408,10 @@ class Robot():
                          kickspeedx=distance/400)
             grSim.send(p)
             print('Passe')
+            return 'DONE'
+        
+        else :
+            return 'EN COURS'
             
             
     #Commande pour que le receveur se dirige vers le point d'arrivée de la balle
@@ -430,20 +427,24 @@ class Robot():
         angle=(phi+np.pi)%(2*np.pi)
         if angle>np.pi:
             angle-=2*np.pi
+        
+        #vecteur directeur de la balle
         vect_balle=self.match.balle.trajectoire()
         d,o_balle=c.polar(vect_balle)
+        
+        #Angle entre le vecteur entre les deux robots et le vecteur de la balle
         theta=angle-o_balle
+        
         print(theta,((self.match.balle.x10[-10]-self.match.balle.x10[-1])**2+(self.match.balle.y10[-10]-self.match.balle.y10[-1])**2))
+        
+        #Si on observe un trop gros écart angulaire alors la passe a rebondit ou elle est ratée
         if (abs(theta)>0.4)&(((self.match.balle.x10[-10]-self.match.balle.x10[-1])**2+(self.match.balle.y10[-10]-self.match.balle.y10[-1])**2)>250):
             self.defPoste('CHASER')
         else :
             self.defPoste('RECEVEUR')
-            # if self.team=='B':
-            #     self.match.blue.passe=False
-            # else:
-            #     self.match.yellow.passe=False
-        dU=complex(-direction.imag,direction.real)
-        dU=10*np.sin(theta)*dU
+            
+        dU=complex(-direction.imag,direction.real) #rotation a 90° du vecteur reliant les robots
+        dU=10*np.sin(theta)*dU #projection de la position où la balle devrait arriver
         # print(dU)
         self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y )
         
@@ -593,21 +594,15 @@ class Coach():
         if ball: 
             if (baller.team==self.nom):
                 
-                #   if (baller.team==self.nom) & (self.passe):
-                # if baller.teammate()==self.baller:
-                #     self.passe=False
-                #     baller.defPoste('AT2')
-                
-                
-                # self.baller=baller
+              
                 if self.openGoal(baller):
                     baller.defPoste('SHOOTER')
-                    baller.teammate().defPoste('AT2')
+                    baller.teammate().defPoste('AT2') #ou defense
                     
                 
                 elif (baller.poste[-1]=='DRIBBLE')&(baller.status=='EN COURS') :
                     baller.defPoste('DRIBBLE')
-                    baller.teammate().defPoste('AT2' ) 
+                    baller.teammate().defPoste('DEMARQUE' ) 
                     
                     
                 # elif (baller.poste[-1]=='DRIBBLE')&(baller.status=='DONE'):
@@ -679,21 +674,24 @@ class Coach():
                     
         elif (not ball):
             closer=self.joueurs[0].match.joueurs[distance.index(min(distance))]
-            if closer.team==self.nom:
-                # if (min(distance)<300)&(closer.poste[-1]=='DRIBBLE'):
-                #     pass
-                # else:
-                if closer.poste[-1]in ('PASSEUR','AT3'):
-                    closer.defPoste('AT3')
+            
+            if closer.team==self.nom: #on est plus proche de la balle
                 
-                elif closer.poste[-1]=='RECEVEUR':
+                if (closer.poste[-1]=='PASSEUR')&(joueur.status=='DONE'): #on verifie que ce n'est pas celui qui vient de faire la passe
+                    closer.defPoste('DEMARQUE')
+                
+                elif (closer.poste[-1]=='DEMARQUE')&(joueur.status=='EN COURS'): #pareil que précédemment mais à l'instant d'aprés
+                    closer.defPoste('DEMARQUE')
+                
+                elif closer.poste[-1]=='RECEVEUR': #si c'est le receveur, alors on ne change pas son poste
                     closer.defPoste('RECEVEUR')
-                else :
+                
+                else : #sinon on va chercher la balle
                     closer.defPoste('CHASER')
-                    closer.teammate().defPoste('AT2')
-            else :
-                # print('defense', closer)
-                goal=self.whoIsTheGoal()
+                    closer.teammate().defPoste('DEMARQUE')
+            
+            else : #l'autre équipe est plus proche de la balle
+                goal=self.whoIsTheGoal() #attribution d'un gardien
                 goal.defPoste('GOAL')
                 
                 if ((self.side=='L')&(balle.x<0))|((self.side=='R')&(balle.x>0)): #Balle de notre coté
@@ -709,7 +707,7 @@ class Coach():
                 
         
         
-        
+        #Affichage changement de status
         if self.joueurs[0].match.disp==0:
             changement=False
             status=''
@@ -732,73 +730,46 @@ class Coach():
             elif joueur.poste[-1]=='CHASER':
                 joueur.status=joueur.commande_balle()
                 
-            elif joueur.poste[-1]=='AT2':
-                if (joueur.status!='EN COURS')&(joueur.teammate().poste[-1]!='RECEVEUR'):
+            elif joueur.poste[-1]=='DEMARQUE':
+                if (joueur.status=='DONE')&(not self.openGoal(joueur)): #calcul d'une nouvelle position 
                     field=joueur.create_game()
                     final_pos_joueur,score_joueur,fail=ia.play_game_3(agent=self.ia,game=field)
-                    if self.side=='L':
+                    if self.side=='L': #l'ia est entrainée que sur un coté donc on doit flip la position
                         joueur.goto=final_pos_joueur
-                    else:
+                    else: 
                         joueur.goto=(-final_pos_joueur[0],final_pos_joueur[1])
                     joueur.status=joueur.commande_position(joueur.goto[0], joueur.goto[1], joueur.teammate().x,joueur.teammate().y)
-                    # print(joueur.goto)
                     
-                else :
+                    
+                else : #la position est déjà calculée donc commande vers la position
                     joueur.status=joueur.commande_position(joueur.goto[0], joueur.goto[1], joueur.teammate().x,joueur.teammate().y)
+                
+                #affichage de la position prédicte
                 if joueur.match.disp==2:
                     goto,=ax.plot(joueur.goto[0],joueur.goto[1],'go')
                     ax.draw_artist(goto)
-                joueur.defPoste('AT2')
-                # p = psl.packetCommandBot(joueur.team=='Y', 
-                #           id=joueur.id, 
-                #           veltangent=0., 
-                #           velnormal=0, 
-                #           velangular=0.)
-                # grSim.send(p)
-                # self.passe=False
-            #     field=joueur.create_game()
-            #     final_pos,score=ia.play_game_3('ia2',game=field)
-
-                
-            #     if self.side=='L':
-            #         joueur.goto=final_pos
-            #     else:
-            #         joueur.goto=(-final_pos[0],final_pos[1])
                 
                 
-                
-            # elif joueur.poste[-1]=='BALLER':
-            #     # field=self.joueurs[0].match.create_game()
-            #     # final_pos,score=ia.play_game_3('ia2',game=field)
-                
-            #     # joueur.goto=final_pos
-            #     # joueur.status=joueur.commande_position(joueur.goto[0], joueur.goto[1], 0,spin=True)
-                
-            #     joueur.defPoste('DRIBBLE')
-            #     joueur.defPoste('DRIBBLE')
-            #     # print(final_pos)
-            #     # time.pause(5)
             
-            elif joueur.poste[-1]=='DRIBBLE':
+            
+            elif joueur.poste[-1]=='DRIBBLE': #commande vers la position calcuée
                 joueur.status=joueur.commande_position(joueur.goto[0], joueur.goto[1], self.but_adversaire[0],self.but_adversaire[1],spin=True)
-                if joueur.match.disp==2:
+                
+                if joueur.match.disp==2:  #affichage
                     goto,=ax.plot(joueur.goto[0],joueur.goto[1],'go')
                     ax.draw_artist(goto)
                 joueur.defPoste('DRIBBLE')
             
-            elif (joueur.poste[-1]=='PASSEUR') & (joueur.teammate().poste[-1]=='RECEVEUR'):
-                joueur.Passe()
+            elif (joueur.poste[-1]=='PASSEUR') & (joueur.teammate().poste[-1]=='RECEVEUR'): #procédure avant la passe
+                joueur.status=joueur.Passe()
                 joueur.defPoste('PASSEUR')
                 
             
-            elif (joueur.poste[-1]=='RECEVEUR') & (joueur.teammate().poste[-1]!='PASSEUR'):
+            elif (joueur.poste[-1]=='RECEVEUR') & (joueur.teammate().poste[-1]!='PASSEUR'): #procédure pendant la passe pour ajuster la position du receveur
                 joueur.reception()
                 
-                
-                # if joueur.distance_balle<100:
-                #     joueur.poste[-1]=='CHASER'
                     
-            elif joueur.poste[-1]=='GOAL':
+            elif joueur.poste[-1]=='GOAL': 
                 joueur.defPoste('GOAL')
                 joueur.goal()
                 
@@ -809,9 +780,7 @@ class Coach():
                     
                 else :
                     x=300
-                    
-                    
-                
+      
                 joueur.commande_position(x, joueur.match.balle.y/2, joueur.match.balle.x,joueur.match.balle.y)     
                 
             elif joueur.poste[-1]=='TACKLE':
@@ -889,8 +858,7 @@ class Match():
     #Récupération des données de SSL Vision et actualisation des robots et de la balle + affichage
     def Vision(self):
         balls, blueBots, yellowBots = getVision()
-       
-       
+  
         for robot in self.joueurs:
             data=False
             if robot.team=='Y':
@@ -905,11 +873,14 @@ class Match():
                     if bot[5]==robot.id:
                         data=True
                         botInfo=bot
-            if data:
+            
+            #parfois il manque une donnée pour un robot
+            if data: 
                 robot.position(botInfo)
             else :
                 self.Vision()
-                
+            
+            #affichage
             if self.disp==2:
                 draw_robot,=ax.plot(robot.x,robot.y,tag,marker='o',ms=20,label=(str(robot)+' '+str(robot.poste[-1])+' '+str(robot.status)))
                 text_robot=ax.text(robot.x,robot.y,robot.id,horizontalalignment='center',verticalalignment='center',color='w')
@@ -923,10 +894,11 @@ class Match():
                     x=700
                 draw_robot=ax.text(x,robot.id*200,str(robot)+' '+str(robot.poste[-1])+' '+str(robot.status),horizontalalignment='center',verticalalignment='center')
                 ax.draw_artist(draw_robot)
+        
+        
         if len(balls)>0:
             self.balle.Position(balls[0])
-            # print(balls[0][2])
-        
+
         if self.disp==2:
             draw_ball,=ax.plot(self.balle.x10,self.balle.y10,'ro')
             ax.draw_artist(draw_ball)
@@ -966,7 +938,7 @@ if match_test.disp==2:
     text=ax.text(0,largeur-200,"")
     fig.canvas.draw()
     axbackground = fig.canvas.copy_from_bbox(ax.bbox)
-    # plt.show(block=False)
+    
     
 
 
@@ -991,14 +963,7 @@ while True:
     
     try:
         if match_test.disp>0:
-            
             fig.canvas.restore_region(axbackground)  
-        
-        # elif match_test.disp==1:
-        #     ax.clear()
-        #     ax.set_xlim(-longueur,longueur)
-        #     ax.set_ylim(-largeur,largeur)
-
 
         #Match 2v2
         match_test.Vision()
@@ -1016,8 +981,7 @@ while True:
             fig.canvas.flush_events()
             
             
-        # elif match_test.disp==1:
-        #     plt.pause(0.03)
+        
         # xb=match_test.balle.x
         # yb=match_test.balle.y
         # match_test.blue.joueurs[0].commande_position(0,0,xb,yb)
