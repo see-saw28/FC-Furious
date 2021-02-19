@@ -41,7 +41,7 @@ De plus, on ne  prend pas en compte les robots qui sont derrière succeptible de
 
 Ainsi, pour la commande du robot on utilise la direction du vecteur à la position du robot.
 
-Si on proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences. Dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.  
+Si on est proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences. Dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.  
 
 
 ### Méthode de visualisation :
