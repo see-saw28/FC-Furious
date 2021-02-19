@@ -33,10 +33,11 @@ De plus, on prend sigma du potentiel pour le champ tournant plus grand donc son 
 Ainsi, on obtient :  
 ![champ tournant](img/champ.png)  
 
+De plus, on ne  prend pas en compte les robots qui sont derrièresucceptible de créer des interférences.  
 Ainsi, pour la commande du robot on utilise la direction du vecteur à la position du robot.
 
-Inconvénient : si on proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences ->solution : dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.  
-Amélioration à faire : ne pas prendre en compte ls robots qui sont derrière.
+Si on proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences. Dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.  
+
 
 ### Méthode de visualisation :
 Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions :    
