@@ -12,10 +12,12 @@
 
 ### Postes :
 * Shooter : on tire si le but est ouvert
-* Dribble : utilisation de l'ia pour avoir le but ouvert
+* Dribble : utilisation de l'ia pour dribbler vers une postion où le but ouvert
+* Demarquage : utilisation de l'ia pour se demarquer vers une postion où le but ouvert
 * Passeur/receveur : réalisation d'une passe statique avec ajustement du receveur
 * Goal : être entre la balle et le but, devant la surface
-* Tackle : récupération de la balle
+* Tackle/Chaser : récupération de la balle 
+
 
 
 
