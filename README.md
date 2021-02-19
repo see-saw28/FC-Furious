@@ -117,7 +117,7 @@ De même, on obtient ce résultat :
 
 La génération étant aléatoire pour couvrir toutes les configurations de terrains possibles, parfois l'issue est très simple (1 mouvement suffit), d'autres fois elle l'est beaucoup moins.  
 Animation :  
-![gif](img/move4.gif)
+![gif](img/move3.gif)
 
 ---
 ### Validation de l'agent obtenu :
