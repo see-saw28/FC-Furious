@@ -549,6 +549,7 @@ class Coach():
         self.nom=couleur
         self.baller=None
         self.passe=False
+        self.ia=ia.Agent('ia3')
        
         if self.side=='L':
             self.but=(-1350,0)  
@@ -624,13 +625,13 @@ class Coach():
                         # print('here')
                         
                         field=baller.create_game()
-                        final_pos_baller,score_baller,fail=ia.play_game_3('ia3',game=field)
+                        final_pos_baller,score_baller,fail=ia.play_game_3(agent=self.ia,game=field)
                         
                         # print(field)
                         # ia.Game(9,9,terrain=field).print()
                         
                         field=baller.teammate().create_game()
-                        final_pos_mate,score_mate,fail=ia.play_game_3('ia3',game=field)
+                        final_pos_mate,score_mate,fail=ia.play_game_3(agent=self.ia,game=field)
                         
                         
                         if score_mate>score_baller+2:
@@ -734,7 +735,7 @@ class Coach():
             elif joueur.poste[-1]=='AT2':
                 if (joueur.status!='EN COURS')&(joueur.teammate().poste[-1]!='RECEVEUR'):
                     field=joueur.create_game()
-                    final_pos_joueur,score_joueur,fail=ia.play_game_3('ia3',game=field)
+                    final_pos_joueur,score_joueur,fail=ia.play_game_3(agent=self.ia,game=field)
                     if self.side=='L':
                         joueur.goto=final_pos_joueur
                     else:
@@ -949,7 +950,7 @@ class Match():
 #%%Création match
 
 
-match_test=Match('test',disp=0)
+match_test=Match('test',disp=1)
 
 if match_test.disp==2:
     fig = plt.figure()
@@ -966,9 +967,8 @@ if match_test.disp==2:
     fig.canvas.draw()
     axbackground = fig.canvas.copy_from_bbox(ax.bbox)
     # plt.show(block=False)
-    t_start = time.time()
+    
 
-    frame =0
 
 elif match_test.disp==1:
     fig = plt.figure()
@@ -979,7 +979,13 @@ elif match_test.disp==1:
     axbackground = fig.canvas.copy_from_bbox(ax.bbox)
     fig.canvas.draw()
     frame =0
-    t_start = time.time()
+    
+t_list = [time.time()]
+def t_update(t_list):
+    t_list.append(time.time())
+    if len(t_list)>30:
+        t_list.pop(0)
+    return(t_list)
     
 while True:
     
@@ -1002,16 +1008,14 @@ while True:
         match_test.yellow.action()
         
         if match_test.disp>0:
-            
-            tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= ((frame) / (time.time() - t_start)) ) 
+            t_list=t_update(t_list)
+            tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
             text.set_text(tx)
             ax.draw_artist(text)
             fig.canvas.blit(ax.bbox)
             fig.canvas.flush_events()
-            frame+=1
-            if frame%20==0:
-                frame=0
-                t_start = time.time()
+            
+            
         # elif match_test.disp==1:
         #     plt.pause(0.03)
         # xb=match_test.balle.x
