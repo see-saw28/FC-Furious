@@ -129,7 +129,7 @@ Animation :
 ### Validation de l'agent obtenu :
 Après plusieurs séries de tests sur 10000 générations de parties aléatoires. Le score moyen est de 8.6 avec un taux d'échec inférieur à 0.6%. Un échec est comptabilisé si l'agent n'atteint pas l'objectif en moins de 20 coups.  
 Les résultats sont très satisfaisants et donc utilisables pour le coach.   
-De plus le temps d'execution de 10000 parties est seulement d'une cinquantaine de seconde donc assez rapide pour être implémenté. (Sur ma machine)
+De plus le temps d'execution de 10000 parties est seulement d'une trentaine de seconde donc assez rapide pour être implémenté. (Sur ma machine)
 
 ---
 ### Implémentation dans le code du coach :
