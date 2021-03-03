@@ -39,6 +39,7 @@ De plus, on ne  prend pas en compte les robots qui sont derrière succeptible de
 
 ![robot arriere](img/shéma_robot_arrière.png)  
 
+### Asservissement en position
 Ainsi, pour la commande du robot on utilise la direction du vecteur (qui est normé) à la position du robot.  Donc la commande en vitesse est toujours à saturation (env. 0.9 m/s) sauf à partir d´une certaine distance où la distance devient proportionnelle à la distance restante.  
 ![vitesse](img/Vitesse.png)
 
