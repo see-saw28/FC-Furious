@@ -56,7 +56,7 @@ Pour le moment, le coach réalise 2 actions:
 * Lecture des données du terrain et attribution des postes
 * Ordre aux robots en fonction du poste  
 
-L´attribution se fait grâce à un arbre qui teste un certain nombre de conditions. On remarque que cette méthode présente ses limites. On pourra peut être utiliser un diagramme d´états pour avoir un meilleur contrôle des transitioons de poste.  
+L´attribution se fait grâce à un arbre qui teste un certain nombre de conditions. On remarque que cette méthode présente ses limites. On pourra peut être utiliser un diagramme d´états pour avoir un meilleur contrôle des transitions de poste.  
 
 --------------
 ## Partie intelligence artificielle
