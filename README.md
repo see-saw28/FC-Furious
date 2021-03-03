@@ -39,7 +39,7 @@ De plus, on ne  prend pas en compte les robots qui sont derrière succeptible de
 
 ![robot arriere](img/shéma_robot_arrière.png)  
 
-Ainsi, pour la commande du robot on utilise la direction du vecteur à la position du robot.
+Ainsi, pour la commande du robot on utilise la direction du vecteur (qui est normé) à la position du robot.  Donc la commande en vitesse est toujours à saturation (env. 0.9 m/s) sauf à partir d´une certaine distance où la distance devient proportionnelle à la distance restante.  
 
 Si on est proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences. Dans ce cas, on ne sert plus des champs et on réalise un asservissement classique à vitesse réduite.  
 
