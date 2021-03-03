@@ -4,7 +4,7 @@
 
 ### Commandes élémentaires :
 * Commande en position avec une orientation par rapport à un point
-* Passe
+* Passe (statique)
 * Réception : calcul du vecteur directeur de la balle et ajustement de la position
 * Orientation avec la balle : tourner autour de la balle (CIR) pour s'orienter
 * Tir
