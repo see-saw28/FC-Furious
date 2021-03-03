@@ -59,6 +59,8 @@ Pour le moment, le coach réalise 2 actions:
 
 L´attribution se fait grâce à un arbre qui teste un certain nombre de conditions. On remarque que cette méthode présente ses limites. On pourra peut être utiliser un diagramme d´états pour avoir un meilleur contrôle des transitions de poste.  
 
+Une autre amélioration sera de prendre en compte l'autoreferee et donc de pouvoir réaliser de vrais matchs. De plus, on pourra adapter la stratégie en focntion du score et du temps restant.  
+
 --------------
 ## Partie intelligence artificielle
 
