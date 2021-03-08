@@ -443,7 +443,7 @@ class Robot():
             
     #Commande pour que le receveur se dirige vers le point d'arrivée de la balle
     def reception(self):  
-        print('rec')
+        # print('rec')
         mate=self.teammate()
         receveur=self.positionc
         passeur=mate.positionc
@@ -461,7 +461,7 @@ class Robot():
         
         #Angle entre le vecteur entre les deux robots et le vecteur de la balle
         theta=phi-o_balle
-        print(phi,o_balle)
+        # print(phi,o_balle)
         
         # print(theta,((self.match.balle.x10[-10]-self.match.balle.x10[-1])**2+(self.match.balle.y10[-10]-self.match.balle.y10[-1])**2))
         
@@ -473,7 +473,7 @@ class Robot():
             
             dU=complex(-direction.imag,direction.real) #rotation a 90° du vecteur reliant les robots
             dU=1*np.sin(theta)*dU #projection de la position où la balle devrait arriver
-            print(theta,dU)
+            # print(theta,dU)
             if self.match.disp==2:
                 
                 goto,=ax.plot(self.x+dU.real, self.y+dU.imag,'mo')
@@ -521,7 +521,7 @@ class Robot():
             xm,ym=self.match.xy_to_position(self.teammate().x, self.teammate().y, self.match.n, self.match.m)
             for robot in self.opponents():
                 a,b=np.polyfit([self.x,robot.x],[self.y,robot.y],1)
-                if abs(a*robot.x+b-robot.y)<r_robot:
+                if robot.distance_droite(a,b)<r_robot:
                     xdg,ydg=self.match.xy_to_position(robot.x, robot.y, self.match.n, self.match.m)
                     xg,yg=robot.x,robot.y
                     xd,yd=self.match.xy_to_position(robot.teammate().x, robot.teammate().y, self.match.n, self.match.m)
@@ -530,7 +530,7 @@ class Robot():
             xm,ym=self.match.xy_to_position(-self.teammate().x, self.teammate().y, self.match.n, self.match.m)
             for robot in self.opponents():
                 a,b=np.polyfit([self.x,robot.x],[self.y,robot.y],1)
-                if abs(a*robot.x+b-robot.y)<r_robot:
+                if robot.distance_droite(a,b)<r_robot:
                     xdg,ydg=self.match.xy_to_position(-robot.x, robot.y, self.match.n, self.match.m)
                     xg,yg=-robot.x,robot.y
                     xd,yd=self.match.xy_to_position(-robot.teammate().x, robot.teammate().y, self.match.n, self.match.m)
@@ -625,12 +625,14 @@ class Coach():
                 if ball:
                     if baller==joueur:
                         joueur.defPoste('ATT')
+                        joueur.teammate().defPoste('DEMARQUE')
                     
                     
                         
                     elif baller.team!=self.nom:
-                        if self.whoIsTheGoal()==joueur:
+                        if (self.whoIsTheGoal()==joueur)&(joueur.teammate().poste[-1]!='GOAL'):
                             joueur.defPoste('GOAL')
+                            
                         else:    
                             if ((self.side=='L')&(balle.x<0))|((self.side=='R')&(balle.x>0)):
                                 joueur.defPoste('TACKLE')
@@ -639,8 +641,9 @@ class Coach():
                                 joueur.defPoste('DEF')
                 else :
                     if closer.team!=self.nom:
-                        if self.whoIsTheGoal()==joueur:
+                        if (self.whoIsTheGoal()==joueur)&(joueur.teammate().poste[-1]!='GOAL'):
                             joueur.defPoste('GOAL')
+                    
                             
                         elif (min(distance)/joueur.distanceToXY(balle.position))>0.7:
                             joueur.defPoste('CHASER')
@@ -714,6 +717,7 @@ class Coach():
             elif joueur.poste[-1]=='DRIBBLE': #commande vers la position calcuée
                 if joueur.status=='DONE':
                     joueur.defPoste('ATT')
+                    joueur.teammate().defPoste('DEMARQUE')
             
             elif (joueur.poste[-1]=='PASSEUR') : #procédure avant la passe
                 #Calcul si la passe est possible
@@ -736,22 +740,26 @@ class Coach():
                 if ball:    
                     if baller==joueur:
                             joueur.defPoste('ATT')
+                            joueur.teammate().defPoste('DEMARQUE')
             
             elif joueur.poste[-1]=='CHASER':
                 if ball:        
                     if baller:
                         if(baller==joueur):
                             joueur.defPoste('ATT')
+                            joueur.teammate().defPoste('DEMARQUE')
                    
             elif joueur.poste[-1]=='GOAL':
                 if ball:
                     if baller==joueur:
                         joueur.defPoste('ATT')
+                        joueur.teammate().defPoste('DEMARQUE')
                 
             elif joueur.poste[-1]=='DEF':
                 if ball:
                     if baller==joueur:
                         joueur.defPoste('ATT')
+                        joueur.teammate().defPoste('DEMARQUE')
                   
                     elif baller.team!=self.nom:
                         if ((self.side=='L')&(balle.x<0))|((self.side=='R')&(balle.x>0)): #Balle de notre coté
@@ -764,8 +772,9 @@ class Coach():
                 
                     if baller==joueur:
                         joueur.defPoste('ATT')
-                    elif baller==None:
-                        joueur.defPoste('CHASER')
+                        joueur.teammate().defPoste('DEMARQUE')
+                else:
+                    joueur.defPoste('CHASER')
                 
             
             
@@ -883,7 +892,7 @@ class Coach():
         for robot in self.joueurs[0].match.joueurs:
            if robot!=shooter:
                if robot.distance_droite(a, b)<r_robot:
-                   robot.defPoste('GOAL')
+                   # robot.defPoste('GOAL')
                    openGoal=False
                    break
         return openGoal
@@ -1000,7 +1009,7 @@ class Match():
 #%%Création match
 
 
-match_test=Match('test',disp=1)
+match_test=Match('test',disp=2)
 
 if match_test.disp==2:
     fig = plt.figure()
