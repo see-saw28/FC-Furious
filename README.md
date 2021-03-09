@@ -25,7 +25,7 @@ Récuperation de balle avec évitement :
 <img src="img/chaser.gif" width="60%"> 
 
 Passe avec ajustement de la position du receveur puis tir :  
-<img src="img/passer.gif" width="60%"> 
+<img src="img/passe.gif" width="60%"> 
 
 Dribble de l'attaquant avec la balle pour marquer :  
 <img src="img/dribble.gif" width="60%">  
