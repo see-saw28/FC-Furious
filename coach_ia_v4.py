@@ -71,7 +71,7 @@ r_robot=115
 K_max=0.8 #facteur prop vitesse
 seuil_distance=250
 sat_vitesse_angulaire=6
-K_angulaire=3
+K_angulaire=5
 sat_orientation_balle=3
 K_orientation_balle=10
 
@@ -381,7 +381,7 @@ class Robot():
         vecteur=posbut-posbot
         distance,phi=c.polar(vecteur)
         # print(phi)
-        self.orientation_with_ball(xbut,ybut)
+        self.commande_position(self.x,self.y,xbut,ybut)
 
         delta=phi-self.orientation
         
@@ -408,7 +408,8 @@ class Robot():
         distance,phi=c.polar(direction)
         
         #orientation du passeur vers le receveur
-        self.orientation_with_ball(mate.x,mate.y)
+        # self.orientation_with_ball(mate.x,mate.y)
+        self.commande_position(self.x,self.y,mate.x,mate.y)
         
         angle=(phi+np.pi)%(2*np.pi)
         if angle>np.pi:
@@ -472,7 +473,7 @@ class Robot():
             # self.defPoste('RECEVEUR')
             
             dU=complex(-direction.imag,direction.real) #rotation a 90° du vecteur reliant les robots
-            dU=1*np.sin(theta)*dU #projection de la position où la balle devrait arriver
+            dU=-2*np.sin(theta)*dU #projection de la position où la balle devrait arriver
             # print(theta,dU)
             if self.match.disp==2:
                 
@@ -718,6 +719,13 @@ class Coach():
                 if joueur.status=='DONE':
                     joueur.defPoste('ATT')
                     joueur.teammate().defPoste('DEMARQUE')
+                if not ball:#perte de balle
+                    joueur.defPoste('WAIT')
+                    joueur.status='DONE'
+                    
+                if self.openGoal(joueur):#on tire si le but est ouvert
+                    joueur.defPoste('SHOOTER')
+                    
             
             elif (joueur.poste[-1]=='PASSEUR') : #procédure avant la passe
                 #Calcul si la passe est possible
@@ -731,6 +739,7 @@ class Coach():
                 
                 if not passe: #dans ce cas, il faut determiner ce qu'on doit faire
                     print('passe impossible')
+                    # joueur.status='DONE' #UTILE ?
                     joueur.defPoste('DRIBBLE')
                     joueur.teammate().defPoste('DEMARQUE')
                     
