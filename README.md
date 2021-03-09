@@ -72,8 +72,8 @@ Visualisation en direct des positions ainsi que les états des robots, plusieurs
 ### Stratégie:
 Pas encore totalement définie.  
 Pour le moment, le coach réalise 2 actions:  
-* Lecture des données du terrain et attribution des postes
-* Ordre aux robots en fonction du poste  
+* Lecture des données du terrain et changements des postes (eventuels)
+* Ordre aux robots en fonction de leur poste  
 
 L´attribution se faisait grâce à un arbre qui testait un certain nombre de conditions. On a remarqué que cette méthode présentait des limites donc on utilise un maintenant un diagramme d´états pour avoir un meilleur contrôle des transitions de poste.  
 
