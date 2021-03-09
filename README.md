@@ -75,9 +75,9 @@ Pour le moment, le coach réalise 2 actions:
 * Lecture des données du terrain et attribution des postes
 * Ordre aux robots en fonction du poste  
 
-L´attribution se fait grâce à un arbre qui teste un certain nombre de conditions. On remarque que cette méthode présente ses limites. On pourra peut être utiliser un diagramme d´états pour avoir un meilleur contrôle des transitions de poste.  
+L´attribution se faisait grâce à un arbre qui testait un certain nombre de conditions. On a remarqué que cette méthode présentait des limites donc on utilise un maintenant un diagramme d´états pour avoir un meilleur contrôle des transitions de poste.  
 
-Une autre amélioration sera de prendre en compte l'autoreferee et donc de pouvoir réaliser de vrais matchs. De plus, on pourra adapter la stratégie en focntion du score et du temps restant.  
+Une autre amélioration sera de prendre en compte l'autoreferee et donc de pouvoir réaliser de vrais matchs. De plus, on pourra adapter la stratégie en fonction du score et du temps restant.  
 
 --------------
 ## Partie intelligence artificielle
