@@ -22,7 +22,7 @@ Dont voici quelques exemples sur simulateur :
 
 
 Récuperation de balle avec évitement :  
-![chaser](img/chaser.gif)  
+<img src="img/chaser.gif" width="60%"> 
 
 Passe avec ajustement de la position du receveur puis tir :  
 ![passe](img/passe.gif)  
