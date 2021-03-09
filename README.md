@@ -18,7 +18,12 @@
 * Goal : être entre la balle et le but, devant la surface
 * Tackle/Chaser : récupération de la balle 
 
-
+Dont voici quelques exemples sur simulateur :  
+![chaser](img/chaser.gif)  
+![passe](img/passe.gif)  
+![dribble](img/dribble.gif)  
+![demarquage](img/demarquage.gif)  
+![tackle](img/tackle.gif)  
 
 
 ### Création d'un champ pour aller à l'objectif en évitant les autres robots :
