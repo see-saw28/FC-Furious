@@ -25,16 +25,16 @@ Récuperation de balle avec évitement :
 <img src="img/chaser.gif" width="60%"> 
 
 Passe avec ajustement de la position du receveur puis tir :  
-![passe](img/passe.gif)  
+<img src="img/passer.gif" width="60%"> 
 
 Dribble de l'attaquant avec la balle pour marquer :  
-![dribble](img/dribble.gif)  
+<img src="img/dribble.gif" width="60%">  
 
 Démarquage d'un robot avant de recevoir la passe et marquer :  
-![demarquage](img/demarquage.gif)  
+<img src="img/demarquage.gif" width="60%"> 
 
 Défense avec le gardien et un tackle :  
-![tackle](img/tackle.gif)  
+<img src="img/tackle.gif" width="60%"> 
 
 
 ### Création d'un champ pour aller à l'objectif en évitant les autres robots :
