@@ -30,10 +30,10 @@ Passe avec ajustement de la position du receveur puis tir :
 Dribble de l'attaquant avec la balle pour marquer :  
 ![dribble](img/dribble.gif)  
 
-Demarquage d'un robot avant de recevoir la passe et marquer :  
+Démarquage d'un robot avant de recevoir la passe et marquer :  
 ![demarquage](img/demarquage.gif)  
 
-Defense avec le gardien et un tackle :  
+Défense avec le gardien et un tackle :  
 ![tackle](img/tackle.gif)  
 
 
