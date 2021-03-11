@@ -89,6 +89,7 @@ On a obtenu les points ci-dessous :
 <img src="img/approximation_puissance_distance.png" width="90%"> 
 
 A gauche, on observe la fonction approximée calculée. 
+Puissance=0.05249286*sqrt(distance-140)
 
 --------------
 ## Partie intelligence artificielle
