@@ -89,7 +89,9 @@ On a obtenu les points ci-dessous :
 <img src="img/approximation_puissance_distance.png" width="90%"> 
 
 A gauche, on observe la fonction approximée calculée. Dont voici, la formule :  
-Puissance=0.05249286*(distance-140)<sup>1/2</sup>
+Puissance=0.05249286*(distance-140)<sup>1/2</sup>  
+
+Ainsi, grâce à cette formule, on peut doser précisement les passes en profondeur.
 
 
 --------------
