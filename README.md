@@ -89,7 +89,7 @@ On a obtenu les points ci-dessous :
 <img src="img/approximation_puissance_distance.png" width="90%"> 
 
 A gauche, on observe la fonction approximée calculée. Dont voici, la formule :  
-Puissance=0.05249286*$`\sqrt{2}`$
+Puissance=0.05249286*<pre xml:lang="latex">\sqrt{2}</pre>
 
 
 --------------
