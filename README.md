@@ -88,8 +88,9 @@ Sur le simulateur, on a mesuré la distance parcourue pour 20 valeurs de puissan
 On a obtenu les points ci-dessous :  
 <img src="img/approximation_puissance_distance.png" width="90%"> 
 
-A gauche, on observe la fonction approximée calculée. 
-Puissance=0.05249286*sqrt(distance-140)
+A gauche, on observe la fonction approximée calculée. Dont voici, la formule :  
+Puissance=0.05249286*sqrt(distance-140)  
+$ $ x = {-b \pm \sqrt{b^2 – 4ac}\over 2a} $ $
 
 --------------
 ## Partie intelligence artificielle
