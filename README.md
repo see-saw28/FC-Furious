@@ -82,8 +82,13 @@ Une autre amélioration sera de prendre en compte l'autoreferee et donc de pouvo
 ### Passe en profondeur  
 #### Caractérisation du kicker  
 Recherche d'une relation entre la distance parcourue par la balle et la puissance envoyée au kicker sur le simulateur :  
-Sur le simulateur, on a mesuré la distance parcourue pour 20 valeurs de puissances difféerentes, en répétant la mesure 5x pour observer s'il y a de la dispersion.  
+Sur le simulateur, on a mesuré la distance parcourue pour 20 valeurs de puissances différentes, en répétant la mesure 5x pour observer s'il y avait de la dispersion.  
 <img src="img/passe_profondeur.gif" width="60%">   
+
+On a obtenu les points ci-dessous :  
+<img src="img/approximation_puissance_distance.png" width="90%"> 
+
+A gauche, on observe la fonction approximée calculée. 
 
 --------------
 ## Partie intelligence artificielle
