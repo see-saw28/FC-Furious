@@ -79,6 +79,12 @@ L´attribution se faisait grâce à un arbre qui testait un certain nombre de co
 
 Une autre amélioration sera de prendre en compte l'autoreferee et donc de pouvoir réaliser de vrais matchs. De plus, on pourra adapter la stratégie en fonction du score et du temps restant.  
 
+### Passe en profondeur  
+#### Caractérisation du kicker  
+Recherche d'une relation entre la distance parcourue par la balle et la puissance envoyée au kicker sur le simulateur :  
+Sur le simulateur, on a mesuré la distance parcourue pour 20 valeurs de puissances difféerentes, en répétant la mesure 5x pour observer s'il y a de la dispersion.
+<img src="img/passe_profondeur.gif" width="60%"> 
+
 --------------
 ## Partie intelligence artificielle
 
