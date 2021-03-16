@@ -17,6 +17,7 @@
 * Passeur/receveur : réalisation d'une passe statique avec ajustement du receveur //a revoir
 * Goal : être entre la balle et le but, devant la surface
 * Tackle/Chaser : récupération de la balle 
+* Defenseur : plusieurs défenses possibles
 
 Dont voici quelques exemples sur simulateur :  
 
