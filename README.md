@@ -182,6 +182,7 @@ On verra par la suite comment l'utiliser :
 * Prédiction de la position finale
 * Prédiction des déplacements un par un pour ainsi actualiser l'état du terrain entre deux déplacements.
 
+----
 ### Agent pour se démarquer  
 Modification du modèle pour créér un agent pour se démarquer. 
 #### Objectif  
