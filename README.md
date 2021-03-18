@@ -18,9 +18,9 @@
 * Goal : être entre la balle et le but, devant la surface
 * Tackle/Chaser : récupération de la balle 
 * Defenseur : plusieurs défenses possibles :  
-* DEF
-* DEF1
-* DEF2
+  * DEF
+  * DEF1
+  * DEF2
 
 
 Dont voici quelques exemples sur simulateur :  
