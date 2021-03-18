@@ -184,6 +184,6 @@ On verra par la suite comment l'utiliser :
 
 ### Agent pour se démarquer  
 Modification du modèle pour créér un agent pour se démarquer. 
-## Objectif  
+#### Objectif  
 En partant d'une situation où le porteur de balle ne peut pas marquer et le que la passe est impossible, on veut bouger le teammate vers une zone avec le but ouvert et la passe possible.
 
