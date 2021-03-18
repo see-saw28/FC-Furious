@@ -187,5 +187,6 @@ Modification du modèle pour créér un agent pour se démarquer.
 #### Objectif  
 En partant d'une situation où le porteur de balle ne peut pas marquer et que la passe est impossible, on veut bouger le teammate vers une zone avec le but ouvert et la passe possible.
 
-Mise en place identique que précédemment, modification uniquement des règles et récompenses.
+#### Entraînement 
+Mise en place identique que précédemment, modification uniquement des règles et récompenses de l'environnemnt.
 
