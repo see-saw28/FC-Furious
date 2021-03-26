@@ -41,43 +41,82 @@ class Match():
     def __repr__(self):
         return f'{self.nom}'
     
-    def getVision(self):
-        while not self.vision.isDataReady(): 
-            continue
+    # def getVision(self):
+    #     while not self.vision.isDataReady(): 
+    #         continue
   
-        return self.vision.getLocations()
+    #     return self.vision.getLocations()
+    # #Récupération des données de SSL Vision et actualisation des robots et de la balle + affichage
+    # def Vision(self):
+    #     balls, blueBots, yellowBots = self.getVision()
+  
+    #     for robot in self.joueurs:
+    #         data=False
+    #         if robot.team=='Y':
+    #             tag='gold'
+    #             for bot in yellowBots:
+    #                 if bot[5]==robot.id:
+    #                     data=True
+    #                     botInfo=bot
+    #         else :
+    #             tag='b'
+    #             for bot in blueBots:
+    #                 if bot[5]==robot.id:
+    #                     data=True
+    #                     botInfo=bot
+            
+    #         #parfois il manque une donnée pour un robot
+    #         if data: 
+    #             robot.position(botInfo)
+    #         else :
+    #             self.Vision()
+            
+            
+        
+        
+    #     if len(balls)>0:
+    #         self.balle.Position(balls[0])
+
+    def getVision(self):
+        # print(self.vision.isDataReady())
+        if self.vision.isDataReady(): 
+            
+  
+            return self.vision.getLocations()
+        else :
+            return None,None,None
+    
     #Récupération des données de SSL Vision et actualisation des robots et de la balle + affichage
     def Vision(self):
         balls, blueBots, yellowBots = self.getVision()
-  
-        for robot in self.joueurs:
-            data=False
-            if robot.team=='Y':
-                tag='gold'
-                for bot in yellowBots:
-                    if bot[5]==robot.id:
-                        data=True
-                        botInfo=bot
-            else :
-                tag='b'
-                for bot in blueBots:
-                    if bot[5]==robot.id:
-                        data=True
-                        botInfo=bot
+        if balls!=None:
+            for robot in self.joueurs:
+                data=False
+                if robot.team=='Y':
+                    
+                    for bot in yellowBots:
+                        if bot[5]==robot.id:
+                            data=True
+                            botInfo=bot
+                else :
+                    
+                    for bot in blueBots:
+                        if bot[5]==robot.id:
+                            data=True
+                            botInfo=bot
+                
+                #parfois il manque une donnée pour un robot
+                if data: 
+                    robot.position(botInfo)
+               
+                
+                
             
-            #parfois il manque une donnée pour un robot
-            if data: 
-                robot.position(botInfo)
-            else :
-                self.Vision()
             
-            
-        
-        
-        if len(balls)>0:
-            self.balle.Position(balls[0])
+            if len(balls)>0:
+                self.balle.Position(balls[0])
 
-        
+               
             
         
         

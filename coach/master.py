@@ -49,10 +49,6 @@ import match as match
 
 
 
-#%%Commande
-
-def q():
-    print('qq')
 
 
 if __name__ == "__main__":
@@ -148,7 +144,7 @@ if __name__ == "__main__":
     #%% Connexion à la vision
     
     vision = psl.SSLVisionClient(ip='224.5.23.2', port=10020)
-    vision.connect()
+    vision.connect3()
     
     #%% Connexion simulateur
     simulateur=True
@@ -168,7 +164,7 @@ if __name__ == "__main__":
 #%%Création match
 
 
-    match_test=match.Match('test',vision,sim,communication,disp=2)
+    match_test=match.Match('test',vision,sim,communication,disp=-1)
     
     if match_test.disp==2:
         fig = plt.figure()
@@ -221,10 +217,12 @@ if __name__ == "__main__":
         
         try:
             if match_test.disp>0:
+                
                 fig.canvas.restore_region(axbackground)  
                 
                 
             if manette :
+                
                 for event in pygame.event.get():
         
                     if event.type == pygame.JOYAXISMOTION:
@@ -263,14 +261,15 @@ if __name__ == "__main__":
                 if( not (opt) )& (button[BUTTON_OPTIONS]):
                     match_test.regame()
                 opt=button[BUTTON_OPTIONS]
-            
+                
             
             if match_test.stop:
                 match_test.Vision()
                 match_test.blue.reset()
                 match_test.yellow.reset()
                 
-            else:    
+            else: 
+                
                 #Match 2v2
                 match_test.Vision()
                 match_test.blue.changementDePoste()
@@ -281,7 +280,7 @@ if __name__ == "__main__":
                 
             
                 
-                
+               
             if match_test.disp==2:
                 for joueur in match_test.joueurs:
                     goto,=ax.plot(joueur.goto.real,joueur.goto.imag,'go')

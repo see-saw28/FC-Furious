@@ -4,16 +4,8 @@ Created on Fri Mar 12 14:26:07 2021
 
 @author: paulg
 """
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.patches as patches
-import matplotlib.lines as lines
-import potentiel as pt
 
 
-from psl_package import paris_saclay_league as psl
-import cmath as c
-import time
 import numpy as np
 import random
 
@@ -84,11 +76,19 @@ class Coach():
                         else:    
                             if ((self.side=='L')&(balle.x<0))|((self.side=='R')&(balle.x>0)):
                                 # joueur.defPoste('TACKLE')
-                                joueur.defPoste('DEF')
+                                # joueur.defPoste('DEF')
+                                defense=random.random()
+                                # print(defense)
+                                if defense<0.5:
+                                    joueur.defPoste('DEF')
+                                elif defense < 0.75:
+                                    joueur.defPoste('DEF1')
+                                else:
+                                    joueur.defPoste('DEF2')
                                 
                             else :
                                 defense=random.random()
-                                print(defense)
+                                # print(defense)
                                 if defense<0:
                                     joueur.defPoste('DEF')
                                 elif defense < 0.5:
@@ -125,8 +125,12 @@ class Coach():
                 else :
                     
                     if (self.openGoal(joueur.teammate()))&(self.openPasse()):
-                        joueur.defPoste('PASSEUR')
-                        joueur.teammate().defPoste('RECEVEUR')
+                        alea=random.random()
+                        if alea<0.650:
+                            joueur.defPoste('PASSEUR')
+                            joueur.teammate().defPoste('RECEVEUR')
+                        else:
+                            joueur.defPoste('DRIBBLE')
                     
                     elif not self.openGoal(joueur.teammate()) :
                         # print('here')
@@ -337,7 +341,7 @@ class Coach():
                 joueur.defPoste('CHASER')
                 
             elif joueur.poste[-1]=='DEMARQUE':
-                if (joueur.status=='DONE')&(not self.openPasse()): #calcul d'une nouvelle position 
+                if (joueur.status=='DONE')&(not self.openPasse()) or (joueur.goto==joueur.teammate().goto): #calcul d'une nouvelle position 
                     field=joueur.create_game()
                     final_pos_joueur,score_joueur,fail,_=dmq.play_game_3(agent=self.dmq,game=field)
                     if self.side=='L': #l'ia est entrainée que sur un coté donc on doit flip la position
@@ -439,7 +443,7 @@ class Coach():
                 joueur.defPoste('TACKLE')
                 
             elif joueur.poste[-1]=='WAIT':
-                joueur.commande_position(joueur.x,joueur.y,0,0)
+                joueur.commande_position(joueur.x,joueur.y,0,0,spin=True)
                 joueur.defPoste('WAIT')
                
             
