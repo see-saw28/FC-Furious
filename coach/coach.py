@@ -196,7 +196,8 @@ class Coach():
 
             
             elif joueur.poste[-1]=='DRIBBLE': #commande vers la position calcuée
-                if not ball:
+                # if not ball:
+                if joueur.distanceToXY(balle.position)>150:
                     joueur.defPoste('ATT')
             
                 if joueur.status=='DONE':
@@ -348,7 +349,7 @@ class Coach():
                         joueur.goto=complex(final_pos_joueur[0],final_pos_joueur[1])
                     else: 
                         joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
-                    joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y)
+                    joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y,spin=True)
                  
                 elif (joueur.status=='DONE')&(not self.openGoal(joueur)): #calcul d'une nouvelle position 
                     field=joueur.create_game()
@@ -357,11 +358,11 @@ class Coach():
                         joueur.goto=complex(final_pos_joueur[0],final_pos_joueur[1])
                     else: 
                         joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
-                    joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y)
+                    joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y,spin=True)
                     
                    
                 else : #la position est déjà calculée donc commande vers la position
-                    joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y)
+                    joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y,spin=True)
                 
                 
                 joueur.defPoste('DEMARQUE')

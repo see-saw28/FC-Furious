@@ -183,9 +183,8 @@ class Robot():
         
         #si l'objectif est proche mais un autre robot aussi alors on fait abstraction des champs repulsifs
         if (min(distance_autres_joueurs)>distance) & (min(distance_autres_joueurs_balle)<300) & (distance<300) :
-            # print("oui")
             
-            self.commande_robot(p.K_proche*np.cos(delta), p.K_proche*np.sin(delta), vitesse_angulaire,spinner=(balle or spin))
+            self.commande_robot(p.K_proche*np.cos(phi-self.orientation), p.K_proche*np.sin(phi-self.orientation), vitesse_angulaire,spinner=(balle or spin))
             
         
             return 'EN COURS'
