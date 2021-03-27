@@ -3,7 +3,6 @@ Tuto
 ### Modules:  
 * matplotlib
 * numpy
-* scipy
 * pygame
 * tensorflow
 * pyserial
