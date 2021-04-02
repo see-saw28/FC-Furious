@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Fri Apr  2 18:21:20 2021
+
+@author: psl
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Apr  2 16:55:40 2021
 
 @author: psl
@@ -106,12 +114,12 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test',vision,sim,communication,blueSide='R',start='B',disp=2)
+    match_test = match.Match('test',vision,sim,communication,blueSide='R',start='B',disp=-1)
     
     
     
     
-    fig,ax,axbackground,text,score = affichage.init(match_test.disp)
+    fig,ax,axbackground,text = affichage.init(match_test.disp)
     t_list = [time.time()]
 
     #%%Boucle
@@ -128,16 +136,8 @@ if __name__ == "__main__":
                 quit = m.refresh(match_test)
                 
             
-            if match_test.stop:
-                match_test.Vision()
-                match_test.blue.reset()
-                match_test.yellow.reset()
-                
-            elif match_test.engagement:
-                match_test.Vision()
-                match_test.blue.engagement()
-                match_test.yellow.engagement()
-                
+            if False:
+                a=1
                 
                 
             else: 
@@ -148,17 +148,12 @@ if __name__ == "__main__":
                 match_test.Vision()
                 
                 #Controle des bleus
-                match_test.blue.changementDePoste()
-                match_test.blue.action()
-                
-                #Controle des jaunes
-                match_test.yellow.changementDePoste()
-                match_test.yellow.action()
+                match_test.blue.joueurs[0].hasTheBall()
                 
                 
             
                 
-            affichage.refresh(match_test,ax,score)   
+            affichage.refresh(match_test,ax)   
             
             if match_test.disp>0:
                 #affichage des FPS

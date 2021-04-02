@@ -347,7 +347,7 @@ class Coach():
                 joueur.defPoste('CHASER')
                 
             elif joueur.poste[-1]=='DEMARQUE':
-                if (joueur.status=='DONE')&(not self.openPasse()) or (joueur.goto==joueur.teammate().goto): #calcul d'une nouvelle position 
+                if (joueur.status=='DONE')&(not self.openPasse()) or (abs(joueur.goto-joueur.teammate().goto)<500): #calcul d'une nouvelle position 
                     field=joueur.create_game()
                     final_pos_joueur,score_joueur,fail,_=dmq.play_game_3(agent=self.dmq,game=field)
                     if self.side=='L': #l'ia est entrainée que sur un coté donc on doit flip la position

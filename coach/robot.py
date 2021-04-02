@@ -104,18 +104,43 @@ class Robot():
     #         return False
     
     #Permet de savoir si le robot a la balle
+    # def hasTheBall(self):
+    #     pos_ball=self.match.balle.position
+    #     pos_rob=self.positionc
+        
+    #     distance,phi=c.polar(pos_ball-pos_rob)
+    #     delta=self.orientation-phi
+       
+    #     if (distance <141)&(abs(delta)<0.33):
+    #         return True
+    #     else :
+            
+    #         return False
+    # from matplotlib import pyplot as plt
+    # fig=plt.figure()
+    # ax = fig.add_subplot(1, 1, 1)
+    # ax.set_xlim(-300,300)
+    # ax.set_ylim(-300,300)
     def hasTheBall(self):
+        
+        # global ax
+        # ax.clear()
         pos_ball=self.match.balle.position
         pos_rob=self.positionc
         
-        distance,phi=c.polar(pos_ball-pos_rob)
-        delta=self.orientation-phi
-       
-        if (distance <141)&(abs(delta)<0.33):
+        theta=self.orientation
+        pos_dribbler=pos_rob+complex(p.r_robot*np.cos(theta),p.r_robot*np.sin(theta))
+        vect_ball=pos_ball-pos_dribbler
+        theta=self.orientation
+        #projection de vect bal dans le repere du robot
+        x1=np.cos(theta)*vect_ball.real+np.sin(theta)*vect_ball.imag
+        y1=-np.sin(theta)*vect_ball.real+np.cos(theta)*vect_ball.imag
+        # print(x1,y1)
+        if (x1<0)and(abs(y1)<35):
             return True
         else :
-            
             return False
+        
     
    
     #Calcul de la distance entre le robot et un point du terrain

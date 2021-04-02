@@ -27,6 +27,7 @@ class Match():
         self.disp=disp
         self.vision=vision
         self.joueurs=[Y0,Y1,B0,B1]
+        self.blueSide=blueSide
         if blueSide=='L':
             yellowSide='R'
         else:

@@ -1,34 +1,53 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Apr  2 10:25:59 2021
+
+@author: paulg
+"""
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr  2 16:55:40 2021
+Created on Fri Mar  5 10:48:18 2021
 
 @author: psl
 """
 
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Feb  7 20:19:12 2021
 
+@author: psl
+"""
 
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Feb  2 20:16:00 2021
+
+@author: psl
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Dec 21 17:14:26 2020
+
+@author: psl
+"""
 #%% Librairies
 
 import matplotlib.pyplot as plt
 import serial
 import serial.tools.list_ports
 import time
-import os
 
 from psl_package import paris_saclay_league as psl
 
 
 import match as match
 import affichage
-
-if os.name=='nt':
-    import manette_win as m
-    print('WINDOWS')
-    
-elif os.name=='posix':
-    import manette_linux as m
-    print('LINUX')
+import manette_win as m
 
 
 
@@ -56,12 +75,10 @@ if __name__ == "__main__":
         # print(list(serial.tools.list_ports.comports()))
         
         #LINUX
-        if os.name=='posix':
-            ser = serial.Serial("/dev/ttyACM0",baudrate=115200,bytesize = 8, parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )  # open first serial port
+        # ser = serial.Serial("/dev/ttyACM0",baudrate=115200,bytesize = 8, parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )  # open first serial port
         
         #WINDOWS
-        elif os.name=='nt':
-            ser = serial.Serial("COM6",baudrate=115200,bytesize = 8,parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )
+        ser = serial.Serial("COM6",baudrate=115200,bytesize = 8,parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )
         
         
         communication=ser
@@ -73,20 +90,16 @@ if __name__ == "__main__":
         
     #%% Connexion à la vision
     
-    vision = psl.SSLVisionClient(ip='224.5.23.2', port=10020)
+    vision = psl.SSLVisionClient(ip='224.5.23.2', port=10006)
     vision.connect3()
     
     #%% Connexion simulateur
     
-    simulateur = True
+    simulateur = False
     
     
     if simulateur:
-        if os.name=='nt':
-            grSim = psl.SSLgrSimClient('192.168.1.11', 20011)
-            
-        elif os.name=='posix':
-            grSim = psl.SSLgrSimClient('127.0.0.1', 20011)
+        grSim = psl.SSLgrSimClient('192.168.1.11', 20011)
         grSim.connect()
         sim = grSim
         print('Connexion au simulateur OK')
@@ -106,12 +119,12 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test',vision,sim,communication,blueSide='R',start='B',disp=2)
+    match_test = match.Match('test',vision,sim,communication,disp=2)
     
     
     
     
-    fig,ax,axbackground,text,score = affichage.init(match_test.disp)
+    fig,ax,axbackground,text = affichage.init(match_test.disp)
     t_list = [time.time()]
 
     #%%Boucle
@@ -144,12 +157,12 @@ if __name__ == "__main__":
                 #MATCH 2V2
                 
                 #Actualisation des positions
-                
+                start=time.time()
                 match_test.Vision()
-                
+                print(time.time()-start)
                 #Controle des bleus
-                match_test.blue.changementDePoste()
-                match_test.blue.action()
+                # match_test.blue.changementDePoste()
+                # match_test.blue.action()
                 
                 #Controle des jaunes
                 match_test.yellow.changementDePoste()
@@ -158,7 +171,7 @@ if __name__ == "__main__":
                 
             
                 
-            affichage.refresh(match_test,ax,score)   
+            affichage.refresh(match_test,ax)   
             
             if match_test.disp>0:
                 #affichage des FPS

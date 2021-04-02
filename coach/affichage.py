@@ -20,15 +20,16 @@ def init(disp):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         ax.set_xlim(-p.longueur,p.longueur)
-        ax.set_ylim(-p.largeur,p.largeur)
+        ax.set_ylim(-p.largeur,p.largeur+500)
         #tracage des lignes du terrain
+        ax.add_artist(lines.Line2D((-p.longueur, +p.longueur), (p.largeur, p.largeur), color = 'green'))
         ax.add_artist(lines.Line2D((-p.longueur, -p.longueur+350, -p.longueur+350,-p.longueur), (-350, -350,350,350), color = 'green'))
         ax.add_artist(lines.Line2D((p.longueur, p.longueur-350, p.longueur-350,p.longueur), (-350, -350,350,350), color = 'green'))
         ax.add_artist(lines.Line2D((0,0), (p.largeur,-p.largeur), color = 'green'))
         ax.add_artist(patches.Circle((0, 0), 500,facecolor='None', edgecolor = 'green'))
-        ax.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc='lower left',
-                    ncol=2, mode="expand", borderaxespad=0.)
-        text=ax.text(0,p.largeur-200,"")
+        
+        score=ax.text(-400,p.largeur+200,"")
+        text=ax.text(600,p.largeur+200,"")
         fig.canvas.draw()
         
         #on enregistre le terrain pour ne pas avoir le retracer à chaque fois
@@ -42,21 +43,22 @@ def init(disp):
         fig = plt.figure()
         ax = fig.add_subplot(1, 1, 1)
         ax.set_xlim(-p.longueur,p.longueur)
-        ax.set_ylim(-p.largeur,p.largeur)
-        text=ax.text(0,p.largeur-200,"")
+        ax.set_ylim(-p.largeur,p.largeur+200)
+        text=ax.text(600,p.largeur-400,"")
+        score=ax.text(-400,p.largeur-400,"")
         axbackground = fig.canvas.copy_from_bbox(ax.bbox)
         fig.canvas.draw()
         
     else :
-        fig,ax,axbackground,text=None,None,None,None
+        fig,ax,axbackground,text,score=None,None,None,None
         
-    return fig,ax,axbackground,text
+    return fig,ax,axbackground,text,score
         
         
         
     
 #mis à jour de l'affichage        
-def refresh(match,ax):
+def refresh(match,ax,score):
     #affichage complet
     if match.disp==2:
         for joueur in match.joueurs:
@@ -81,9 +83,18 @@ def refresh(match,ax):
             text_joueur=ax.text(joueur.x,joueur.y,joueur.id,horizontalalignment='center',verticalalignment='center',color='w')
             #status joueur
             text2_joueur=ax.text(joueur.x,joueur.y-100,str(joueur.poste[-1])+' '+str(joueur.status),horizontalalignment='center',verticalalignment='center',color='black')
+            
+           
             ax.draw_artist(draw_joueur)
             ax.draw_artist(text_joueur)
             ax.draw_artist(text2_joueur)
+            if match.blueSide=='L':
+                tx = f'BLEU : {match.score_bleu} - {match.score_jaune} : JAUNE'
+            else:
+                tx = f'JAUNE : {match.score_jaune} - {match.score_bleu} : BLEU'
+            score.set_text(tx)
+            ax.draw_artist(score)
+            
             
             
             
@@ -95,6 +106,12 @@ def refresh(match,ax):
     
     #affichage des status
     elif match.disp==1:
+        if match.blueSide=='L':
+            tx = f'BLEU : {match.score_bleu} - {match.score_jaune} : JAUNE'
+        else:
+            tx = f'JAUNE : {match.score_jaune} - {match.score_bleu} : BLEU'
+        score.set_text(tx)
+        ax.draw_artist(score)
         for joueur in match.joueurs:
             if joueur.team=='B':
                 x=-700
