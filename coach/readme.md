@@ -14,7 +14,7 @@ Tuto
 commenter/decommenter les équipes à jouer dans master.py (env.L150)
 
 ### Lancement match
-RUN  master.py
+RUN  master_all.py
 
 
 ## Contrôle manette
