@@ -16,7 +16,7 @@ import parametres as p
 
 class Match():
     
-    def __init__(self,nom,vision,grSim,com,disp=0):
+    def __init__(self,nom,vision,grSim,com,blueSide='L',start='B',disp=0):
         self.nom=nom
         Y0=rbt.Robot('Y',0,self,grSim,com)
         Y1=rbt.Robot('Y',1,self,grSim,com)
@@ -27,8 +27,12 @@ class Match():
         self.disp=disp
         self.vision=vision
         self.joueurs=[Y0,Y1,B0,B1]
-        Yellow=coach.Coach([self.joueurs[0],self.joueurs[1]],'Y','R')
-        Blue=coach.Coach([self.joueurs[2],self.joueurs[3]],'B','L')
+        if blueSide=='L':
+            yellowSide='R'
+        else:
+            yellowSide='L'
+        Yellow=coach.Coach([self.joueurs[0],self.joueurs[1]],'Y',yellowSide)
+        Blue=coach.Coach([self.joueurs[2],self.joueurs[3]],'B',blueSide)
         self.balle=Balle(0,0)
         self.blue=Blue
         self.yellow=Yellow
@@ -37,6 +41,8 @@ class Match():
         self.go=False
         self.score_jaune=0
         self.score_bleu=0
+        self.team_engagement=start
+        self.engagement=True
     
     def __repr__(self):
         return f'{self.nom}'
@@ -135,19 +141,22 @@ class Match():
     def Go(self):
         self.go=True
         self.stop=False
+        self.engagement=False
         print('GO')
         
     def but_jaune(self):
         print('BUT JAUNE')
         self.score_jaune+=1
+        self.team_engagement='B'
         print(f'Le score est BLEU {self.score_bleu} - {self.score_jaune} JAUNE')
-        self.Stop()
+        self.engagement=True
         
     def but_bleu(self):
         print('BUT BLEU')
         self.score_bleu+=1
+        self.team_engagement='Y'
         print(f'Le score est BLEU {self.score_bleu} - {self.score_jaune} JAUNE')
-        self.Stop()
+        self.engagement=True
         
     def regame(self):
         self.Stop()

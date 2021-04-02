@@ -187,6 +187,11 @@ class Coach():
                 if ball:
                     if baller in joueur.opponents():
                         joueur.defPoste('WAIT')
+                        
+                    elif baller==joueur:
+                        joueur.defPoste('ATT')
+                    
+                        
                 elif (min(distance)/joueur.distanceToXY(balle.position))>0.7:
                             joueur.defPoste('CHASER')
                             
@@ -510,3 +515,21 @@ class Coach():
         self.joueurs[0].defPoste('CHASER')
         self.joueurs[1].defPoste('GOAL')
         
+        
+    def engagement(self):
+        if self.joueurs[0].match.team_engagement==self.nom:
+            if self.side=='R':
+                x=150
+            else :
+                x=-150
+            self.joueurs[0].commande_position(x, 0, -x, 0)
+            self.joueurs[1].commande_position(x, -500, 0, 0)
+        
+            self.joueurs[0].defPoste('CHASER')
+            self.joueurs[1].defPoste('DEMARQUE')
+        
+        else :
+            self.joueurs[0].defPoste('DEF')
+            self.joueurs[1].defPoste('GOAL')
+            self.action()
+            

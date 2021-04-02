@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Apr  2 10:29:46 2021
+
+@author: paulg
+"""
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -8,37 +14,39 @@ Created on Sat Mar 27 13:59:23 2021
 import pygame
 
 # Labels for DS4 controller axes
+
+#%%WINDOWS
+# Labels for DS4 controller axes
 AXIS_LEFT_STICK_X = 0
 AXIS_LEFT_STICK_Y = 1
-AXIS_RIGHT_STICK_X = 4
+AXIS_RIGHT_STICK_X = 2
 AXIS_RIGHT_STICK_Y = 3
 AXIS_R2 = 5
 AXIS_L2 = 4
 
 # Labels for DS4 controller buttons
 # Note that there are 14 buttons (0 to 13 for pygame, 1 to 14 for Windows setup)
-BUTTON_SQUARE = 3
+BUTTON_SQUARE = 2
 BUTTON_CROSS = 0
 BUTTON_CIRCLE = 1
-BUTTON_TRIANGLE = 2
+BUTTON_TRIANGLE = 3
 
-BUTTON_L1 = 4
-BUTTON_R1 = 5
-BUTTON_L2 = 6
-BUTTON_R2 = 7
+BUTTON_L1 = 9
+BUTTON_R1 = 10
+BUTTON_L2 = 5
+BUTTON_R2 = 14
 
-BUTTON_SHARE = 8
-BUTTON_OPTIONS = 9
+BUTTON_SHARE = 4
+BUTTON_OPTIONS = 6
 
-BUTTON_LEFT_STICK = 10
-BUTTON_RIGHT_STICK = 11
+BUTTON_LEFT_STICK = 7
+BUTTON_RIGHT_STICK = 8
 
 BUTTON_PS = 12
-BUTTON_PAD = 5
+BUTTON_PAD = 13
 
 # Labels for DS4 controller hats (Only one hat control)
 HAT_1 = 0
-
 
 
 #initialisation de pygame et de la manette
@@ -111,7 +119,7 @@ def refresh(match):
         	hat[event.hat] = event.value
         
     #fleche du bas pour arreter le programme
-    quit = hat[HAT_1][1]==-1
+    quit = button[BUTTON_CIRCLE]
     
     #carré pour stoper le match
     if (button[BUTTON_SQUARE]) & (not(stop)):

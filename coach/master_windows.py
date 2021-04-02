@@ -84,10 +84,9 @@ if __name__ == "__main__":
         for i in range(controller.get_numhats()):
         	hat[i] = (0, 0)
         
-        # Labels for DS4 controller axes
         AXIS_LEFT_STICK_X = 0
         AXIS_LEFT_STICK_Y = 1
-        AXIS_RIGHT_STICK_X = 4
+        AXIS_RIGHT_STICK_X = 2
         AXIS_RIGHT_STICK_Y = 3
         AXIS_R2 = 5
         AXIS_L2 = 4
@@ -99,19 +98,19 @@ if __name__ == "__main__":
         BUTTON_CIRCLE = 1
         BUTTON_TRIANGLE = 3
         
-        BUTTON_L1 = 4
-        BUTTON_R1 = 5
-        BUTTON_L2 = 6
-        BUTTON_R2 = 7
+        BUTTON_L1 = 9
+        BUTTON_R1 = 10
+        BUTTON_L2 = 5
+        BUTTON_R2 = 14
         
-        BUTTON_SHARE = 8
-        BUTTON_OPTIONS = 9
+        BUTTON_SHARE = 4
+        BUTTON_OPTIONS = 6
         
-        BUTTON_LEFT_STICK = 10
-        BUTTON_RIGHT_STICK = 11
+        BUTTON_LEFT_STICK = 7
+        BUTTON_RIGHT_STICK = 8
         
         BUTTON_PS = 12
-        BUTTON_PAD = 5
+        BUTTON_PAD = 13
         
         # Labels for DS4 controller hats (Only one hat control)
         HAT_1 = 0
@@ -134,10 +133,10 @@ if __name__ == "__main__":
         # print(list(serial.tools.list_ports.comports()))
         
         #LINUX
-        ser = serial.Serial("/dev/ttyACM0",baudrate=115200,bytesize = 8, parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )  # open first serial port
+       # ser = serial.Serial("/dev/ttyACM0",baudrate=115200,bytesize = 8, parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )  # open first serial port
         
         #WINDOWS
-        # ser = serial.Serial("COM6",baudrate=115200,bytesize = 8,parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )
+        ser = serial.Serial("COM6",baudrate=115200,bytesize = 8,parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )
         
         
         communication=ser
@@ -170,7 +169,7 @@ if __name__ == "__main__":
 #%%Création match
 
 
-    match_test=match.Match('test',vision,sim,communication,disp=1)
+    match_test=match.Match('test',vision,sim,communication,disp=2)
     
     if match_test.disp==2:
         fig = plt.figure()
@@ -274,11 +273,15 @@ if __name__ == "__main__":
                 
             else:    
                 #Match 2v2
+                start=time.time()
                 match_test.Vision()
-                # match_test.blue.changementDePoste()
-                # match_test.blue.action()
-                # match_test.yellow.changementDePoste()
-                # match_test.yellow.action()
+                t_vision=time.time()
+                # print('vision :',t_vision-start)
+                match_test.blue.changementDePoste()
+                match_test.blue.action()
+                # print(1/(time.time()-start))
+                match_test.yellow.changementDePoste()
+                match_test.yellow.action()
                 
                 
             
@@ -345,7 +348,7 @@ if __name__ == "__main__":
     
     vision.close()
     
-    if simulateur!=None:
+    if simulateur:
      grSim.close()
      
     if communication!=None:

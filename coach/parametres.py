@@ -23,7 +23,7 @@ ymax=largeur
 
 ##ROBOT
 r_robot=115
-K_max=0.6 #facteur prop vitesse
+K_max=0.8 #facteur prop vitesse
 seuil_distance=250
 sat_vitesse_angulaire=6
 K_angulaire=3
@@ -48,9 +48,9 @@ x_grid,y_grid = np.meshgrid(X,Y)
 #Création du champ répulsif des surfaces
 surface_x=np.zeros((nbPoints,nbPoints))
 surface_y=np.zeros((nbPoints,nbPoints))
-for i in range(int(350/2700*nbPoints)):
-    for j in range(int(650/2000*nbPoints),int(1350/2000*nbPoints)):
-        surface_x[j,i]=1
-        surface_x[j,nbPoints-1-i]=-1
-        surface_y[j,i]=1*np.sign(j-int(nbPoints/2))*(int(350/2700*nbPoints)-i-1)
-        surface_y[j,nbPoints-1-i]=1*np.sign(j-int(nbPoints/2))*(int(350/2700*nbPoints)-i-1)
+# for i in range(int(350/2700*nbPoints)):
+#     for j in range(int(650/2000*nbPoints),int(1350/2000*nbPoints)):
+#         surface_x[j,i]=1
+#         surface_x[j,nbPoints-1-i]=-1
+#         surface_y[j,i]=1*np.sign(j-int(nbPoints/2))*(int(350/2700*nbPoints)-i-1)
+#         surface_y[j,nbPoints-1-i]=1*np.sign(j-int(nbPoints/2))*(int(350/2700*nbPoints)-i-1)
