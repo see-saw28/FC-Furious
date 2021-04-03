@@ -136,7 +136,7 @@ class Robot():
         x1=np.cos(theta)*vect_ball.real+np.sin(theta)*vect_ball.imag
         y1=-np.sin(theta)*vect_ball.real+np.cos(theta)*vect_ball.imag
         # print(x1,y1)
-        if (x1<0)and(abs(y1)<35):
+        if (x1<10)and(abs(y1)<35):
             return True
         else :
             return False

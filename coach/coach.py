@@ -104,9 +104,11 @@ class Coach():
                             
                         elif ((min(distance)/joueur.distanceToXY(balle.position))>0.7)&(joueur.teammate().poste[-1]!='RECEVEUR'):
                             joueur.defPoste('CHASER')
+                            joueur.teammate().defPoste('GOAL')
                         
                         else :
                             joueur.defPoste('DEF')
+                            joueur.teammate().defPoste('GOAL')
                             
                     # elif (closer==joueur)&(joueur.teammate().poste[-1]!='RECEVEUR'):
                     #     joueur.defPoste('CHASER')
@@ -523,13 +525,13 @@ class Coach():
             else :
                 x=-150
             self.joueurs[0].commande_position(x, 0, -x, 0)
-            self.joueurs[1].commande_position(x, -500, 0, 0)
+            self.joueurs[1].commande_position(x, -800, 0, 0)
         
             self.joueurs[0].defPoste('CHASER')
             self.joueurs[1].defPoste('DEMARQUE')
         
         else :
-            self.joueurs[0].defPoste('DEF')
+            self.joueurs[0].defPoste('DEF2')
             self.joueurs[1].defPoste('GOAL')
             self.action()
             

@@ -106,13 +106,13 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test',vision,sim,communication,blueSide='R',start='B',disp=2)
+    match_test = match.Match('test',vision,sim,communication,blueSide='R',start='B',disp=0)
     
     
     
-    
-    fig,ax,axbackground,text,score = affichage.init(match_test.disp)
-    t_list = [time.time()]
+    if match_test.disp>0:
+        fig,ax,axbackground,text,score = affichage.init(match_test.disp)
+        t_list = [time.time()]
 
     #%%Boucle
     while not quit:
@@ -158,9 +158,12 @@ if __name__ == "__main__":
                 
             
                 
-            affichage.refresh(match_test,ax,score)   
+              
             
             if match_test.disp>0:
+                affichage.refresh(match_test,ax,score) 
+                
+                
                 #affichage des FPS
                 t_list = affichage.t_update(t_list)
                 tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 

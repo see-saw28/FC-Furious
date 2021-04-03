@@ -17,7 +17,7 @@ def init(disp):
     
     #affichage complet
     if disp==2:
-        fig = plt.figure()
+        fig = plt.figure(figsize=[6,6])
         ax = fig.add_subplot(1, 1, 1)
         ax.set_xlim(-p.longueur,p.longueur)
         ax.set_ylim(-p.largeur,p.largeur+500)
