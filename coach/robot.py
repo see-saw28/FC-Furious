@@ -136,7 +136,7 @@ class Robot():
         x1=np.cos(theta)*vect_ball.real+np.sin(theta)*vect_ball.imag
         y1=-np.sin(theta)*vect_ball.real+np.cos(theta)*vect_ball.imag
         # print(x1,y1)
-        if (x1<10)and(abs(y1)<35):
+        if (x1<10)and(abs(y1)<45):
             return True
         else :
             return False
@@ -248,7 +248,7 @@ class Robot():
                 if distance<p.seuil_distance:
                     vitesse_tangente=vitesse_tangente*distance/p.seuil_distance
                     vitesse_normale=vitesse_normale*distance/p.seuil_distance
-                    spin=spin
+                    spin=(balle or spin)
                 
                 
                 self.commande_robot(vitesse_tangente, vitesse_normale, vitesse_angulaire,spinner=spin)
@@ -541,6 +541,7 @@ class Robot():
     
     def commande_robot(self,Vtang,Vnorm,Vang,spinner=True,tir=0):
         if self.grSim!=None:
+            
             p = psl.packetCommandBot(self.team=='Y', 
                          id=self.id, 
                          veltangent=Vtang, 

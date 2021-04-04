@@ -136,42 +136,47 @@ class Coach():
                     
                     elif not self.openGoal(joueur.teammate()) :
                         # print('here')
-                        
-                        field=joueur.create_game()
-                        final_pos_joueur,score_joueur,fail,_=ia.play_game_3(agent=self.ia,game=field)
-                        
-                        # print(field)
-                        # ia.Game(9,9,terrain=field).print()
-                        
-                        field=joueur.teammate().create_game()
-                        final_pos_mate,score_mate,fail,_=ia.play_game_3(agent=self.ia,game=field)
-                        
-                        
-                        if score_mate>score_joueur+2:
-                            if self.side=='L':
-                                joueur.teammate().goto=complex(final_pos_mate[0],final_pos_mate[1])
+                        alea=random.random()
+                        if alea<0.750:
+                            field=joueur.create_game()
+                            final_pos_joueur,score_joueur,fail,_=ia.play_game_3(agent=self.ia,game=field)
+                            
+                            # print(field)
+                            # ia.Game(9,9,terrain=field).print()
+                            
+                            field=joueur.teammate().create_game()
+                            final_pos_mate,score_mate,fail,_=ia.play_game_3(agent=self.ia,game=field)
+                            
+                            
+                            if score_mate>score_joueur+2:
+                                if self.side=='L':
+                                    joueur.teammate().goto=complex(final_pos_mate[0],final_pos_mate[1])
+                                else:
+                                    joueur.teammate().goto=complex(-final_pos_mate[0],final_pos_mate[1])
+                                # joueur.teammate().goto=final_pos_mate
+                               
+                                joueur.teammate().status=joueur.teammate().commande_position(joueur.teammate().goto.real, joueur.teammate().goto.imag, self.but_adversaire[0],self.but_adversaire[1],spin=True)
+                                
+                                joueur.teammate().defPoste('DEMARQUE')
+                                
+                                joueur.defPoste('PASSEUR')
+                                
+                                
+                                
+                                
                             else:
-                                joueur.teammate().goto=complex(-final_pos_mate[0],final_pos_mate[1])
-                            # joueur.teammate().goto=final_pos_mate
-                           
-                            joueur.teammate().status=joueur.teammate().commande_position(joueur.teammate().goto.real, joueur.teammate().goto.imag, self.but_adversaire[0],self.but_adversaire[1],spin=True)
-                            
-                            joueur.teammate().defPoste('DEMARQUE')
-                            
-                            joueur.defPoste('PASSEUR')
-                            
-                            
-                            
-                            
+                                if self.side=='L':
+                                    joueur.goto=complex(final_pos_mate[0],final_pos_mate[1])
+                                else:
+                                    joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
+                                joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, self.but_adversaire[0],self.but_adversaire[1],spin=True)
+                                # print(joueur.goto)
+                                
+                                joueur.defPoste('DRIBBLE')
+                                
                         else:
-                            if self.side=='L':
-                                joueur.goto=complex(final_pos_mate[0],final_pos_mate[1])
-                            else:
-                                joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
-                            joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, self.but_adversaire[0],self.but_adversaire[1],spin=True)
-                            # print(joueur.goto)
-                            
-                            joueur.defPoste('DRIBBLE')
+                            joueur.defPoste('PASSEUR')
+                            joueur.teammate().defPoste('RECEVEUR')
                             
                     elif not self.openPasse():
                         print('here')
@@ -243,12 +248,12 @@ class Coach():
             
             elif joueur.poste[-1]=='CHASER':
                 if ball:        
-                    if baller:
-                        if(baller==joueur):
-                            joueur.defPoste('ATT')
-                            joueur.teammate().defPoste('DEMARQUE')
-                        else :
-                            joueur.defPoste('DEF')
+                    
+                    if(baller==joueur):
+                        joueur.defPoste('ATT')
+                        joueur.teammate().defPoste('DEMARQUE')
+                    else :
+                        joueur.defPoste('DEF')
                 #on évite d'avoir les deux robots qui chassent la balle
                 if joueur.teammate().poste[-1]=='CHASER':
             
@@ -263,7 +268,7 @@ class Coach():
                         joueur.defPoste('ATT')
                         joueur.teammate().defPoste('DEMARQUE')
                 #Si la balle est pas loin, on va la récupérer
-                if joueur==closer:
+                if (joueur==closer) and (not ball):
                     joueur.defPoste('CHASER')
                 
             elif joueur.poste[-1]=='DEF':
@@ -524,7 +529,11 @@ class Coach():
                 x=150
             else :
                 x=-150
-            self.joueurs[0].commande_position(x, 0, -x, 0)
+            
+            if self.joueurs[0].hasTheBall():
+                self.joueurs[0].commande_position(x, 0, -x, 0,spin=True)
+            else :
+                self.joueurs[0].commande_balle()
             self.joueurs[1].commande_position(x, -800, 0, 0)
         
             self.joueurs[0].defPoste('CHASER')

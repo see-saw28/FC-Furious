@@ -122,7 +122,21 @@ class Match():
             
             if len(balls)>0:
                 self.balle.Position(balls[0])
-
+                ball=balls[0]
+                ballex,balley=ball[6],ball[7]
+                if (ballex>1350) and(abs(balley)<175)and self.go:
+                    print('but droite')
+                    if self.blue.side=='L':
+                        self.but_bleu()
+                    else:
+                        self.but_jaune()
+                        
+                elif (ballex<-1350) and(abs(balley)<175)and self.go:
+                    print('but gauche')
+                    if self.blue.side=='R':
+                        self.but_bleu()
+                    else:
+                        self.but_jaune()
                
             
         
@@ -151,6 +165,7 @@ class Match():
         self.team_engagement='B'
         print(f'Le score est BLEU {self.score_bleu} - {self.score_jaune} JAUNE')
         self.engagement=True
+        self.go=False
         
     def but_bleu(self):
         print('BUT BLEU')
@@ -158,6 +173,7 @@ class Match():
         self.team_engagement='Y'
         print(f'Le score est BLEU {self.score_bleu} - {self.score_jaune} JAUNE')
         self.engagement=True
+        self.go=False
         
     def regame(self):
         self.Stop()

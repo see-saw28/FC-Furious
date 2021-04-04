@@ -7,37 +7,6 @@ Created on Sat Mar 27 13:59:23 2021
 """
 import pygame
 
-# Labels for DS4 controller axes
-AXIS_LEFT_STICK_X = 0
-AXIS_LEFT_STICK_Y = 1
-AXIS_RIGHT_STICK_X = 3
-AXIS_RIGHT_STICK_Y = 4
-AXIS_R2 = 5
-AXIS_L2 = 2
-
-# Labels for DS4 controller buttons
-# Note that there are 14 buttons (0 to 13 for pygame, 1 to 14 for Windows setup)
-BUTTON_SQUARE = 3
-BUTTON_CROSS = 0
-BUTTON_CIRCLE = 1
-BUTTON_TRIANGLE = 2
-
-BUTTON_L1 = 4
-BUTTON_R1 = 5
-BUTTON_L2 = 6
-BUTTON_R2 = 7
-
-BUTTON_SHARE = 8
-BUTTON_OPTIONS = 9
-
-BUTTON_LEFT_STICK = 11
-BUTTON_RIGHT_STICK = 12
-
-BUTTON_PS = 10
-BUTTON_PAD = 5
-
-# Labels for DS4 controller hats (Only one hat control)
-HAT_1 = 0
 
 
 
@@ -51,6 +20,7 @@ def init():
     global opt
     global stop
     global go
+    global controller
     
     pygame.init()
     pygame.joystick.init()
@@ -86,17 +56,52 @@ def init():
     
     
     
+    
+    
 #lecture des commandes de la manette
 def refresh(match):
     global axis
     global button
     global hat
-    
+    global controller
     global r1
     global l1
     global opt
     global stop
     global go
+    
+    # Labels for DS4 controller axes
+    AXIS_LEFT_STICK_X = 0
+    AXIS_LEFT_STICK_Y = 1
+    AXIS_RIGHT_STICK_X = 3
+    AXIS_RIGHT_STICK_Y = 4
+    AXIS_R2 = 5
+    AXIS_L2 = 2
+    
+    # Labels for DS4 controller buttons
+    # Note that there are 14 buttons (0 to 13 for pygame, 1 to 14 for Windows setup)
+    BUTTON_SQUARE = 3
+    BUTTON_CROSS = 0
+    BUTTON_CIRCLE = 1
+    BUTTON_TRIANGLE = 2
+    
+    BUTTON_L1 = 4
+    BUTTON_R1 = 5
+    BUTTON_L2 = 6
+    BUTTON_R2 = 7
+    
+    BUTTON_SHARE = 8
+    BUTTON_OPTIONS = 9
+    
+    BUTTON_LEFT_STICK = 11
+    BUTTON_RIGHT_STICK = 12
+    
+    BUTTON_PS = 10
+    BUTTON_PAD = 5
+    
+    # Labels for DS4 controller hats (Only one hat control)
+    HAT_1 = 0
+
     
     #lecture des entrées de la manette
     for event in pygame.event.get():

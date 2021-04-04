@@ -106,7 +106,7 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test',vision,sim,communication,blueSide='R',start='B',disp=0)
+    match_test = match.Match('test',vision,sim,communication,disp=0,blueSide='R',start='B')
     
     
     
@@ -143,8 +143,7 @@ if __name__ == "__main__":
             else: 
                 #MATCH 2V2
                 
-                #Actualisation des positions
-                
+                #Actualisation des positions + detection but 
                 match_test.Vision()
                 
                 #Controle des bleus
