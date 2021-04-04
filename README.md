@@ -69,10 +69,11 @@ Si on est proche de l'objectif et qu'il y a un robot proche aussi, cela fait des
 
 
 ### Méthode de visualisation :
-Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions :    
-* mode 0: affichage dans la console des changements de postes  
-* mode 1: affichage sur un graphique des postes et du status des robots
-* mode 2: affichage sur un graphique d'une reproduction du terrain 
+Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions : 
+* mode -1: aucun affichage
+* mode  0: affichage dans la console des changements de postes  
+* mode  1: affichage sur un graphique des postes et du status des robots
+* mode  2: affichage sur un graphique d'une reproduction du terrain 
 
 ### Stratégie:
 Pas encore totalement définie.  

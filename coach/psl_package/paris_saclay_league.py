@@ -84,6 +84,28 @@ class SSLVisionClient:
         self.sock.setsockopt(socket.IPPROTO_IP, 
                               socket.IP_ADD_MEMBERSHIP, 
                               mreq)
+    
+    def connect3(self):
+        """
+        Binds a multicast group with ip and port.
+        (Version proposed by Bruno Denis) 
+
+        Returns
+        -------
+        None.
+
+        """
+        self.sock = socket.socket(socket.AF_INET, # family address : internet
+                                  socket.SOCK_DGRAM, # type of socket : UDP
+                                  socket.IPPROTO_UDP)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.bind(('', self.port))
+        mreq = struct.pack("4sl", 
+                           socket.inet_aton(self.ip), 
+                           socket.INADDR_ANY)
+        self.sock.setsockopt(socket.IPPROTO_IP, 
+                              socket.IP_ADD_MEMBERSHIP, 
+                              mreq)
 
 
     def connect2(self):

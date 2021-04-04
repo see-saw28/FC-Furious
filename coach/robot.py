@@ -4,10 +4,7 @@ Created on Fri Mar 12 14:23:15 2021
 
 @author: paulg
 """
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.patches as patches
-import matplotlib.lines as lines
+
 import potentiel as pt
 
 
@@ -16,8 +13,7 @@ import cmath as c
 import time
 import numpy as np
 
-import serial
-import serial.tools.list_ports
+
 
 import match as match
 
@@ -29,7 +25,7 @@ class Robot():
     
     def __init__(self,team,numero,match,grSim,com):
         self.id=numero
-        self.x=0
+        self.x=numero*500
         self.y=0
         self.orientation=0
         self.match=match
@@ -108,18 +104,43 @@ class Robot():
     #         return False
     
     #Permet de savoir si le robot a la balle
+    # def hasTheBall(self):
+    #     pos_ball=self.match.balle.position
+    #     pos_rob=self.positionc
+        
+    #     distance,phi=c.polar(pos_ball-pos_rob)
+    #     delta=self.orientation-phi
+       
+    #     if (distance <141)&(abs(delta)<0.33):
+    #         return True
+    #     else :
+            
+    #         return False
+    # from matplotlib import pyplot as plt
+    # fig=plt.figure()
+    # ax = fig.add_subplot(1, 1, 1)
+    # ax.set_xlim(-300,300)
+    # ax.set_ylim(-300,300)
     def hasTheBall(self):
+        
+        # global ax
+        # ax.clear()
         pos_ball=self.match.balle.position
         pos_rob=self.positionc
         
-        distance,phi=c.polar(pos_ball-pos_rob)
-        delta=self.orientation-phi
-       
-        if (distance <141)&(abs(delta)<0.33):
+        theta=self.orientation
+        pos_dribbler=pos_rob+complex(p.r_robot*np.cos(theta),p.r_robot*np.sin(theta))
+        vect_ball=pos_ball-pos_dribbler
+        theta=self.orientation
+        #projection de vect bal dans le repere du robot
+        x1=np.cos(theta)*vect_ball.real+np.sin(theta)*vect_ball.imag
+        y1=-np.sin(theta)*vect_ball.real+np.cos(theta)*vect_ball.imag
+        # print(x1,y1)
+        if (x1<10)and(abs(y1)<45):
             return True
         else :
-            
             return False
+        
     
    
     #Calcul de la distance entre le robot et un point du terrain
@@ -181,15 +202,14 @@ class Robot():
         for robot in self.match.joueurs:
             if robot!=self:
                 distance_autres_joueurs.append(self.distanceToXY(robot.positionc))
-                distance_autres_joueurs_balle.append(robot.distanceToXY(robot.match.balle.position))
+                distance_autres_joueurs_balle.append(robot.distanceToXY(position_arrivee.position))
         
         
         
         #si l'objectif est proche mais un autre robot aussi alors on fait abstraction des champs repulsifs
-        if (min(distance_autres_joueurs)>distance) & (min(distance_autres_joueurs_balle)<300) & (distance<300) & balle:
-            # print("oui")
+        if (min(distance_autres_joueurs)>distance) & (min(distance_autres_joueurs_balle)<300) & (distance<300) :
             
-            self.commande_robot(p.K_proche*np.cos(delta), p.K_proche*np.sin(delta), vitesse_angulaire,spinner=True)
+            self.commande_robot(p.K_proche*np.cos(phi-self.orientation), p.K_proche*np.sin(phi-self.orientation), vitesse_angulaire,spinner=(balle or spin))
             
         
             return 'EN COURS'
@@ -228,7 +248,7 @@ class Robot():
                 if distance<p.seuil_distance:
                     vitesse_tangente=vitesse_tangente*distance/p.seuil_distance
                     vitesse_normale=vitesse_normale*distance/p.seuil_distance
-                    spin=True
+                    spin=(balle or spin)
                 
                 
                 self.commande_robot(vitesse_tangente, vitesse_normale, vitesse_angulaire,spinner=spin)
@@ -310,12 +330,16 @@ class Robot():
         distance,phi=c.polar(direction)
         
         #orientation du passeur vers le receveur
-        self.orientation_with_ball(mate.goto.real,mate.goto.imag)
+        self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
         # self.commande_position(self.x,self.y,mate.x,mate.y)
         
         angle=(phi+np.pi)%(2*np.pi)
         if angle>np.pi:
             angle-=2*np.pi
+        
+        but_adv=mate.myTeam().but_adversaire
+        _,angle_but=c.polar(complex(but_adv[0],but_adv[1])+direction)
+        # print(angle_but)
         
         #orientation du receveur vers le passeur
         mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
@@ -326,9 +350,9 @@ class Robot():
         
         
         #Alignement réussi IDEE arrêt lors du changement de signe
-        if (abs(delta)<.05)&(abs(delta1)<0.55):
+        if (abs(delta)<.05)&(abs(delta1)<1.5):
             if mate.distanceToXY(mate.goto)>150:
-                puissance=self.puissanceKicker(distance)
+                puissance=self.puissanceKicker(distance)+0.3
             else :
                 puissance=distance/400
             self.commande_robot(0, 0, 0,tir=puissance)
@@ -379,7 +403,7 @@ class Robot():
                 # self.goto=complex(self.x+dU.real, self.y+dU.imag)
                     
                     
-                self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y )
+                self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y,spin=True )
     
             
     def puissanceKicker(self,distance):
@@ -510,13 +534,14 @@ class Robot():
         chaine_commande += str(spin) + "," + str(tir)[0] #a changer
         
         # print (ser.portstr)       # check which port was really used
-    
+        print(chaine_commande)
         for charactere in chaine_commande:
                 self.com.write(str.encode(charactere))
         return chaine_commande
     
-    def commande_robot(self,Vtang,Vnorm,Vang,spinner=False,tir=0):
+    def commande_robot(self,Vtang,Vnorm,Vang,spinner=True,tir=0):
         if self.grSim!=None:
+            
             p = psl.packetCommandBot(self.team=='Y', 
                          id=self.id, 
                          veltangent=Vtang, 
@@ -528,4 +553,4 @@ class Robot():
         if self.com:
             start=time.time()
             self.commande_com(self.id,Vtang,Vnorm,Vang,spinner,tir)
-            print(time.time()-start)
+            # print(time.time()-start)
