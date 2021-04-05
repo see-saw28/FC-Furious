@@ -283,10 +283,11 @@ class Robot():
         if (abs(delta)>.05):
             
             self.commande_robot(0, -vitesse_angulaire/9.25, vitesse_angulaire,spinner=True)
+            return 'EN COURS'
 
         else :
             self.commande_robot(0, 0, 0,spinner=True)
-       
+            return 'DONE'
         
         
     
@@ -330,7 +331,7 @@ class Robot():
         distance,phi=c.polar(direction)
         
         #orientation du passeur vers le receveur
-        self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
+        status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
         # self.commande_position(self.x,self.y,mate.x,mate.y)
         
         angle=(phi+np.pi)%(2*np.pi)
@@ -338,19 +339,33 @@ class Robot():
             angle-=2*np.pi
         
         but_adv=mate.myTeam().but_adversaire
-        _,angle_but=c.polar(complex(but_adv[0],but_adv[1])+direction)
-        # print(angle_but)
+        _,angle_but=c.polar(complex(but_adv[0],but_adv[1])-receveur)
+        but_adv_c=complex(but_adv[0],but_adv[1])
+        x=but_adv_c-receveur
+        y=passeur-receveur
+        dot=x.real*y.real+x.imag*y.imag
+        norm=abs(x)*abs(y)
+        theta=np.arccos(dot/norm)
+        # print(theta)
         
-        #orientation du receveur vers le passeur
-        mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
+        if theta<np.pi/3:
+            mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
+            delta1=angle_but-mate.orientation
+            if delta1>np.pi:
+                delta1-=2*np.pi
+            # print(delta1)
+        else:    
+            #orientation du receveur vers le passeur
+            mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
+            delta1=angle-mate.orientation
+        
         
         delta=phi-self.orientation
-        delta1=angle-mate.orientation
         
         
         
         #Alignement réussi IDEE arrêt lors du changement de signe
-        if (abs(delta)<.05)&(abs(delta1)<1.5):
+        if (status=='DONE')&(abs(delta1)<1.0):
             if mate.distanceToXY(mate.goto)>150:
                 puissance=self.puissanceKicker(distance)+0.3
             else :
@@ -362,6 +377,7 @@ class Robot():
             return 'DONE'
         
         else :
+            # print('load passe',delta,delta1)
             return 'EN COURS'
             
             
@@ -401,7 +417,21 @@ class Robot():
                 dU=2*np.sin(theta)*dU #projection de la position où la balle devrait arriver
                 # print(theta,dU)
                 # self.goto=complex(self.x+dU.real, self.y+dU.imag)
-                    
+                but_adv=self.myTeam().but_adversaire
+                but_adv_c=complex(but_adv[0],but_adv[1])
+                x=but_adv_c-receveur
+                y=passeur-receveur
+                dot=x.real*y.real+x.imag*y.imag
+                norm=abs(x)*abs(y)
+                theta=np.arccos(dot/norm)
+                # print(theta)
+                
+                if theta<np.pi/3:
+                    self.commande_position(self.x+dU.real, self.y+dU.imag,but_adv[0],but_adv[1],spin=True )
+                    # mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
+                else:    
+                    #orientation du receveur vers le passeur
+                    self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y,spin=True )  
                     
                 self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y,spin=True )
     

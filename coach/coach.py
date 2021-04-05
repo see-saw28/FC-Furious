@@ -459,7 +459,8 @@ class Coach():
                 joueur.commande_position(joueur.x,joueur.y,0,0,spin=True)
                 joueur.defPoste('WAIT')
                
-            
+            elif joueur.poste[-1]=='ATT':
+                joueur.status='EN COURS'
             
             
         
