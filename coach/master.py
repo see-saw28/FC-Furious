@@ -42,7 +42,7 @@ from psl_package import paris_saclay_league as psl
 import match as match
 import affichage
 import manette as m
-
+import main as main
 
 
 
@@ -153,6 +153,8 @@ if __name__ == "__main__":
                 #Controle des jaunes
                 match_test.yellow.changementDePoste()
                 match_test.yellow.action()
+                
+                main.update(match.joueurs[0].x)
                 
                 
             

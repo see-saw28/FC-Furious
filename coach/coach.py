@@ -9,7 +9,7 @@ Created on Fri Mar 12 14:26:07 2021
 import numpy as np
 import random
 
-import ia_v3 as ia
+import ia_v4 as ia
 import ia_demarquage1 as dmq
 
 import parametres as p
@@ -23,7 +23,7 @@ class Coach():
         self.nom=couleur
         self.baller=None
         self.passe=False
-        self.ia=ia.Agent('ia3')
+        self.ia=ia.Agent('ia7')
         self.dmq=dmq.Agent('dmq6')
        
         if self.side=='L':
