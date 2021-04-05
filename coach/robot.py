@@ -369,8 +369,10 @@ class Robot():
             if mate.distanceToXY(mate.goto)>150:
                 puissance=self.puissanceKicker(distance)+0.3
             else :
-                puissance=distance/400
+                # puissance=distance/400
+                puissance=self.puissanceKicker(distance)+1
             self.commande_robot(0, 0, 0,tir=puissance)
+            mate.origine_passe=self.match.balle.position
             print('Passe')
             self.defPoste('DEMARQUE')
             self.teammate().defPoste('RECEVEUR')
@@ -581,6 +583,6 @@ class Robot():
                          kickspeedx=tir)
             self.grSim.send(p)
         if self.com:
-            start=time.time()
+            # start=time.time()
             self.commande_com(self.id,Vtang,Vnorm,Vang,spinner,tir)
             # print(time.time()-start)
