@@ -106,7 +106,7 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test',vision,sim,communication,disp=0,blueSide='R',start='B')
+    match_test = match.Match('test', vision, sim, communication, disp=0, blueSide='R', start='B')
     
     
     
@@ -156,16 +156,16 @@ if __name__ == "__main__":
                 
                 
             
-                
+            #affichage des FPS
+           
               
             
             if match_test.disp>0:
                 affichage.refresh(match_test,ax,score) 
                 
-                
-                #affichage des FPS
                 t_list = affichage.t_update(t_list)
                 tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
+                # print(tx)     
                 text.set_text(tx)
                 ax.draw_artist(text)
                 

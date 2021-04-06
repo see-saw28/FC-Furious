@@ -9,7 +9,7 @@ Created on Fri Mar 12 14:26:07 2021
 import numpy as np
 import random
 
-import ia_v4 as ia
+import ia_v5 as ia
 import ia_demarquage1 as dmq
 
 import parametres as p
@@ -23,7 +23,7 @@ class Coach():
         self.nom=couleur
         self.baller=None
         self.passe=False
-        self.ia=ia.Agent('ia7')
+        self.ia=ia.Agent('ia8')
         self.dmq=dmq.Agent('dmq6')
        
         if self.side=='L':
@@ -241,10 +241,12 @@ class Coach():
                 if ball:    
                     if baller.team!=self.nom:
                             joueur.defPoste('WAIT')
+                    elif baller==joueur:
+                        joueur.defPoste('ATT')
                             
-                if joueur.distanceToXY(balle.position)<200:
-                    joueur.defPoste('CHASER')
-                    joueur.teammate().defPoste('DEMARQUE')
+                # if joueur.distanceToXY(balle.position)<200:
+                #     joueur.defPoste('CHASER')
+                #     joueur.teammate().defPoste('DEMARQUE')
             
             elif joueur.poste[-1]=='CHASER':
                 if ball:        
