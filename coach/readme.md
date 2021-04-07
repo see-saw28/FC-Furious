@@ -27,3 +27,9 @@ Si une manette est détectée:
 * L2 : engagement pour les bleus
 * OPTIONS : reset match
 * flèche du bas : arrêt du programme python
+
+
+## IA  
+ia_v3 + model-ia3: dribble tout terrain
+ia_v4 + model-ia4: dribble x>-400
+ia_v5 + model-ia5: dribble moitié adverse
