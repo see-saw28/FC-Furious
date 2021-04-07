@@ -202,4 +202,4 @@ En partant d'une situation où le porteur de balle ne peut pas marquer et que la
 
 #### Entraînement 
 Mise en place identique que précédemment, modification uniquement des règles et récompenses de l'environnement.  
-Cette fois ci, l'entraînement est beaucoup plus important, il fallu réaliser un plus grand d'épisodes pour converger vers une solution, en effet il a plus de contraintes.
+Cette fois ci, l'entraînement est beaucoup plus important, il a fallu réaliser un plus grand d'épisodes pour converger vers une solution acceptable, en effet il a plus de contraintes.
