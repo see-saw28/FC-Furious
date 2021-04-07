@@ -204,7 +204,7 @@ Cette fois ci, l'entraînement est beaucoup plus important, il a fallu réaliser
 
 
 ## Simulateur  
--> dossier [a relative link](/coach/readme.md) coach  
+-> dossier [coach](/coach)   
 Prise en compte de :
 * Detection des buts
 * Score du match
