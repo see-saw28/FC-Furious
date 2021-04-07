@@ -5,7 +5,7 @@
 ### Commandes élémentaires :
 * Commande en position avec une orientation par rapport à un point
 * Passe (statique)
-* Réception : calcul du vecteur directeur de la balle et ajustement de la position
+* Reception : calcul du vecteur directeur de la balle et ajustement de la position
 * Orientation avec la balle : tourner autour de la balle (CIR) pour s'orienter
 * Tir
 
@@ -14,10 +14,14 @@
 * Shooter : on tire si le but est ouvert
 * Dribble : utilisation de l'ia pour dribbler vers une postion où le but ouvert
 * Demarquage : utilisation de l'ia pour se demarquer vers une postion où le but ouvert
-* Passeur/receveur : réalisation d'une passe statique avec ajustement du receveur //a revoir
+* Passeur/receveur : réalisation d'une passe statique ou en profondeur avec ajustement du receveur 
 * Goal : être entre la balle et le but, devant la surface
 * Tackle/Chaser : récupération de la balle 
-* Defenseur : plusieurs défenses possibles
+* Defenseur : plusieurs défenses possibles :  
+  * DEF : défense passive dans notre terrain
+  * DEF1 : placement entre les 2 attaquants pour empêcher les passes
+  * DEF2 : placement entre le 2è attaquant et le but
+
 
 Dont voici quelques exemples sur simulateur :  
 
@@ -178,3 +182,12 @@ La limite de cette ia c'est qu'elle ne prend pas en compte les déplacements des
 On verra par la suite comment l'utiliser :
 * Prédiction de la position finale
 * Prédiction des déplacements un par un pour ainsi actualiser l'état du terrain entre deux déplacements.
+
+----
+### Agent pour se démarquer  
+Modification du modèle pour créér un agent pour se démarquer. 
+#### Objectif  
+En partant d'une situation où le porteur de balle ne peut pas marquer et que la passe est impossible, on veut bouger le teammate vers une zone avec le but ouvert et la passe possible.
+
+#### Entraînement 
+Mise en place identique que précédemment, modification uniquement des règles et récompenses de l'environnemnt.
