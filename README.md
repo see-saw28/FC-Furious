@@ -87,7 +87,8 @@ Une amélioration possible serait d'adapter la stratégie en fonction du score e
 
 ### Passes  
 #### Méthode   
-Pour le moment, les passes se font toujours avec le passeur en position statique. Au moment de l'orientation du passeur, on regarde l'angle entre le passeur, le receveur et le but. Si cet angle est inférieur à $pi/2$
+Pour le moment, les passes se font toujours avec le passeur en position statique. Au moment de l'orientation du passeur, on regarde l'angle entre le passeur, le receveur et le but. Si cet angle est inférieur à pi/3 on peut orienter le receveur directement face au but, cela ne posera pas de problème pour la reception et on gagne en rapidité entre la reception de la balle et le tir car le robot est déjà orienté. Sinon on oriente le receveur face au passeur pour la passe.  
+De plus, on regarde la passe par rapport au point où le receveur veut se rendre. Ainsi s'il est proche de sa position d'arrivée on peut réaliser une passe appuyée, sinon on réalise une passe en profondeur (donc moins forte) pour laisser le temps au receveur d'arriver à ce point le temps de la passe.
 
 #### Passes en profondeur
 ##### Caractérisation du kicker  
@@ -103,6 +104,8 @@ Puissance=0.05249286*(distance-140)<sup>1/2</sup>
 
 Ainsi, grâce à cette formule, on peut doser précisement les passes en profondeur.
 
+#### Reception   
+Lorsque la passe est effectuée, le receveur passe en mode "reception", c'est à dire qu'on adapte sa position en fonction de la trajectoire de la balle pour assurer la reception.
 
 --------------
 ## Partie intelligence artificielle
