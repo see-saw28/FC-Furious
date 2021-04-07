@@ -183,6 +183,10 @@ On verra par la suite comment l'utiliser :
 * Prédiction de la position finale
 * Prédiction des déplacements un par un pour ainsi actualiser l'état du terrain entre deux déplacements.
 
+---
+### Améliorations :  
+En mettant en place l'ia dans le coach, on remarque que la solution est souvent assez loin du but, ce qui est donc pas très éfficace pour marquer. Pour remedier à ce problème, une contrainte a été rajouté pour l'objectif. En effet maintenant le robot doit être dans la moitié de terrain adverse pour satisfaire l'objectif. Ainsi on observe que l'ia est beaucoup plus offensive et donc plus efficace sur le simulateur.
+
 ----
 ### Agent pour se démarquer  
 Modification du modèle pour créér un agent pour se démarquer. 
@@ -190,4 +194,5 @@ Modification du modèle pour créér un agent pour se démarquer.
 En partant d'une situation où le porteur de balle ne peut pas marquer et que la passe est impossible, on veut bouger le teammate vers une zone avec le but ouvert et la passe possible.
 
 #### Entraînement 
-Mise en place identique que précédemment, modification uniquement des règles et récompenses de l'environnemnt.
+Mise en place identique que précédemment, modification uniquement des règles et récompenses de l'environnement.  
+Cette fois ci, l'entraînement est beaucoup plus important, il fallu réaliser un plus grand d'épisodes pour converger vers une solution, en effet il a plus de contraintes.
