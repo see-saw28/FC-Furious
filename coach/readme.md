@@ -30,6 +30,6 @@ Si une manette est détectée:
 
 
 ## IA  
-ia_v3 + model-ia3: dribble tout terrain
-ia_v4 + model-ia4: dribble x>-400
-ia_v5 + model-ia5: dribble moitié adverse
+ia_v3 + model-ia3: dribble tout terrain  
+ia_v4 + model-ia7: dribble moitié adverse  
+ia_v5 + model-ia8: dribble moitié adverse pas trop proche de la surface (évite d'être trop proche du goal adverse)
