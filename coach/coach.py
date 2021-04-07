@@ -199,10 +199,10 @@ class Coach():
                         joueur.defPoste('ATT')
                     
                         
-                elif (min(distance)/joueur.distanceToXY(balle.position))>0.7:
+                elif ((min(distance)/joueur.distanceToXY(balle.position))>0.7)&(joueur.teammate().poste[-1]!='RECEVEUR'):
                             joueur.defPoste('CHASER')
                             
-                elif (closer.team!=self.nom):
+                elif (closer.team!=self.nom)&(joueur.teammate().poste[-1]!='RECEVEUR'):
                     joueur.defPoste('WAIT')
                     
 

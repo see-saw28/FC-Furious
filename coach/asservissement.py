@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Wed Apr  7 11:46:00 2021
+
+@author: psl
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Apr  2 16:55:40 2021
 
 @author: psl
@@ -108,8 +116,8 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test', vision, sim, communication, disp=0, blueSide='R', start='B')
-    
+    match_test = match.Match('test', vision, sim, communication, disp=2, blueSide='R', start='B')
+    match_test.engagement=False
     
     
     if match_test.disp>0:
@@ -125,46 +133,40 @@ if __name__ == "__main__":
             if match_test.disp>0:
                 fig.canvas.restore_region(axbackground)  
             
-            #Lecture des commandes deouis la manette
+            #Lecture des commandes depuis la manette
             if manette :
                 quit = m.refresh(match_test)
                 
-            
+            #controle du robot à la manette
             if match_test.stop:
                 match_test.Vision()
-                match_test.blue.reset()
-                match_test.yellow.reset()
+                Vnorm,Vtang,Vang=m.controle()
+                match_test.blue.joueurs[0].commande_robot(Vtang, Vnorm, Vang)
                 
-            elif match_test.engagement:
-                match_test.Vision()
-                match_test.blue.engagement()
-                match_test.yellow.engagement()
+            
                 
                 
                 
             else: 
-                #MATCH 2V2
+                
                 
                 #Actualisation des positions + detection but 
                 match_test.Vision()
                 
-                #Controle des bleus
-                match_test.blue.changementDePoste()
-                match_test.blue.action()
                 
-                #Controle des jaunes
-                match_test.yellow.changementDePoste()
-                match_test.yellow.action()
-                
+                #asservissement du robot en position ou chaser
+                # match_test.blue.joueurs[0].commande_balle() 
+                match_test.blue.joueurs[0].commande_position(500,500,0,0)
                 
             
-            #affichage des FPS
+            
            
               
             
             if match_test.disp>0:
                 affichage.refresh(match_test,ax,score) 
                 
+                #affichage des FPS
                 t_list = affichage.t_update(t_list)
                 tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
                 # print(tx)     

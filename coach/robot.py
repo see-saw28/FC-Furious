@@ -331,7 +331,7 @@ class Robot():
         distance,phi=c.polar(direction)
         
         #orientation du passeur vers le receveur
-        status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
+        # status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
         # self.commande_position(self.x,self.y,mate.x,mate.y)
         
         angle=(phi+np.pi)%(2*np.pi)
@@ -349,6 +349,7 @@ class Robot():
         # print(theta)
         
         if theta<np.pi/3:
+            status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(angle_but),mate.goto.imag+p.r_robot*np.sin(angle_but))
             mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
             delta1=angle_but-mate.orientation
             if delta1>np.pi:
@@ -356,6 +357,7 @@ class Robot():
             # print(delta1)
         else:    
             #orientation du receveur vers le passeur
+            status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
             mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
             delta1=angle-mate.orientation
         
@@ -408,7 +410,7 @@ class Robot():
         # print(theta,((self.match.balle.x10[-10]-self.match.balle.x10[-1])**2+(self.match.balle.y10[-10]-self.match.balle.y10[-1])**2))
         
         #Si on observe un trop gros écart angulaire alors la passe a rebondit ou elle est ratée
-        if (np.sqrt(((self.match.balle.x10[0]-self.match.balle.x10[-1])**2+(self.match.balle.y10[0]-self.match.balle.y10[-1])**2))>300):
+        if (np.sqrt(((self.match.balle.x10[0]-self.match.balle.x10[-1])**2+(self.match.balle.y10[0]-self.match.balle.y10[-1])**2))>150):
             
             if (abs(theta)>0.4):
                 self.defPoste('WAIT')

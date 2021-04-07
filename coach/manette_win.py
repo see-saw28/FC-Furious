@@ -49,6 +49,12 @@ BUTTON_PAD = 13
 HAT_1 = 0
 
 
+
+
+
+
+
+
 #initialisation de pygame et de la manette
 def init():
     global axis
@@ -56,9 +62,12 @@ def init():
     global hat
     global r1
     global l1
+    global r2
+    global l2
     global opt
     global stop
     global go
+    global controller
     
     pygame.init()
     pygame.joystick.init()
@@ -84,9 +93,13 @@ def init():
         
     r1=False
     l1=False
+    r2=False
+    l2=False
     opt=False
     stop=False
     go=False
+    
+    
     
     
     
@@ -99,12 +112,17 @@ def refresh(match):
     global axis
     global button
     global hat
-    
+    global controller
     global r1
     global l1
+    global r2
+    global l2
     global opt
     global stop
     global go
+    
+ 
+
     
     #lecture des entrées de la manette
     for event in pygame.event.get():
@@ -119,7 +137,7 @@ def refresh(match):
         	hat[event.hat] = event.value
         
     #fleche du bas pour arreter le programme
-    quit = button[BUTTON_CIRCLE]
+    quit = hat[HAT_1][1]==-1
     
     #carré pour stoper le match
     if (button[BUTTON_SQUARE]) & (not(stop)):
@@ -146,4 +164,57 @@ def refresh(match):
         match.regame()
     opt=button[BUTTON_OPTIONS]
     
+    if match.Stop:
+        if (not (l2))&(button[BUTTON_L2]):
+            match.team_engagement='B'
+            print('Balle Bleu')
+            match.engagement=True
+            match.stop=False
+        elif (not (r2))&(button[BUTTON_R2]):
+            match.team_engagement='Y'
+            match.engagement=True
+            match.stop=False
+            print('Balle Jaune')
+    l2=button[BUTTON_L2]
+    r2=button[BUTTON_R2]
+    
     return quit
+
+
+def controle():
+    global axis
+    global button
+    global hat
+    
+    global r1
+    global l1
+    global opt
+    global stop
+    global go
+    
+    
+    
+    
+    #lecture des entrées de la manette
+    for event in pygame.event.get():
+            
+        if event.type == pygame.JOYAXISMOTION:
+            axis[event.axis] = round(event.value,3)
+        elif event.type == pygame.JOYBUTTONDOWN:
+            button[event.button] = True
+        elif event.type == pygame.JOYBUTTONUP:
+            button[event.button] = False
+        elif event.type == pygame.JOYHATMOTION:
+        	hat[event.hat] = event.value
+            
+    #VITESSE NORMALE
+    vn=-axis[AXIS_LEFT_STICK_X]
+    
+    #VITESSE TANGENTE
+    vt=-axis[AXIS_LEFT_STICK_Y]
+    
+    #VITESSE ANGULAIRE
+    va=-axis[AXIS_RIGHT_STICK_X]
+    
+    return vn,vt,va*5
+    

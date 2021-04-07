@@ -8,7 +8,37 @@ Created on Sat Mar 27 13:59:23 2021
 import pygame
 
 
+# Labels for DS4 controller axes
+AXIS_LEFT_STICK_X = 0
+AXIS_LEFT_STICK_Y = 1
+AXIS_RIGHT_STICK_X = 3
+AXIS_RIGHT_STICK_Y = 4
+AXIS_R2 = 5
+AXIS_L2 = 2
 
+# Labels for DS4 controller buttons
+# Note that there are 14 buttons (0 to 13 for pygame, 1 to 14 for Windows setup)
+BUTTON_SQUARE = 3
+BUTTON_CROSS = 0
+BUTTON_CIRCLE = 1
+BUTTON_TRIANGLE = 2
+
+BUTTON_L1 = 4
+BUTTON_R1 = 5
+BUTTON_L2 = 6
+BUTTON_R2 = 7
+
+BUTTON_SHARE = 8
+BUTTON_OPTIONS = 9
+
+BUTTON_LEFT_STICK = 11
+BUTTON_RIGHT_STICK = 12
+
+BUTTON_PS = 10
+BUTTON_PAD = 5
+
+# Labels for DS4 controller hats (Only one hat control)
+HAT_1 = 0
 
 #initialisation de pygame et de la manette
 def init():
@@ -17,6 +47,8 @@ def init():
     global hat
     global r1
     global l1
+    global r2
+    global l2
     global opt
     global stop
     global go
@@ -46,6 +78,8 @@ def init():
         
     r1=False
     l1=False
+    r2=False
+    l2=False
     opt=False
     stop=False
     go=False
@@ -66,41 +100,13 @@ def refresh(match):
     global controller
     global r1
     global l1
+    global r2
+    global l2
     global opt
     global stop
     global go
     
-    # Labels for DS4 controller axes
-    AXIS_LEFT_STICK_X = 0
-    AXIS_LEFT_STICK_Y = 1
-    AXIS_RIGHT_STICK_X = 3
-    AXIS_RIGHT_STICK_Y = 4
-    AXIS_R2 = 5
-    AXIS_L2 = 2
     
-    # Labels for DS4 controller buttons
-    # Note that there are 14 buttons (0 to 13 for pygame, 1 to 14 for Windows setup)
-    BUTTON_SQUARE = 3
-    BUTTON_CROSS = 0
-    BUTTON_CIRCLE = 1
-    BUTTON_TRIANGLE = 2
-    
-    BUTTON_L1 = 4
-    BUTTON_R1 = 5
-    BUTTON_L2 = 6
-    BUTTON_R2 = 7
-    
-    BUTTON_SHARE = 8
-    BUTTON_OPTIONS = 9
-    
-    BUTTON_LEFT_STICK = 11
-    BUTTON_RIGHT_STICK = 12
-    
-    BUTTON_PS = 10
-    BUTTON_PAD = 5
-    
-    # Labels for DS4 controller hats (Only one hat control)
-    HAT_1 = 0
 
     
     #lecture des entrées de la manette
@@ -143,4 +149,56 @@ def refresh(match):
         match.regame()
     opt=button[BUTTON_OPTIONS]
     
+    if match.Stop:
+        if (not (l2))&(button[BUTTON_L2]):
+            match.team_engagement='B'
+            print('Balle Bleu')
+            match.engagement=True
+            match.stop=False
+        elif (not (r2))&(button[BUTTON_R2]):
+            match.team_engagement='Y'
+            match.engagement=True
+            match.stop=False
+            print('Balle Jaune')
+    l2=button[BUTTON_L2]
+    r2=button[BUTTON_R2]
+    
     return quit
+
+
+def controle():
+    global axis
+    global button
+    global hat
+    
+    global r1
+    global l1
+    global opt
+    global stop
+    global go
+    
+    
+    
+    
+    #lecture des entrées de la manette
+    for event in pygame.event.get():
+            
+        if event.type == pygame.JOYAXISMOTION:
+            axis[event.axis] = round(event.value,3)
+        elif event.type == pygame.JOYBUTTONDOWN:
+            button[event.button] = True
+        elif event.type == pygame.JOYBUTTONUP:
+            button[event.button] = False
+        elif event.type == pygame.JOYHATMOTION:
+        	hat[event.hat] = event.value
+            
+    #VITESSE NORMALE
+    vn=-axis[AXIS_LEFT_STICK_X]
+    
+    #VITESSE TANGENTE
+    vt=-axis[AXIS_LEFT_STICK_Y]
+    
+    #VITESSE ANGULAIRE
+    va=-axis[AXIS_RIGHT_STICK_X]
+    
+    return vn,vt,va*5
