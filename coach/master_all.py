@@ -109,7 +109,7 @@ if __name__ == "__main__":
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
     match_test = match.Match('test', vision, sim, communication, disp=0, blueSide='R', start='B')
-    
+    match_test.engagement=manette
     
     
     if match_test.disp>0:

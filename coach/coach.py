@@ -179,8 +179,9 @@ class Coach():
                             joueur.teammate().defPoste('RECEVEUR')
                             
                     elif not self.openPasse():
-                        print('here')
+                        print('here3')
                         joueur.defPoste('DRIBBLE')
+                        joueur.status='DONE'
             
             elif joueur.poste[-1]=='SHOOTER':
                 if not ball:
@@ -330,7 +331,7 @@ class Coach():
        
         
         #Affichage changement de status
-        if self.joueurs[0].match.disp==0:
+        if self.joueurs[0].match.disp>=0:
             changement=False
             status=''
             for joueur in self.joueurs:

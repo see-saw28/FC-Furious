@@ -176,10 +176,11 @@ class Match():
         self.go=False
         
     def regame(self):
-        self.Stop()
+        self.stop=False
         print('NOUVEAU MATCH')
         self.score_bleu=0
         self.score_jaune=0
+        self.engagement=True
     
 class Balle():
     

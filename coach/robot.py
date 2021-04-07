@@ -350,7 +350,7 @@ class Robot():
         
         if theta<np.pi/3:
             status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(angle_but),mate.goto.imag+p.r_robot*np.sin(angle_but))
-            mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
+            # mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
             delta1=angle_but-mate.orientation
             if delta1>np.pi:
                 delta1-=2*np.pi
@@ -358,13 +358,13 @@ class Robot():
         else:    
             #orientation du receveur vers le passeur
             status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
-            mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
+            # mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
             delta1=angle-mate.orientation
         
         
         delta=phi-self.orientation
         
-        
+        print(status)
         
         #Alignement réussi IDEE arrêt lors du changement de signe
         if (status=='DONE')&(abs(delta1)<1.0):
@@ -389,7 +389,7 @@ class Robot():
     def reception(self):  
         # print('rec')
         mate=self.teammate()
-        receveur=self.positionc
+        receveur=self.positionc+p.r_robot*np.exp(complex(0,self.orientation))
         passeur=self.origine_passe
         direction=receveur-passeur
         distance,phi=c.polar(direction)
@@ -404,40 +404,51 @@ class Robot():
         d,o_balle=c.polar(vect_balle)
         
         #Angle entre le vecteur entre les deux robots et le vecteur de la balle
-        theta=o_balle-phi
+        omega=o_balle-phi
         # print(phi,o_balle)
         
+        
+        but_adv=self.myTeam().but_adversaire
+        but_adv_c=complex(but_adv[0],but_adv[1])
+        x=but_adv_c-receveur
+        y=passeur-receveur
+        dot=x.real*y.real+x.imag*y.imag
+        norm=abs(x)*abs(y)
+        theta=np.arccos(dot/norm)
+                # print(theta)
         # print(theta,((self.match.balle.x10[-10]-self.match.balle.x10[-1])**2+(self.match.balle.y10[-10]-self.match.balle.y10[-1])**2))
         
         #Si on observe un trop gros écart angulaire alors la passe a rebondit ou elle est ratée
-        if (np.sqrt(((self.match.balle.x10[0]-self.match.balle.x10[-1])**2+(self.match.balle.y10[0]-self.match.balle.y10[-1])**2))>150):
+        if (self.teammate().poste[-1]!='PASSEUR'):
             
-            if (abs(theta)>0.4):
+            if (abs(omega)>1.4)&(np.sqrt(((self.match.balle.x10[0]-self.match.balle.x10[-1])**2+(self.match.balle.y10[0]-self.match.balle.y10[-1])**2))>200):
                 self.defPoste('WAIT')
+                a=0
             else :
                 # self.defPoste('RECEVEUR')
                 
                 dU=complex(-direction.imag,direction.real) #rotation a 90° du vecteur reliant les robots
-                dU=2*np.sin(theta)*dU #projection de la position où la balle devrait arriver
+                dU=1*np.sin(omega)*dU #projection de la position où la balle devrait arriver
                 # print(theta,dU)
                 # self.goto=complex(self.x+dU.real, self.y+dU.imag)
-                but_adv=self.myTeam().but_adversaire
-                but_adv_c=complex(but_adv[0],but_adv[1])
-                x=but_adv_c-receveur
-                y=passeur-receveur
-                dot=x.real*y.real+x.imag*y.imag
-                norm=abs(x)*abs(y)
-                theta=np.arccos(dot/norm)
-                # print(theta)
-                
                 if theta<np.pi/3:
                     self.commande_position(self.x+dU.real, self.y+dU.imag,but_adv[0],but_adv[1],spin=True )
                     # mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
                 else:    
                     #orientation du receveur vers le passeur
-                    self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y,spin=True )  
-                    
-                self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y,spin=True )
+                    self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y,spin=True )
+                
+        else :
+            dU=complex(0,0)
+             
+            if theta<np.pi/3:
+                self.commande_position(self.goto.real, self.goto.imag, but_adv[0], but_adv[1])
+                # mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
+            else:    
+                #orientation du receveur vers le passeur
+                self.commande_position(self.goto.real, self.goto.imag, mate.x, mate.y)  
+            
+        # self.commande_position(self.x+dU.real, self.y+dU.imag,mate.x,mate.y,spin=True )
     
             
     def puissanceKicker(self,distance):
