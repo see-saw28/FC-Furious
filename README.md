@@ -193,7 +193,7 @@ On verra par la suite comment l'utiliser :
 En mettant en place l'ia dans le coach, on remarque que la solution est souvent assez loin du but, ce qui est donc pas très éfficace pour marquer. Pour remedier à ce problème, une contrainte a été rajouté pour l'objectif. En effet maintenant le robot doit être dans la moitié de terrain adverse pour satisfaire l'objectif. Ainsi on observe que l'ia est beaucoup plus offensive et donc plus efficace sur le simulateur.
 
 ----
-### Agent pour se démarquer  
+### Extension à un agent pour se démarquer  
 Modification du modèle pour créér un agent pour se démarquer. 
 #### Objectif  
 En partant d'une situation où le porteur de balle ne peut pas marquer et que la passe est impossible, on veut bouger le teammate vers une zone avec le but ouvert et la passe possible.
