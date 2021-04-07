@@ -1,8 +1,6 @@
-# FC Furious
- 
-## Partie Coach
+# Partie Coach
 
-### Commandes élémentaires :
+## Commandes élémentaires :
 * Commande en position avec une orientation par rapport à un point
 * Passe (statique)
 * Reception : calcul du vecteur directeur de la balle et ajustement de la position
@@ -10,7 +8,7 @@
 * Tir
 
 
-### Postes :
+## Postes :
 * Shooter : on tire si le but est ouvert
 * Dribble : utilisation de l'ia pour dribbler vers une postion où le but ouvert
 * Demarquage : utilisation de l'ia pour se demarquer vers une position où le but ouvert et la passe est possible
@@ -42,7 +40,7 @@ Défense avec le gardien et un tackle :
 <img src="img/tackle.gif" width="60%"> 
 
 
-### Création d'un champ pour aller à l'objectif en évitant les autres robots :
+## Création d'un champ pour aller à l'objectif en évitant les autres robots :
 L'idée de base est de créer un champ répulsif en faisant le gradient de la somme des potentiels, avec un potentiel positif pour les robots à éviter et un potentiel négatif pour l'objectif. Le potentiel étant calculé avec une loi normale :   
 P(M)=Pt.e<sup>(||M-M<sub>0</sub>||²/&sigma;²)</sup> avec M<sub>0</sub> le point d'origine du potentiel  
 On peut observer les potentiels :  
@@ -60,7 +58,7 @@ De plus, on ne  prend pas en compte les robots qui sont derrière succeptible de
 
 ![robot arriere](img/shéma_robot_arrière.png)  
 
-### Asservissement en position
+## Asservissement en position
 Ainsi, pour la commande du robot on utilise la direction du vecteur (qui est normé) à la position du robot.  Donc la commande en vitesse est toujours à saturation (env. 0.9 m/s) sauf à partir d´une certaine distance où la distance devient proportionnelle à la distance restante.  
 <img src="img/Vitesse.png" width="60%">
 
@@ -68,14 +66,14 @@ Ainsi, pour la commande du robot on utilise la direction du vecteur (qui est nor
 Si on est proche de l'objectif et qu'il y a un robot proche aussi, cela fait des interférences. Dans ce cas, on ne sert plus des champs et on réalise un asservissement classique (proportionnel + saturation) à vitesse réduite.  
 
 
-### Méthode de visualisation :
+## Méthode de visualisation :
 Visualisation en direct des positions ainsi que les états des robots, plusieurs solutions : 
 * mode -1: aucun affichage
 * mode  0: affichage dans la console des changements de postes  
 * mode  1: affichage sur un graphique des postes et du status des robots
 * mode  2: affichage sur un graphique d'une reproduction du terrain 
 
-### Stratégie:
+## Stratégie:
 Pas encore totalement définie.  
 Pour le moment, le coach réalise 2 actions:  
 * Lecture des données du terrain et attribution des postes 
@@ -85,13 +83,13 @@ Tout d'abord l´attribution se faisait grâce à un arbre qui testait un certain
 
 Une amélioration possible serait d'adapter la stratégie en fonction du score et du temps restant.  
 
-### Passes  
-#### Méthode   
+## Passes  
+### Méthode   
 Pour le moment, les passes se font toujours avec le passeur en position statique. Au moment de l'orientation du passeur, on regarde l'angle entre le passeur, le receveur et le but. Si cet angle est inférieur à pi/3 on peut orienter le receveur directement face au but, cela ne posera pas de problème pour la reception et on gagne en rapidité entre la reception de la balle et le tir car le robot est déjà orienté. Sinon on oriente le receveur face au passeur pour la passe.  
 De plus, on regarde la passe par rapport au point où le receveur veut se rendre. Ainsi s'il est proche de sa position d'arrivée on peut réaliser une passe appuyée, sinon on réalise une passe en profondeur (donc moins forte) pour laisser le temps au receveur d'arriver à ce point le temps de la passe.
 
-#### Passes en profondeur
-##### Caractérisation du kicker  
+### Passes en profondeur
+#### Caractérisation du kicker  
 Recherche d'une relation entre la distance parcourue par la balle et la puissance envoyée au kicker sur le simulateur :  
 Sur le simulateur, on a mesuré la distance parcourue pour 20 valeurs de puissances différentes, en répétant la mesure 5x pour observer s'il y avait de la dispersion.  
 <img src="img/passe_profondeur.gif" width="60%">   
@@ -104,13 +102,13 @@ Puissance=0.05249286*(distance-140)<sup>1/2</sup>
 
 Ainsi, grâce à cette formule, on peut doser précisement les passes en profondeur.
 
-#### Reception   
+### Reception   
 Lorsque la passe est effectuée, le receveur passe en mode "reception", c'est à dire qu'on adapte sa position en fonction de la trajectoire de la balle pour assurer la reception.
 
 --------------
-## Partie intelligence artificielle
+## Intelligence artificielle
 
-### Objectif :
+## Objectif :
 Le but de cette intelligence artificielle est de déplacer un attaquant vers un endroit où le but est ouvert en un minimum de déplacements.
 
 ------------
