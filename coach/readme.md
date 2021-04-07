@@ -11,13 +11,13 @@
 
 ## Lancement d'une partie
 ### Sélection équipe
-commenter/decommenter les équipes à jouer dans master.py (env.L150)
+commenter/decommenter les équipes à jouer dans master_all.py (env.L150)
 
 ### Lancement match
-RUN  master.py
+RUN  master_all.py
 
 
-## Contrôle manette
+## Contrôles manette
 Si une manette est détectée:
 * CARRE : stopper tous les robots
 * CROIX : relance les robots
