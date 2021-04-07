@@ -81,12 +81,16 @@ Pour le moment, le coach réalise 2 actions:
 * Lecture des données du terrain et attribution des postes 
 * Ordre aux robots en fonction de leur poste  
 
-L´attribution se faisait grâce à un arbre qui testait un certain nombre de conditions. On a remarqué que cette méthode présentait des limites donc on utilise un maintenant un diagramme d´états pour avoir un meilleur contrôle des transitions de poste.  
+Tout d'abord l´attribution se faisait grâce à un arbre qui testait un certain nombre de conditions. On a remarqué que cette méthode présentait des limites donc on utilise un maintenant un diagramme d´états pour avoir un meilleur contrôle des transitions de poste. Ainsi, on contrôle les transitions beaucoup plus facilement et donc la stratégie est plus efficace. 
 
-Une autre amélioration sera de prendre en compte l'autoreferee et donc de pouvoir réaliser de vrais matchs. De plus, on pourra adapter la stratégie en fonction du score et du temps restant.  
+Une amélioration possible serait d'adapter la stratégie en fonction du score et du temps restant.  
 
-### Passe en profondeur  
-#### Caractérisation du kicker  
+### Passes  
+#### Méthode   
+Pour le moment, les passes se font toujours avec le passeur en position statique. Au moment de l'orientation du passeur, on regarde l'angle entre le passeur, le receveur et le but. Si cet angle est inférieur à $pi/2$
+
+#### Passes en profondeur
+##### Caractérisation du kicker  
 Recherche d'une relation entre la distance parcourue par la balle et la puissance envoyée au kicker sur le simulateur :  
 Sur le simulateur, on a mesuré la distance parcourue pour 20 valeurs de puissances différentes, en répétant la mesure 5x pour observer s'il y avait de la dispersion.  
 <img src="img/passe_profondeur.gif" width="60%">   
