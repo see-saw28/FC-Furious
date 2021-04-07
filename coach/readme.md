@@ -23,5 +23,7 @@ Si une manette est détectée:
 * CROIX : relance les robots
 * R1 : but pour les jaunes
 * L1 : but pour les bleus
+* R2 : engagement pour les jaunes
+* L2 : engagement pour les bleus
 * OPTIONS : reset match
 * flèche du bas : arrêt du programme python
