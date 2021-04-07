@@ -205,7 +205,8 @@ Cette fois ci, l'entraînement est beaucoup plus important, il a fallu réaliser
 
 ## Simulateur  
 Prise en compte de :
-Detection des buts
-Engagement
-Côtés des équipes
-Utilisation d'une manette de PS4 pour contrôler les faits de matchs
+* Detection des buts
+* Score du match
+* Engagement
+* Côtés des équipes
+* Utilisation d'une manette de PS4 pour contrôler les faits de matchs (coup d'envoi, buts, engagements, arrêts du jeu)
