@@ -450,6 +450,8 @@ class Coach():
                     adv=adversaires[0]
                 pos_adv=adv.positionc
                 placement=(pos_adv+complex(self.but[0],self.but[1]))/2
+                if abs(placement-joueur.goto)>200:
+                    print('chgt')
                 joueur.goto=placement
                 joueur.commande_position(joueur.goto.real,joueur.goto.imag,pos_adv.real,pos_adv.imag)
                 joueur.defPoste('DEF2')
