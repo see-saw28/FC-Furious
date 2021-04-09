@@ -1,5 +1,7 @@
 # Partie Coach
-
+##  A faire  
+Améliorer défense  
+Chgt de postes défensifs : inversion du gardien
 ## Commandes élémentaires :
 * Commande en position avec une orientation par rapport à un point
 * Passe (statique)
