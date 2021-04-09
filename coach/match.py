@@ -188,20 +188,24 @@ class Balle():
         self.x=x
         self.y=y
         self.potentiel=pt.Potentiel(-3,[self.x,self.y],p.x_grid,p.y_grid,2500) 
-        self.position=complex(x,y)
+        self.positionc=complex(x,y)
         self.x10=[x]
         self.y10=[y]
+        self.t10=[0]
         
     def Position(self,ball): 
-        self.x,self.y=ball[6],ball[7]
-        self.position=complex(self.x,self.y)
+        self.x,self.y,t=ball[6],ball[7],ball[1]
+        self.positionc=complex(self.x,self.y)
         self.potentiel=pt.Potentiel(-3,[self.x,self.y],p.x_grid,p.y_grid,2500) #potentiel négatif pour attirer les robots
         
         if len(self.x10)>9:
             self.x10.pop(0)
             self.y10.pop(0)
+            self.t10.pop(0)
         self.x10.append(self.x) #on enregistre les 10 dernieres positions de la balle
         self.y10.append(self.y)
+        self.t10.append(t)
+        
             
         
             
@@ -213,6 +217,14 @@ class Balle():
             vect_balle=-vect_balle
         return vect_balle
         
+    def vitesse(self):
+        dt=self.t10[-1]-self.t10[0]
+        if dt!=0:
+            dx=self.x10[-1]-self.x10[0]
+            dy=self.y10[-1]-self.y10[0]
+            dl=np.sqrt(dx**2+dy**2)
+            
+            return dl/dt
     
 
    

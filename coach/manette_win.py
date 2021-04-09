@@ -137,7 +137,7 @@ def refresh(match):
         	hat[event.hat] = event.value
         
     #fleche du bas pour arreter le programme
-    quit = hat[HAT_1][1]==-1
+    quit = button[BUTTON_TRIANGLE]
     
     #carré pour stoper le match
     if (button[BUTTON_SQUARE]) & (not(stop)):
@@ -214,7 +214,7 @@ def controle():
     vt=-axis[AXIS_LEFT_STICK_Y]
     
     #VITESSE ANGULAIRE
-    va=-axis[AXIS_RIGHT_STICK_X]
+    va=axis[AXIS_RIGHT_STICK_X]
     
     return vn,vt,va*5
     

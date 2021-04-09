@@ -81,7 +81,8 @@ if __name__ == "__main__":
         
     #%% Connexion à la vision
     
-    vision = psl.SSLVisionClient(ip='224.5.23.2', port=10020)
+    # vision = psl.SSLVisionClient(ip='224.5.23.2', port=10020)
+    vision = psl.SSLVisionClient(ip='224.5.23.2', port=10006)
     vision.connect3()
     
     #%% Connexion simulateur
@@ -116,7 +117,7 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test', vision, sim, communication, disp=2, blueSide='R', start='B')
+    match_test = match.Match('test', vision, sim, communication, disp=0, blueSide='R', start='B')
     match_test.engagement=False
     
     
@@ -127,8 +128,10 @@ if __name__ == "__main__":
     #%%Boucle
     while not quit:
         
+        start=time.time()
         #test interruption crtl+C pour arrêter tous les robots
         try:
+            
             
             if match_test.disp>0:
                 fig.canvas.restore_region(axbackground)  
@@ -141,7 +144,7 @@ if __name__ == "__main__":
             if match_test.stop:
                 match_test.Vision()
                 Vnorm,Vtang,Vang=m.controle()
-                match_test.blue.joueurs[0].commande_robot(Vtang, Vnorm, Vang)
+                match_test.yellow.joueurs[0].commande_robot(Vtang, Vnorm, Vang)
                 
             
                 
@@ -156,7 +159,8 @@ if __name__ == "__main__":
                 
                 #asservissement du robot en position ou chaser
                 # match_test.blue.joueurs[0].commande_balle() 
-                match_test.blue.joueurs[0].commande_position(500,500,0,0)
+                match_test.yellow.joueurs[0].commande_position(500,500,0,0)
+                # match_test.blue.joueurs[0].commande_robot(0, -0.1, 0)
                 
             
             
@@ -186,10 +190,15 @@ if __name__ == "__main__":
             #     joueur.commande_robot(0,0,0)
             break
         
+        print(time.time()-start)
     #%%Arrêt du programme
     
     for joueur in match_test.joueurs:
         joueur.commande_robot(0,0,0)
+        
+        # joueur.commande_robot(0,0,0)
+        # joueur.commande_robot(0,0,0)
+        # joueur.commande_robot(0,0,0)
     
     #ferme la fenetre pyplot
     plt.close("all")

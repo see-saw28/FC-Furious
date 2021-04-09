@@ -108,7 +108,7 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test', vision, sim, communication, disp=0, blueSide='R', start='B')
+    match_test = match.Match('test', vision, sim, communication, disp=0, blueSide='L', start='B')
     match_test.engagement=manette
     
     
@@ -156,6 +156,10 @@ if __name__ == "__main__":
                 match_test.yellow.changementDePoste()
                 match_test.yellow.action()
                 
+                # #Controle des jaunes
+                # match_test.yellow.joueurs[0].defPoste('DEF3')
+                # match_test.yellow.joueurs[1].defPoste('GOAL')
+                # match_test.yellow.action()
                 
             
             #affichage des FPS

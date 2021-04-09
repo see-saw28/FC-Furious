@@ -167,7 +167,7 @@ class Game:
         cases.remove(mate)
         xm,ym=self.position_to_xy(mate[0], mate[1])
         
-        other_cases=[(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6)]
+        other_cases=[(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6),(8,1)(8,7)]
         for case in other_cases:
             if case in cases:
                 cases.remove(case)

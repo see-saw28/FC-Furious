@@ -94,7 +94,7 @@ class Robot():
         
     ##Ancienne version
     # def hasTheBall(self):
-    #     pos_ball=self.match.balle.position
+    #     pos_ball=self.match.balle.positionc
     #     pos_rob=self.positionc
     #     pos_vitual=pos_rob+complex(r_robot*np.cos(self.orientation),r_robot*np.sin(self.orientation))
     #     distance,phi=c.polar(pos_vitual-pos_ball)
@@ -106,7 +106,7 @@ class Robot():
     
     #Permet de savoir si le robot a la balle
     # def hasTheBall(self):
-    #     pos_ball=self.match.balle.position
+    #     pos_ball=self.match.balle.positionc
     #     pos_rob=self.positionc
         
     #     distance,phi=c.polar(pos_ball-pos_rob)
@@ -126,7 +126,7 @@ class Robot():
         
         # global ax
         # ax.clear()
-        pos_ball=self.match.balle.position
+        pos_ball=self.match.balle.positionc
         pos_rob=self.positionc
         
         theta=self.orientation
@@ -137,7 +137,8 @@ class Robot():
         x1=np.cos(theta)*vect_ball.real+np.sin(theta)*vect_ball.imag
         y1=-np.sin(theta)*vect_ball.real+np.cos(theta)*vect_ball.imag
         # print(x1,y1)
-        if (x1<10)and(abs(y1)<45):
+        if (x1<10)and(abs(y1)<45)and(x1>-50):
+            # print(x1,y1)
             return True
         else :
             return False
@@ -187,7 +188,7 @@ class Robot():
         self.goto=complex(x,y)
         position_arrivee=match.Balle(x,y)     
         
-        vecteur=position_arrivee.position-self.positionc
+        vecteur=position_arrivee.positionc-self.positionc
         distance,phi=c.polar(vecteur)
         
         o=c.polar(complex(xo,yo)-self.positionc)[1]
@@ -203,16 +204,17 @@ class Robot():
         for robot in self.match.joueurs:
             if robot!=self:
                 distance_autres_joueurs.append(self.distanceToXY(robot.positionc))
-                distance_autres_joueurs_balle.append(robot.distanceToXY(position_arrivee.position))
+                distance_autres_joueurs_balle.append(robot.distanceToXY(position_arrivee.positionc))
         
         
         
         #si l'objectif est proche mais un autre robot aussi alors on fait abstraction des champs repulsifs
         if (min(distance_autres_joueurs)>distance) & (min(distance_autres_joueurs_balle)<300) & (distance<300) :
-            
-            self.commande_robot(p.K_proche*np.cos(phi-self.orientation), p.K_proche*np.sin(phi-self.orientation), vitesse_angulaire,spinner=(balle or spin))
-            
-        
+            if self.poste[-1]!='GOAL':
+                self.commande_robot(p.K_proche*np.cos(phi-self.orientation), p.K_proche*np.sin(phi-self.orientation), vitesse_angulaire,spinner=(balle or spin))
+            else:
+                self.commande_robot(0.6*p.K_max*np.cos(phi-self.orientation), 0.6*p.K_max*np.sin(phi-self.orientation), vitesse_angulaire,spinner=(balle or spin))
+                
             return 'EN COURS'
         
         elif (abs(distance)>35)|(abs(delta)>0.05):
@@ -323,6 +325,12 @@ class Robot():
         
     #Commande pour orienter les deux joueurs face à face avant une passe puis passe
     def Passe(self):
+        if not self.hasTheBall():
+            print('fuck')
+            self.defPoste('WAIT')
+            return 'EN COURS'
+        else:
+            pass
         #calcul vecteur directeur entre le receveur et le passeur
         passeur=self.positionc
         mate=self.teammate()
@@ -375,7 +383,7 @@ class Robot():
                 puissance=self.puissanceKicker(distance)+1
             #passe
             self.commande_robot(0, 0, 0,tir=puissance)
-            mate.origine_passe=self.match.balle.position
+            mate.origine_passe=self.match.balle.positionc
             print('Passe')
             self.defPoste('DEMARQUE')
             self.teammate().defPoste('RECEVEUR')
@@ -397,10 +405,10 @@ class Robot():
         direction=receveur-passeur
         distance,phi=c.polar(direction)
         
-    
-        
+        ballon=self.match.balle
+        vitesse_balle=ballon.vitesse()
         #vecteur directeur de la balle
-        vect_balle=self.match.balle.trajectoire()
+        vect_balle=ballon.trajectoire()
         d,o_balle=c.polar(vect_balle)
         
         #Angle entre le vecteur entre les deux robots et le vecteur de la balle
@@ -420,7 +428,7 @@ class Robot():
         #passe effectuée
         if (self.teammate().poste[-1]!='PASSEUR'):
             #Si on observe un trop gros écart angulaire alors la passe a rebondit ou elle est ratée
-            if (abs(omega)>1.4)&(np.sqrt(((self.match.balle.x10[0]-self.match.balle.x10[-1])**2+(self.match.balle.y10[0]-self.match.balle.y10[-1])**2))>200):
+            if ((abs(omega)>1.0)&(vitesse_balle>200)) or ((vitesse_balle<100)&(mate.distanceToXY(ballon.positionc)>300)):
                 self.defPoste('WAIT')
                 
             
@@ -493,7 +501,7 @@ class Robot():
      
         
     #Commande pour se placer en tant que gardien entre le balle et le but tout en respectant la surface    
-    def goal(self):
+    def goal(self,objectif=None):
         if self.match.blue.nom==self.team:
             team=self.match.blue
         else:
@@ -509,25 +517,28 @@ class Robot():
             xg=900
             y=0
             
-        
-        balle=self.match.balle
+        if type(objectif).__name__=='Robot':
+            balle=objectif
+        else:
+            balle=self.match.balle
         
         a,b=np.polyfit([balle.x,x],[balle.y,y],1)
         
         #interception
-        vect=balle.position-self.positionc
-        vect_but=balle.position-complex(x,y)
-        dist=vect-(vect.real*vect_but.real+vect.imag*vect_but.imag)*vect_but/(abs(vect_but)**2)
+        vect=balle.positionc-self.positionc
+        vect_but=balle.positionc-complex(x,y)
+        scalaire=(vect.real*vect_but.real+vect.imag*vect_but.imag)
+        dist=vect-scalaire*vect_but/(abs(vect_but)**2)
         self.interception=dist
         # print(a,vect_but,vect_but/abs(vect_but),dist)
         
-        if abs(dist)<p.r_robot:
+        if (abs(dist)<p.r_robot) or (scalaire<0):
         #position but
             yg=a*xg+b
             if abs(yg)>440:
                 yg=np.sign(yg)*400
                 xg=(yg-b)/a
-            # distance,phi=c.polar(balle.position-complex(x,y))
+            # distance,phi=c.polar(balle.positionc-complex(x,y))
             
             self.goto=complex(xg,yg)
             
@@ -602,6 +613,7 @@ class Robot():
         print(chaine_commande)
         for charactere in chaine_commande:
                 self.com.write(str.encode(charactere))
+        # time.sleep(0.05)
         return chaine_commande
     
     def commande_robot(self,Vtang,Vnorm,Vang,spinner=True,tir=0):
@@ -618,4 +630,5 @@ class Robot():
         if self.com:
             # start=time.time()
             self.commande_com(self.id,Vtang,Vnorm,Vang,spinner,tir)
+            # time.sleep(0.05)
             # print(time.time()-start)
