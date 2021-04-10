@@ -1,7 +1,7 @@
 # Partie Coach
 ##  A faire  
 Améliorer défense  
-Chgt de postes défensifs : inversion du gardien
+
 ## Commandes élémentaires :
 * Commande en position avec une orientation par rapport à un point
 * Passe (statique)
@@ -107,6 +107,14 @@ Ainsi, grâce à cette formule, on peut doser précisement les passes en profond
 Pour ce sortir de situation avec un marquage aggressif ie DEF1 pour notre coach, on réalise une passe lobée si un joueur se situe entre les deux attaquants.
 ### Reception   
 Lorsque la passe est effectuée, le receveur passe en mode "reception", c'est à dire qu'on adapte sa position en fonction de la trajectoire de la balle pour assurer la reception.
+
+## Défense
+### Changements de poste   
+Inversion des postes GOAL et DEF2 lorsque les attaquants font une passe car le DEF2 est déjà positionné entre le but et le receveur.
+
+### Stratégies 'cheatées' 
+* DEF1 rend totalement impossible les passes si les passes lobées sont interdites
+* DEF3 + GOAL : 2 joueurs devant la surface qui bloquent toute possibilité de tir adverse
 
 --------------
 ## Intelligence artificielle
