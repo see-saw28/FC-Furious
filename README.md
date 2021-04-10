@@ -2,7 +2,8 @@
 ##  A faire  
 Améliorer défense    
 DEF3 à revoir  
-chgt de postes à peaufiner
+chgt de postes à peaufiner  
+attribution du poste défensive à voir aussi
 ## Commandes élémentaires :
 * Commande en position avec une orientation par rapport à un point
 * Passe (statique)
