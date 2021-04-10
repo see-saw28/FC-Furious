@@ -1,9 +1,15 @@
 # Partie Coach
 ##  A faire  
 Améliorer défense    
-DEF3 à revoir  
-chgt de postes à peaufiner  
-attribution du poste défensive à voir aussi
+-DEF3 à revoir  
+-chgt de postes à peaufiner  
+-attribution du poste défensive à voir aussi  
+
+bug attaque  
+-freeze joueur  
+-goto hors des limites
+
+
 ## Commandes élémentaires :
 * Commande en position avec une orientation par rapport à un point
 * Passe (statique)
