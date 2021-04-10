@@ -4,10 +4,14 @@ Améliorer défense
 -DEF3 à revoir  
 -chgt de postes à peaufiner  
 -attribution du poste défensive à voir aussi  
+-def2 dans la surface
 
 bug attaque  
 -freeze joueur  
--goto hors des limites
+-goto hors des limites  
+-dribble et demarquage le long de la ligne de but  
+
+surface repulsive  
 
 
 ## Commandes élémentaires :
