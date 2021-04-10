@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Sat Apr 10 12:24:29 2021
+
+@author: psl
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Apr  2 16:55:40 2021
 
 @author: psl
@@ -108,8 +116,8 @@ if __name__ == "__main__":
          1 : affichage dans un plot des status des robots
          2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-    match_test = match.Match('test', vision, sim, communication, disp=2, blueSide='L', start='B')
-    match_test.engagement=manette
+    match_test = match.Match('test', vision, sim, communication, disp=0, blueSide='L', start='B')
+    match_test.engagement=False
     
     
     if match_test.disp>0:
@@ -149,17 +157,17 @@ if __name__ == "__main__":
                 match_test.Vision()
                 
                 #Controle des bleus
-                match_test.blue.changementDePoste()
-                match_test.blue.action()
+                match_test.blue.joueurs[0].PasseLob()
+                match_test.blue.joueurs[1].reception()
                 
                 #Controle des jaunes
-                match_test.yellow.changementDePoste()
-                match_test.yellow.action()
-                
-                # # #Controle des jaunes
-                # match_test.yellow.joueurs[0].defPoste('DEF1')
-                # match_test.yellow.joueurs[1].defPoste('GOAL')
+                # match_test.yellow.changementDePoste()
                 # match_test.yellow.action()
+                
+                # #Controle des jaunes
+                match_test.yellow.joueurs[0].defPoste('DEF1')
+                match_test.yellow.joueurs[1].defPoste('GOAL')
+                match_test.yellow.action()
                 
             
             #affichage des FPS

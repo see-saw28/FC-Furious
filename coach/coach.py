@@ -23,6 +23,7 @@ class Coach():
         self.nom=couleur
         self.baller=None
         self.passe=False
+        self.lob=False
         self.ia=ia.Agent('ia8')
         self.dmq=dmq.Agent('dmq6')
        
@@ -81,7 +82,7 @@ class Coach():
                                 # print(defense)
                                 if defense<0:
                                     joueur.defPoste('DEF')
-                                elif defense < 0.3:
+                                elif defense < 0.6:
                                     joueur.defPoste('DEF1')
                                 elif defense < 1:
                                     joueur.defPoste('DEF2')
@@ -183,9 +184,13 @@ class Coach():
                             joueur.teammate().defPoste('RECEVEUR')
                             
                     elif not self.openPasse():
+                        alea=random.random()
                         print('here3')
-                        joueur.defPoste('DRIBBLE')
-                        joueur.status='DONE'
+                        if alea<0.5:
+                            joueur.defPoste('DRIBBLE')
+                            joueur.status='DONE'
+                        else :
+                            joueur.defPoste('LOB')
             
             elif joueur.poste[-1]=='SHOOTER':
                 if not ball:
@@ -231,29 +236,31 @@ class Coach():
             elif (joueur.poste[-1]=='PASSEUR') : #procédure avant la passe
                 if not ball:
                     joueur.defPoste('WAIT')
-                elif not self.openPasse():
-                    joueur.defPoste('ATT')
+                  
                 
+                elif not self.openPasse(): #dans ce cas, il faut determiner ce qu'on doit faire
+                    print('passe impossible => lob')
                     
-                
-                if not self.openPasse(): #dans ce cas, il faut determiner ce qu'on doit faire
-                    print('passe impossible')
-                    joueur.status='DONE' 
-                    joueur.defPoste('DRIBBLE')
-                    joueur.teammate().defPoste('DEMARQUE')
+                    joueur.defPoste('LOB')
                     
-                
+                    
+            elif (joueur.poste[-1]=='LOB') : #procédure avant la passe
+                if not ball:
+                    joueur.defPoste('WAIT')
+                   
             
             elif (joueur.poste[-1]=='RECEVEUR'): #procédure pendant la passe pour ajuster la position du receveur
-                if ball:    
-                    if baller.team!=self.nom:
-                            joueur.defPoste('WAIT')
-                    elif baller==joueur:
-                        joueur.defPoste('ATT')
-                            
-                # if joueur.distanceToXY(balle.positionc)<200:
-                #     joueur.defPoste('CHASER')
-                #     joueur.teammate().defPoste('DEMARQUE')
+                if not self.lob: 
+                    if ball:    
+                        if baller.team!=self.nom:
+                                joueur.defPoste('WAIT')
+                        elif baller==joueur:
+                            joueur.defPoste('ATT')
+                else: 
+                    self.lob=False
+                    if joueur.distanceToXY(balle.positionc)<200:
+                        joueur.defPoste('CHASER')
+                        joueur.teammate().defPoste('DEMARQUE')
             
             elif joueur.poste[-1]=='CHASER':
                 if ball:        
@@ -422,7 +429,10 @@ class Coach():
             elif (joueur.poste[-1]=='PASSEUR') : #procédure avant la passe
                 joueur.status=joueur.Passe()
                 joueur.defPoste('PASSEUR')
-                
+            
+            elif (joueur.poste[-1]=='LOB') : #procédure avant la passe
+                joueur.status=joueur.PasseLob()
+                joueur.defPoste('LOB')
             
             elif (joueur.poste[-1]=='RECEVEUR') : #procédure pendant la passe pour ajuster la position du receveur
                 joueur.defPoste('RECEVEUR')    
@@ -541,9 +551,12 @@ class Coach():
     
     def openPasse(self):
         passe=True
-        a,b=np.polyfit([self.joueurs[0].goto.real,self.joueurs[1].goto.real],[self.joueurs[0].goto.imag,self.joueurs[1].goto.imag],1)
+        x1,y1=self.joueurs[0].goto.real,self.joueurs[0].goto.imag
+        x2,y2=self.joueurs[1].goto.real,self.joueurs[1].goto.imag
+        
+        a,b=np.polyfit([x1,x2],[y1,y2],1)
         for robot in self.joueurs[0].opponents():
-            if robot.distance_droite(a,b)<p.r_robot:
+            if ((robot.distance_droite(a,b)<1.2*p.r_robot) and (((robot.x<max(x1,x2))and(robot.x>min(x1,x2))) or ((robot.y<max(y1,y2))and(robot.y>min(y1,y2))))):
                 passe=False
                 break
         return passe
