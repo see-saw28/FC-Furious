@@ -11,7 +11,7 @@ bug attaque
 -goto hors des limites  
 -dribble et demarquage le long de la ligne de but  
 
-surface repulsive  
+surface repulsive sauf si la balle est statique dedans  
 
 
 ## Commandes élémentaires :
