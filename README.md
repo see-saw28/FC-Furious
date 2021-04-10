@@ -103,7 +103,8 @@ A gauche, on observe la fonction approximée calculée. Dont voici, la formule :
 Puissance=0.05249286*(distance-140)<sup>1/2</sup>  
 
 Ainsi, grâce à cette formule, on peut doser précisement les passes en profondeur.
-
+### Passe lobée  
+Pour ce sortir de situation avec un marquage aggressif ie DEF1 pour notre coach, on réalise une passe lobée si un joueur se situe entre les deux attaquants.
 ### Reception   
 Lorsque la passe est effectuée, le receveur passe en mode "reception", c'est à dire qu'on adapte sa position en fonction de la trajectoire de la balle pour assurer la reception.
 
