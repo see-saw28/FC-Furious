@@ -16,7 +16,7 @@ import parametres as p
 
 class Match():
     
-    def __init__(self,nom,vision,grSim,com,blueSide='L',start='B',disp=0):
+    def __init__(self,nom,vision,grSim,com,controlledTeams='B',blueSide='L',start='B',disp=0):
         self.nom=nom
         Y0=rbt.Robot('Y',0,self,grSim,com)
         Y1=rbt.Robot('Y',1,self,grSim,com)
@@ -27,6 +27,7 @@ class Match():
         self.disp=disp
         self.vision=vision
         self.joueurs=[Y0,Y1,B0,B1]
+        self.controlledTeams=controlledTeams
         self.blueSide=blueSide
         if blueSide=='L':
             yellowSide='R'
@@ -181,6 +182,35 @@ class Match():
         self.score_bleu=0
         self.score_jaune=0
         self.engagement=True
+    
+    def Reset(self):
+        self.Vision()
+        if 'B' in self.controlledTeams:
+            self.blue.reset()
+        if 'Y' in self.controlledTeams:
+            self.yellow.reset()
+        
+    def Engagement(self):
+        self.Vision()
+        if 'B' in self.controlledTeams:
+            self.blue.engagement()
+        if 'Y' in self.controlledTeams:
+            self.yellow.engagement()
+        
+    def Play(self):
+        #Actualisation des positions + detection but 
+        self.Vision()
+        
+        #Controle des bleus
+        if 'B' in self.controlledTeams:
+            self.blue.changementDePoste()
+            self.blue.action()
+        
+        #Controle des jaunes
+        if 'Y' in self.controlledTeams:
+            self.yellow.changementDePoste()
+            self.yellow.action()
+        
     
 class Balle():
     

@@ -102,13 +102,31 @@ if __name__ == "__main__":
         
    #%%Création match
 
-    '''parametre disp :
-        -1 : aucun affichage
-         0 : affichage dans la console des changements de postes
-         1 : affichage dans un plot des status des robots
-         2 : affichage dans un plot du terrain avec les robots et leur status'''
+    '''parametres :
+       -disp :
+           -1 : aucun affichage
+            0 : affichage dans la console des changements de postes
+            1 : affichage dans un plot des status des robots
+            2 : affichage dans un plot du terrain avec les robots et leur status
+         
+        -controlledTeams:
+            'B' to control blue
+            'Y' to control yellow
+            'BY' to control both 
         
-    match_test = match.Match('test', vision, sim, communication, disp=2, blueSide='L', start='B')
+        -blueSide:
+            'L' if blue plays on the left
+            'R' if blue plays on the right
+            
+        -start:
+            'B' if blue engages first
+            'Y' if yellow engages first
+            
+            '''
+         
+    
+        
+    match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='BY', blueSide='L', start='B')
     match_test.engagement=manette
     
     
@@ -118,75 +136,61 @@ if __name__ == "__main__":
 
     #%%Boucle
     while not quit:
+   
+        if match_test.disp>0:
+            fig.canvas.restore_region(axbackground)  
         
-        #test interruption crtl+C pour arrêter tous les robots
-        try:
+        #Lecture des commandes depuis la manette
+        if manette :
+            quit = m.refresh(match_test)
             
-            if match_test.disp>0:
-                fig.canvas.restore_region(axbackground)  
-            
-            #Lecture des commandes deouis la manette
-            if manette :
-                quit = m.refresh(match_test)
-                
-            
-            if match_test.stop:
-                match_test.Vision()
-                match_test.blue.reset()
-                match_test.yellow.reset()
-                
-            elif match_test.engagement:
-                match_test.Vision()
-                match_test.blue.engagement()
-                match_test.yellow.engagement()
-                
-                
-                
-            else: 
-                #MATCH 2V2
-                
-                #Actualisation des positions + detection but 
-                match_test.Vision()
-                
-                #Controle des bleus
-                match_test.blue.changementDePoste()
-                match_test.blue.action()
-                
-                #Controle des jaunes
-                match_test.yellow.changementDePoste()
-                match_test.yellow.action()
-                
-                # # #Controle des jaunes
-                # match_test.yellow.joueurs[0].defPoste('DEF1')
-                # match_test.yellow.joueurs[1].defPoste('GOAL')
-                # match_test.yellow.action()
-                
-            
-            #affichage des FPS
-           
-              
-            
-            if match_test.disp>0:
-                affichage.refresh(match_test,ax,score) 
-                
-                t_list = affichage.t_update(t_list)
-                tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
-                # print(tx)     
-                text.set_text(tx)
-                ax.draw_artist(text)
-                
-                #actualisation du plot
-                fig.canvas.blit(ax.bbox)
-                fig.canvas.flush_events()
+        
+        if match_test.stop:
+            match_test.Reset()
             
             
-                
-                
-        except KeyboardInterrupt :#mise à zéro de tous les robots lors de l'interruption du programme
-            print('INTERRUPTION')
-            # for joueur in match_test.joueurs:
-            #     joueur.commande_robot(0,0,0)
-            break
+        elif match_test.engagement:
+            match_test.Engagement()
+            
+
+        else: 
+            #MATCH 2V2
+            match_test.Play()
+            
+            
+            # #Actualisation des positions + detection but 
+            # match_test.Vision()
+            
+            # #Controle des bleus
+            # match_test.blue.changementDePoste()
+            # match_test.blue.action()
+            
+            # #Controle des jaunes
+            # match_test.yellow.changementDePoste()
+            # match_test.yellow.action()
+            
+            # # #Controle des jaunes
+            # match_test.yellow.joueurs[0].defPoste('DEF1')
+            # match_test.yellow.joueurs[1].defPoste('GOAL')
+            # match_test.yellow.action()
+            
+          
+        
+        if match_test.disp>0:
+            affichage.refresh(match_test,ax,score) 
+            
+            t_list = affichage.t_update(t_list)
+            tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
+            # print(tx)     
+            text.set_text(tx)
+            ax.draw_artist(text)
+            
+            #actualisation du plot
+            fig.canvas.blit(ax.bbox)
+            fig.canvas.flush_events()
+        
+
+        
         
     #%%Arrêt du programme
     
