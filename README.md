@@ -10,6 +10,7 @@ bug attaque
 -freeze joueur  
 -goto hors des limites  
 -dribble et demarquage le long de la ligne de but  
+-passeur  
 
 surface repulsive sauf si la balle est statique dedans  
 
