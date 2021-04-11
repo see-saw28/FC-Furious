@@ -374,6 +374,11 @@ class Coach():
         balle=self.joueurs[0].match.balle
         for joueur in self.joueurs:
             # print(joueur.poste)
+            change_pos=False
+            for player in joueur.opponents():
+                if abs(joueur.goto-player.positionc)<200:
+                    change_pos=True
+                    break
             if joueur.poste[-1]=='SHOOTER':
                 joueur.status=joueur.Tir()
                 joueur.defPoste('SHOOTER')
@@ -392,7 +397,7 @@ class Coach():
                         joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
                     joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y,spin=True)
                  
-                elif (joueur.status=='DONE')&(not self.openGoal(joueur)): #calcul d'une nouvelle position 
+                elif ((joueur.status=='DONE')&(not self.openGoal(joueur)))or(change_pos): #calcul d'une nouvelle position 
                     field=joueur.create_game()
                     final_pos_joueur,score_joueur,fail,_=ia.play_game_3(agent=self.ia,game=field)
                     if self.side=='L': #l'ia est entrainée que sur un coté donc on doit flip la position
@@ -411,7 +416,7 @@ class Coach():
             
             
             elif joueur.poste[-1]=='DRIBBLE': #commande vers la position calcuée
-                 if (joueur.status=='DONE')&(not self.openGoal(joueur)): #calcul d'une nouvelle position 
+                 if ((joueur.status=='DONE')&(not self.openGoal(joueur)))or(change_pos): #calcul d'une nouvelle position 
                     field=joueur.create_game()
                     final_pos_joueur,score_joueur,fail,_=ia.play_game_3(agent=self.ia,game=field)
                     if self.side=='L': #l'ia est entrainée que sur un coté donc on doit flip la position
@@ -420,9 +425,7 @@ class Coach():
                         joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
 
                  joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, self.but_adversaire[0],self.but_adversaire[1],spin=True)
-                
-                 
-                
+
                 
                  joueur.defPoste('DRIBBLE')
             
@@ -470,28 +473,7 @@ class Coach():
                 joueur.defPoste('DEF1')
                 
             elif joueur.poste[-1]=='DEF2':#placement entre le 2è attaquant et le but, orienté vers lui
-                adversaires=joueur.opponents()
-                distance1=adversaires[0].distanceToXY(balle.positionc)
-                distance2=adversaires[1].distanceToXY(balle.positionc)
-                if distance1<distance2:
-                    adv=adversaires[1]
-                else:
-                    adv=adversaires[0]
-                pos_adv=adv.positionc
-                placement=(pos_adv+complex(self.but[0],self.but[1]))/2
-                
-                a,b=np.polyfit([balle.x,self.but_adversaire[0]],[balle.y,self.but_adversaire[1]],1)
-                d1=joueur.distance_droite(a, b)
-                d2=joueur.teammate().distance_droite(a, b)
-                if (d1<d2) & (not(joueur.match.engagement)):
-                    print('chgt')
-                    joueur.defPoste('GOAL')
-                    joueur.teammate().goto=placement
-                    joueur.teammate().defPoste('DEF2')
-                else:
-                    joueur.goto=placement
-                    joueur.commande_position(joueur.goto.real,joueur.goto.imag,pos_adv.real,pos_adv.imag)
-                    joueur.defPoste('DEF2')
+                joueur.def2(self.but_adversaire,self.but,balle)
             
             elif joueur.poste[-1]=='DEF3':#placement entre le 2è attaquant et le but, orienté vers lui
                 adversaires=joueur.opponents()

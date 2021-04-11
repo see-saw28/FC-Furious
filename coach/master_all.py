@@ -126,7 +126,7 @@ if __name__ == "__main__":
          
     
         
-    match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='BY', blueSide='L', start='B')
+    match_test = match.Match('test', vision, sim, communication, disp=-1, controlledTeams='BY', blueSide='L', start='B')
     match_test.engagement=manette
     
     

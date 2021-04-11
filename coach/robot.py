@@ -480,13 +480,19 @@ class Robot():
         if self.orientation_but:
             #calcul de l'angle passeur-receveur-but
             but_adv=self.myTeam().but_adversaire
-            
+        
+        #test si la balle est derriere le receveur
+        vecteur1=ballon.positionc-receveur
+        vecteur2=-direction
+        dot=vecteur1.real*vecteur2.real+vecteur1.imag*vecteur2.imag
+        # print(dot)
+        
         
         #passe effectuée
         if (self.teammate().poste[-1] not in ['PASSEUR','LOB']):
             passeur_no_balle=mate.distanceToXY(ballon.positionc)>300
             #Si on observe un trop gros écart angulaire alors la passe a rebondit ou elle est ratée
-            if ((abs(omega)>1.0)&(vitesse_balle>300)&passeur_no_balle) or ((vitesse_balle<100)&passeur_no_balle):
+            if ((abs(omega)>1.0)&(vitesse_balle>300)&passeur_no_balle) or ((vitesse_balle<100)&passeur_no_balle) or (dot<0):
                 self.defPoste('WAIT')
                 
             
@@ -575,38 +581,93 @@ class Robot():
             xg=900
             y=0
             
-        if type(objectif).__name__=='Robot':
-            balle=objectif
+        if type(objectif)==complex:
+            balleX=objectif.real
+            balleY=objectif.imag
+            balleC=objectif
         else:
             balle=self.match.balle
+            balleX=balle.x
+            balleY=balle.y
+            balleC=balle.positionc
         
-        a,b=np.polyfit([balle.x,x],[balle.y,y],1)
-        
+        a,b=np.polyfit([balleX,x],[balleY,y],1)
+            
         #interception
-        vect=balle.positionc-self.positionc
-        vect_but=balle.positionc-complex(x,y)
+        vect=balleC-self.positionc
+        vect_but=balleC-complex(x,y)
+        
         scalaire=(vect.real*vect_but.real+vect.imag*vect_but.imag)
         dist=vect-scalaire*vect_but/(abs(vect_but)**2)
         self.interception=dist
         # print(a,vect_but,vect_but/abs(vect_but),dist)
         
+        
+        yg=a*xg+b
+        if abs(yg)>440:
+            yg=np.sign(yg)*480
+            xg=(yg-b)/a
+        # distance,phi=c.polar(balle.positionc-complex(x,y))
+        goal_pos=complex(xg,yg)
         if (abs(dist)<p.r_robot) or (scalaire<0):
         #position but
-            yg=a*xg+b
-            if abs(yg)>440:
-                yg=np.sign(yg)*400
-                xg=(yg-b)/a
-            # distance,phi=c.polar(balle.positionc-complex(x,y))
-            
-            self.goto=complex(xg,yg)
+ 
+            self.goto=goal_pos
             
             
         else:
-            self.goto=self.positionc+dist
+            interception_pos=self.positionc+dist
+            
+            #mix entre position gardien et interception
+            alpha=0.8
+            placement=alpha*interception_pos+(1-alpha)*goal_pos
+            
+            #check surface
+            if (abs(placement.real)>1000-p.r_robot) and (abs(placement.imag)<350+p.r_robot):
+                self.goto=goal_pos
+            else:
+                self.goto=placement
+                
+        if type(objectif)==complex:
+            pass
+        else:
+            self.commande_position(self.goto.real, self.goto.imag, balleX,balleY)
         
-        self.commande_position(self.goto.real, self.goto.imag, balle.x,balle.y)
+    def def2(self,but_adversaire,but,balle):
         
-      
+        #determination de l'adversaire qui a la balle
+        adversaires=self.opponents()
+        distance1=adversaires[0].distanceToXY(balle.positionc)
+        distance2=adversaires[1].distanceToXY(balle.positionc)
+        #le def s'occupe de l'autre
+        if distance1<distance2:
+            adv=adversaires[1]
+        else:
+            adv=adversaires[0]
+        pos_adv=adv.positionc
+        
+        #placement entre le but et l'adversaire
+        placement=(pos_adv+complex(but[0],but[1]))/2
+        
+        #check surface
+        if (abs(placement.real)>1000-p.r_robot) and (abs(placement.imag)<350+p.r_robot):
+            self.goal(pos_adv)
+            placement=self.goto
+            
+        
+        #calcul changement de poste entre le goal et le def par exemple lors d'une passe
+        a,b=np.polyfit([balle.x,but_adversaire[0]],[balle.y,but_adversaire[1]],1)
+        d1=self.distance_droite(a, b)
+        d2=self.teammate().distance_droite(a, b)
+        if (d1<d2) & (not(self.match.engagement)):
+            print('chgt')
+            self.defPoste('GOAL')
+            self.teammate().goto=placement
+            self.teammate().defPoste('DEF2')
+        else:
+            self.goto=placement
+            self.commande_position(self.goto.real,self.goto.imag,pos_adv.real,pos_adv.imag)
+            self.defPoste('DEF2')
         
     #Fonction pour créer les données du terrain (la position des 4 robots) pour alimentier l'ia
     def create_game(self):

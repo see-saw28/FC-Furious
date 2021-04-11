@@ -19,8 +19,8 @@ def init(disp):
     if disp==2:
         fig = plt.figure(figsize=[6,6])
         ax = fig.add_subplot(1, 1, 1)
-        ax.set_xlim(-p.longueur,p.longueur)
-        ax.set_ylim(-p.largeur,p.largeur+500)
+        ax.set_xlim(-p.longueur-500,p.longueur+500)
+        ax.set_ylim(-p.largeur-500,p.largeur+500)
         #tracage des lignes du terrain
         ax.add_artist(lines.Line2D((-p.longueur, +p.longueur), (p.largeur, p.largeur), color = 'green'))
         ax.add_artist(lines.Line2D((-p.longueur, -p.longueur+350, -p.longueur+350,-p.longueur), (-350, -350,350,350), color = 'green'))

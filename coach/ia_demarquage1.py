@@ -1101,7 +1101,7 @@ def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
         if counter>40:
             fail=True
         
-    print('score:',score)
+    # print('score:',score)
     
     #on peut afficher les deplacements du robot
     if disp & (score<8):

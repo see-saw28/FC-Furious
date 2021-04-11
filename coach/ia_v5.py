@@ -784,7 +784,7 @@ def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
         if counter>20:
             fail=True
         
-    print('score:',score)
+    # print('score:',score)
     
     if disp:
         fig=plt.figure()
