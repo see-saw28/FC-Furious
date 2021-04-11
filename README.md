@@ -94,7 +94,6 @@ Pas encore totalement définie.
 &nbsp;
 
 Avant l´attribution se faisait grâce à un arbre qui testait un certain nombre de conditions. On a remarqué que cette méthode présentait des limites donc on utilise un maintenant un diagramme d´états pour avoir un meilleur contrôle des transitions de poste. Ainsi, on contrôle les transitions beaucoup plus facilement et donc la stratégie est plus efficace.   
-
 &nbsp;
 
 Maintenant, le coach réalise 2 actions:  
