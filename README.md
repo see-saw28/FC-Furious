@@ -125,7 +125,8 @@ Lorsque la passe est effectuée, le receveur passe en mode "reception", c'est à
 Inversion des postes GOAL et DEF2 lorsque les attaquants font une passe car le DEF2 est déjà positionné entre le but et le receveur.
 
 ### Goal  
-Celui ci se dirige d'abord sur la ligne balle-but pour bloquer un eventuel tir avant de se positionner devant la surface. Cet enchainement permet d'arrêter quelques tirs en contre attaque.
+Celui ci se dirige d'abord sur la ligne balle-but pour bloquer un eventuel tir avant de se positionner devant la surface. Cet enchainement permet d'arrêter quelques tirs en contre attaque.  
+Gestion de la surface pour ne jamais avoir de goto dedans.
 
 ### Stratégies 'cheatées' 
 * DEF1 rend totalement impossible les passes si les passes lobées sont interdites
