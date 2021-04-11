@@ -46,6 +46,7 @@ class Match():
         self.score_bleu=0
         self.team_engagement=start
         self.engagement=True
+        self.freeze=False
         self.start_pause=time.time()
     
     def __repr__(self):
@@ -156,12 +157,14 @@ class Match():
     
     def Stop(self):
         self.stop=True
+        self.freeze=False
         print('STOP')
 
     def Go(self):
         self.go=True
         self.stop=False
         self.engagement=False
+        self.freeze=False
         print('GO')
         
     def but_jaune(self):
@@ -214,6 +217,18 @@ class Match():
         if 'Y' in self.controlledTeams:
             self.yellow.changementDePoste()
             self.yellow.action()
+            
+    def Freeze(self):
+        print('freeze')
+        self.freeze=True
+        #Controle des bleus
+        if 'B' in self.controlledTeams:
+            self.blue.freeze()
+        
+        #Controle des jaunes
+        if 'Y' in self.controlledTeams:
+            self.yellow.freeze()
+        
         
     
 class Balle():

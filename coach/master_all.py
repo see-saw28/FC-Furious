@@ -126,7 +126,7 @@ if __name__ == "__main__":
          
     
         
-    match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='BY', blueSide='L', start='B')
+    match_test = match.Match('test', vision, sim, communication, disp=2, controlledTeams='BY', blueSide='L', start='B')
     
     
     
@@ -144,18 +144,20 @@ if __name__ == "__main__":
             if manette :
                 quit = m.refresh(match_test)
             
+            if match_test.freeze:
+                pass
             
-            
-            if match_test.stop:
+            elif match_test.stop:
                 match_test.Reset()
-                
+            
                 
             elif match_test.engagement:
                 match_test.Engagement()
+                # print(match_test.blue.openGoal(match_test.blue.joueurs[0]))
                 if (time.time()-match_test.start_pause>5) and (not manette):
                     match_test.Go()
     
-            else: 
+            else : 
                 #MATCH 2V2
                 match_test.Play()
                 
@@ -197,8 +199,7 @@ if __name__ == "__main__":
         
     #%%Arrêt du programme
     
-    for joueur in match_test.joueurs:
-        joueur.commande_robot(0,0,0)
+    match_test.Freeze()
     
     #ferme la fenetre pyplot
     plt.close("all")

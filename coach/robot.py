@@ -361,14 +361,25 @@ class Robot():
             # mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
             delta1=angle_but-mate.orientation
             mate.orientation_but=True
-            if delta1>np.pi:
+            if delta1<-np.pi:
+                delta1+=2*np.pi
+                # print(delta1)
+            elif delta1>np.pi:
                 delta1-=2*np.pi
+                # print(delta1)
+                
             # print(delta1)
         else:    
             #orientation du receveur vers le passeur
             status=self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
             # mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
             delta1=angle-mate.orientation
+            if delta1<-np.pi:
+                delta1+=2*np.pi
+                # print(delta1)
+            elif delta1>np.pi:
+                delta1-=2*np.pi
+                # print(delta1)
             mate.orientation_but=False
         
         
@@ -377,7 +388,7 @@ class Robot():
         # print(status,angle,mate.orientation, delta1)
         
         #Alignement réussi + mate pas trop loin de son ojectif IDEE arrêt lors du changement de signe
-        if (status=='DONE')&(abs(delta1)<1.0):
+        if (status=='DONE')&(abs(delta1)<1.2):
             #ajustement de la puissance en fonction de la position du receveur
             if mate.distanceToXY(mate.goto)>150:
                 puissance=self.puissanceKicker(distance)+0.3
@@ -394,6 +405,7 @@ class Robot():
             return 'DONE'
         
         else :
+            # print(delta1,mate.orientation_but)
             # print('load passe',delta,delta1)
             return 'EN COURS'
     
@@ -566,21 +578,34 @@ class Robot():
         
     #Commande pour se placer en tant que gardien entre le balle et le but tout en respectant la surface    
     def goal(self,objectif=None):
-        if self.match.blue.nom==self.team:
-            team=self.match.blue
-        else:
-            team=self.match.yellow
-            
+        team=self.myTeam()
+        alpha=0.8   
         if team.side=='L':
             x=-1350
             xg=-900
             y=0
+            flip=True
            
         else :
             x=1350
             xg=900
             y=0
+            flip=False
+        
+        #test tir ennemi
+        balle=self.match.balle
+        vect_balle=balle.trajectoire()
+        
+        if flip:
+            y_prediction=balle.y-vect_balle.imag*(x-balle.x)
+            # print('flip going to the left')
+        else:
+            y_prediction=balle.y+vect_balle.imag*(x-balle.x)
             
+        if abs(y_prediction)<175 and balle.vitesse()>800:
+            # print(y_prediction,balle.vitesse())
+            alpha=1
+                
         if type(objectif)==complex:
             balleX=objectif.real
             balleY=objectif.imag
@@ -619,7 +644,7 @@ class Robot():
             interception_pos=self.positionc+dist
             
             #mix entre position gardien et interception
-            alpha=0.8
+            
             placement=alpha*interception_pos+(1-alpha)*goal_pos
             
             #check surface
