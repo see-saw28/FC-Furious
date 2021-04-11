@@ -4,7 +4,7 @@ Améliorer défense
 -DEF3 à revoir  
 -chgt de postes à peaufiner  
 -attribution du poste défensive à voir aussi  
--def2 dans la surface
+
 
 bug attaque  
 -freeze joueur  
