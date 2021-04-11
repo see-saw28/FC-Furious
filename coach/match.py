@@ -9,6 +9,7 @@ import potentiel as pt
 import robot as rbt
 import coach as coach
 import numpy as np
+import time
 
 import parametres as p
 
@@ -45,6 +46,7 @@ class Match():
         self.score_bleu=0
         self.team_engagement=start
         self.engagement=True
+        self.start_pause=time.time()
     
     def __repr__(self):
         return f'{self.nom}'
@@ -127,6 +129,7 @@ class Match():
                 ballex,balley=ball[6],ball[7]
                 if (ballex>1350) and(abs(balley)<175)and self.go:
                     print('but droite')
+                    self.start_pause=time.time()
                     if self.blue.side=='L':
                         self.but_bleu()
                     else:
@@ -134,6 +137,7 @@ class Match():
                         
                 elif (ballex<-1350) and(abs(balley)<175)and self.go:
                     print('but gauche')
+                    self.start_pause=time.time()
                     if self.blue.side=='R':
                         self.but_bleu()
                     else:

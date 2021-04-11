@@ -632,6 +632,21 @@ class Robot():
             pass
         else:
             self.commande_position(self.goto.real, self.goto.imag, balleX,balleY)
+    
+    def def1(self,balle):
+        adversaires=self.opponents()
+        adv1=adversaires[0].positionc
+        adv2=adversaires[1].positionc
+        placement=(adv1+adv2)/2
+        self.goto=placement
+        distance1=adversaires[0].distanceToXY(balle.positionc)
+        distance2=adversaires[1].distanceToXY(balle.positionc)
+        if distance1<distance2:
+            orientation=adv1
+        else:
+            orientation=adv2
+        self.commande_position(self.goto.real,self.goto.imag,orientation.real,orientation.imag)
+        self.defPoste('DEF1')
         
     def def2(self,but_adversaire,but,balle):
         
@@ -668,6 +683,65 @@ class Robot():
             self.goto=placement
             self.commande_position(self.goto.real,self.goto.imag,pos_adv.real,pos_adv.imag)
             self.defPoste('DEF2')
+     
+            
+    def def3(self,but_adversaire,but,balle):
+        
+        #determination de l'adversaire qui a la balle
+        adversaires=self.opponents()
+        distance1=adversaires[0].distanceToXY(balle.positionc)
+        distance2=adversaires[1].distanceToXY(balle.positionc)
+        #le def s'occupe de l'autre
+        if distance1<distance2:
+            adv=adversaires[1]
+        else:
+            adv=adversaires[0]
+        pos_adv=adv.positionc
+        
+        
+        self.goal(pos_adv)
+        placement=self.goto
+            
+        
+        #calcul changement de poste entre le goal et le def par exemple lors d'une passe
+        a,b=np.polyfit([balle.x,but_adversaire[0]],[balle.y,but_adversaire[1]],1)
+        d1=self.distance_droite(a, b)
+        d2=self.teammate().distance_droite(a, b)
+        if (d1<d2) & (not(self.match.engagement)):
+            print('chgt')
+            self.defPoste('GOAL')
+            self.teammate().goto=placement
+            self.teammate().defPoste('DEF3')
+        else:
+            self.goto=placement
+            self.commande_position(self.goto.real,self.goto.imag,pos_adv.real,pos_adv.imag)
+            self.defPoste('DEF3')
+    
+        
+    def def4(self,balle):
+        adversaires=self.opponents()
+        adv1=adversaires[0].positionc
+        adv2=adversaires[1].positionc
+        milieu=(adv1+adv2)/2
+        
+        dU=200*(adv1-adv2)/abs((adv1-adv2))*np.exp(complex(0,np.pi/2))
+        
+        but=complex(self.myTeam().but[0],self.myTeam().but[1])
+        placement1=milieu+dU
+        placement2=milieu-dU
+        
+        if adversaires[0].hasTheBall() or adversaires[1].hasTheBall():
+            
+            if abs(placement1-but)<abs(placement2-but):
+                self.goto=placement1
+            else:
+                self.goto=placement2
+        else:
+            self.goto=milieu
+        
+        self.commande_position(self.goto.real,self.goto.imag,balle.x,balle.y)
+        self.defPoste('DEF4')
+        
         
     #Fonction pour créer les données du terrain (la position des 4 robots) pour alimentier l'ia
     def create_game(self):

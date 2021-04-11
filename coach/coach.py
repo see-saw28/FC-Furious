@@ -82,9 +82,9 @@ class Coach():
                                 # print(defense)
                                 if defense<0:
                                     joueur.defPoste('DEF')
-                                elif defense < 0.6:
+                                elif defense < 0.3:
                                     joueur.defPoste('DEF1')
-                                elif defense < 1:
+                                elif defense < 0.4:
                                     joueur.defPoste('DEF2')
                                 else:
                                     joueur.defPoste('DEF3')
@@ -94,9 +94,9 @@ class Coach():
                                 # print(defense)
                                 if defense<0:
                                     joueur.defPoste('DEF')
-                                elif defense < 0.5:
+                                elif defense < 0.3:
                                     joueur.defPoste('DEF1')
-                                elif defense < 1:
+                                elif defense < 4:
                                     joueur.defPoste('DEF2')
                                 else:
                                     joueur.defPoste('DEF3')
@@ -112,7 +112,7 @@ class Coach():
                             joueur.teammate().defPoste('GOAL')
                         
                         else :
-                            joueur.defPoste('DEF2')
+                            joueur.defPoste('DEF1')
                             joueur.teammate().defPoste('GOAL')
                             
                     # elif (closer==joueur)&(joueur.teammate().poste[-1]!='RECEVEUR'):
@@ -269,7 +269,7 @@ class Coach():
                         joueur.defPoste('ATT')
                         joueur.teammate().defPoste('DEMARQUE')
                     else :
-                        joueur.defPoste('DEF2')
+                        joueur.defPoste('WAIT')
                 #on évite d'avoir les deux robots qui chassent la balle
                 if joueur.teammate().poste[-1]=='CHASER':
             
@@ -329,8 +329,19 @@ class Coach():
                         joueur.teammate().defPoste('DEMARQUE')
                   
                     elif baller.team!=self.nom:
-                        joueur.defPoste('DEF2')
+                        joueur.defPoste('DEF3')
                 elif (closer==joueur)and(balle.vitesse()<200):
+                    joueur.defPoste('CHASER')
+                    
+            elif joueur.poste[-1]=='DEF4':
+                if ball:
+                    if baller==joueur:
+                        joueur.defPoste('ATT')
+                        joueur.teammate().defPoste('DEMARQUE')
+                  
+                    elif baller.team!=self.nom:
+                        joueur.defPoste('DEF4')
+                elif closer==joueur:
                     joueur.defPoste('CHASER')
                     
                 
@@ -458,45 +469,16 @@ class Coach():
                 joueur.defPoste('DEF')   
                 
             elif joueur.poste[-1]=='DEF1':#placement entre les 2 attaquants, orienté vers le plus proche de la balle
-                adversaires=joueur.opponents()
-                adv1=adversaires[0].positionc
-                adv2=adversaires[1].positionc
-                placement=(adv1+adv2)/2
-                joueur.goto=placement
-                distance1=adversaires[0].distanceToXY(balle.positionc)
-                distance2=adversaires[1].distanceToXY(balle.positionc)
-                if distance1<distance2:
-                    orientation=adv1
-                else:
-                    orientation=adv2
-                joueur.commande_position(joueur.goto.real,joueur.goto.imag,orientation.real,orientation.imag)
-                joueur.defPoste('DEF1')
+                joueur.def1(balle)               
                 
             elif joueur.poste[-1]=='DEF2':#placement entre le 2è attaquant et le but, orienté vers lui
                 joueur.def2(self.but_adversaire,self.but,balle)
             
             elif joueur.poste[-1]=='DEF3':#placement entre le 2è attaquant et le but, orienté vers lui
-                adversaires=joueur.opponents()
-                distance1=adversaires[0].distanceToXY(balle.positionc)
-                distance2=adversaires[1].distanceToXY(balle.positionc)
-                if distance1<distance2:
-                    adv=adversaires[1]
-                else:
-                    adv=adversaires[0]
-                pos_adv=adv.positionc
-                placement=(pos_adv+complex(self.but[0],self.but[1]))/2
+                joueur.def3(self.but_adversaire,self.but,balle)
                 
-                a,b=np.polyfit([balle.x,self.but_adversaire[0]],[balle.y,self.but_adversaire[1]],1)
-                d1=joueur.distance_droite(a, b)
-                d2=joueur.teammate().distance_droite(a, b)
-                if False:
-                    print('chgt')
-                    joueur.defPoste('GOAL')
-                    joueur.teammate().goto=placement
-                    joueur.teammate().defPoste('DEF3')
-                else:
-                    joueur.goal(objectif=adv)
-                    joueur.defPoste('DEF3')
+            elif joueur.poste[-1]=='DEF4':#placement entre le 2è attaquant et le but, orienté vers lui
+                joueur.def4(balle) 
                     
             elif joueur.poste[-1]=='TACKLE':
                 joueur.commande_balle()
