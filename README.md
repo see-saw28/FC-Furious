@@ -89,7 +89,7 @@ Visualisation en direct des positions ainsi que les états des robots, plusieurs
 * mode  2: affichage sur un graphique d'une reproduction du terrain 
 
 ## Stratégie:
-Pas encore totalement définie. 
+Pas encore totalement définie.  
 &nbsp;  
 Avant l´attribution se faisait grâce à un arbre qui testait un certain nombre de conditions. On a remarqué que cette méthode présentait des limites donc on utilise un maintenant un diagramme d´états pour avoir un meilleur contrôle des transitions de poste. Ainsi, on contrôle les transitions beaucoup plus facilement et donc la stratégie est plus efficace.   
 &nbsp;  
