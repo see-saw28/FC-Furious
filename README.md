@@ -33,6 +33,7 @@ surface repulsive sauf si la balle est statique dedans
   * DEF : défense passive dans notre terrain
   * DEF1 : placement entre les 2 attaquants pour empêcher les passes
   * DEF2 : placement entre le 2è attaquant et le but
+  * DEF3 : placement entre le 2è attaquant et le but devant la surface
 
 
 Dont voici quelques exemples sur simulateur :  
