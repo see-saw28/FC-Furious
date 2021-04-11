@@ -10,6 +10,7 @@ bug attaque
 -freeze joueur  
 -goto hors des limites  
 -dribble et demarquage le long de la ligne de but  
+-passeur  
 
 surface repulsive sauf si la balle est statique dedans  
 
@@ -34,6 +35,7 @@ surface repulsive sauf si la balle est statique dedans
   * DEF1 : placement entre les 2 attaquants pour empêcher les passes
   * DEF2 : placement entre le 2è attaquant et le but
   * DEF3 : placement entre le 2è attaquant et le but devant la surface
+  * DEF4 : placement pour réaliser interception
 
 
 Dont voici quelques exemples sur simulateur :  
