@@ -67,6 +67,7 @@ def init():
     global opt
     global stop
     global go
+    global freeze
     global controller
     
     pygame.init()
@@ -98,7 +99,7 @@ def init():
     opt=False
     stop=False
     go=False
-    
+    freeze=False
     
     
     
@@ -120,7 +121,7 @@ def refresh(match):
     global opt
     global stop
     global go
-    
+    global freeze
  
 
     
@@ -147,7 +148,12 @@ def refresh(match):
     #croix pour reprendre le match
     if (button[BUTTON_CROSS]) & (not go):
         match.Go()
-    go=button[BUTTON_CROSS]   
+    go=button[BUTTON_CROSS]  
+    
+    #rond pour freeze le match
+    if (button[BUTTON_CIRCLE]) & (not freeze):
+        match.Freeze()
+    freeze = button[BUTTON_CIRCLE] 
     
     #R1 pour but jaune
     if (not (r1 ))& (button[BUTTON_R1]):

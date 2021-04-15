@@ -121,6 +121,7 @@ class Coach():
                     
                     else :
                         joueur.defPoste('DEMARQUE')
+                        joueur.status='DONE'
                         
                 
                     
@@ -178,7 +179,7 @@ class Coach():
                                     joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
                                 joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, self.but_adversaire[0],self.but_adversaire[1],spin=True)
                                 # print(joueur.goto)
-                                print(joueur.goto,4)
+                                print(joueur.id,joueur.goto,4)
                                 joueur.defPoste('DRIBBLE')
                                 
                         else:
@@ -410,7 +411,7 @@ class Coach():
                     else: 
                         joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
                     joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y,spin=True)
-                    print(joueur.goto,3)
+                    print(joueur.id,joueur.goto,3)
                     
                 elif ((joueur.status=='DONE')&(not self.openGoal(joueur)))or(change_pos): #calcul d'une nouvelle position 
                     field=joueur.create_game()
@@ -421,7 +422,7 @@ class Coach():
                     else: 
                         joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
                     joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y,spin=True)
-                    print(joueur.goto,2)
+                    print(joueur.id,joueur.goto,2)
                    
                 else : #la position est déjà calculée donc commande vers la position
                     joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, joueur.teammate().x,joueur.teammate().y,spin=True)
@@ -439,7 +440,7 @@ class Coach():
                         joueur.goto=complex(final_pos_joueur[0],final_pos_joueur[1])
                     else: 
                         joueur.goto=complex(-final_pos_joueur[0],final_pos_joueur[1])
-                    print(joueur.goto,1)
+                    print(joueur.id,joueur.goto,1)
                  joueur.status=joueur.commande_position(joueur.goto.real, joueur.goto.imag, self.but_adversaire[0],self.but_adversaire[1],spin=True)
 
                  
@@ -477,10 +478,10 @@ class Coach():
                 joueur.def1(balle)               
                 
             elif joueur.poste[-1]=='DEF2':#placement entre le 2è attaquant et le but, orienté vers lui
-                joueur.def2(self.but_adversaire,self.but,balle)
+                joueur.def2(self.but,balle)
             
             elif joueur.poste[-1]=='DEF3':#placement entre le 2è attaquant et le but, orienté vers lui
-                joueur.def3(self.but_adversaire,self.but,balle)
+                joueur.def3(self.but,balle)
                 
             elif joueur.poste[-1]=='DEF4':#placement entre le 2è attaquant et le but, orienté vers lui
                 joueur.def4(balle) 

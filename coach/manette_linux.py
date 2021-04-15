@@ -137,7 +137,7 @@ def refresh(match):
         match.Go()
     go = button[BUTTON_CROSS]  
     
-    #croix pour reprendre le match
+    #rond pour freeze le match
     if (button[BUTTON_CIRCLE]) & (not freeze):
         match.Freeze()
     freeze = button[BUTTON_CIRCLE] 

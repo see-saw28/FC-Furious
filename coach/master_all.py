@@ -126,7 +126,7 @@ if __name__ == "__main__":
          
     
         
-    match_test = match.Match('test', vision, sim, communication, disp=2, controlledTeams='BY', blueSide='L', start='B')
+    match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='BY', blueSide='L', start='B')
     
     
     
@@ -174,7 +174,7 @@ if __name__ == "__main__":
                 # match_test.yellow.action()
                 
                 # # #Controle des jaunes
-                # match_test.yellow.joueurs[0].defPoste('DEF1')
+                # match_test.yellow.joueurs[0].defPoste('DEF2')
                 # match_test.yellow.joueurs[1].defPoste('GOAL')
                 # match_test.yellow.action()
                 

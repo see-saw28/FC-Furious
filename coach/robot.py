@@ -673,10 +673,11 @@ class Robot():
         self.commande_position(self.goto.real,self.goto.imag,orientation.real,orientation.imag)
         self.defPoste('DEF1')
         
-    def def2(self,but_adversaire,but,balle):
+    def def2(self,but,balle):
         
         #determination de l'adversaire qui a la balle
         adversaires=self.opponents()
+        mate=self.teammate()
         distance1=adversaires[0].distanceToXY(balle.positionc)
         distance2=adversaires[1].distanceToXY(balle.positionc)
         #le def s'occupe de l'autre
@@ -696,10 +697,14 @@ class Robot():
             
         
         #calcul changement de poste entre le goal et le def par exemple lors d'une passe
-        a,b=np.polyfit([balle.x,but_adversaire[0]],[balle.y,but_adversaire[1]],1)
+        a,b=np.polyfit([balle.x,but[0]],[balle.y,but[1]],1)
         d1=self.distance_droite(a, b)
-        d2=self.teammate().distance_droite(a, b)
-        if (d1<d2) & (not(self.match.engagement)):
+        d2=mate.distance_droite(a, b)
+        v1=balle.positionc-complex(but[0],but[1])
+        v2=balle.positionc-self.positionc
+        dot=v1.real*v2.real+v1.imag*v2.imag
+        # print(dot)
+        if (d1<d2) & (dot>0) & (not(self.match.engagement)):
             print('chgt')
             self.defPoste('GOAL')
             self.teammate().goto=placement
@@ -708,9 +713,10 @@ class Robot():
             self.goto=placement
             self.commande_position(self.goto.real,self.goto.imag,pos_adv.real,pos_adv.imag)
             self.defPoste('DEF2')
+            # print('no')
      
             
-    def def3(self,but_adversaire,but,balle):
+    def def3(self,but,balle):
         
         #determination de l'adversaire qui a la balle
         adversaires=self.opponents()
@@ -729,10 +735,13 @@ class Robot():
             
         
         #calcul changement de poste entre le goal et le def par exemple lors d'une passe
-        a,b=np.polyfit([balle.x,but_adversaire[0]],[balle.y,but_adversaire[1]],1)
+        a,b=np.polyfit([balle.x,but[0]],[balle.y,but[1]],1)
         d1=self.distance_droite(a, b)
         d2=self.teammate().distance_droite(a, b)
-        if (d1<d2) & (not(self.match.engagement)):
+        v1=balle.positionc-complex(but[0],but[1])
+        v2=balle.positionc-self.positionc
+        dot=v1.real*v2.real+v1.imag*v2.imag
+        if (d1<d2) & (dot>0) & (not(self.match.engagement)):
             print('chgt')
             self.defPoste('GOAL')
             self.teammate().goto=placement
