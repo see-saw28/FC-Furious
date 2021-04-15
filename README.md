@@ -126,7 +126,7 @@ Lorsque la passe est effectuée, le receveur passe en mode "reception", c'est à
 
 ## Défense
 ### Changements de poste   
-Inversion des postes GOAL et DEF2 lorsque les attaquants font une passe car le DEF2 est déjà positionné entre le but et le receveur.
+Inversion des postes GOAL et DEF2/3 lorsque les attaquants font une passe car le DEF2/3 est déjà positionné entre le but et le receveur. On regarde la distance entre les joueurs et la droite qui relie la balle et le but. Le joueur le plus proche devient le gardien et l'autre prend son poste.
 
 ### Goal  
 Celui ci se dirige d'abord sur la ligne balle-but pour bloquer un eventuel tir avant de se positionner devant la surface. Cet enchainement permet d'arrêter quelques tirs en contre attaque.  
