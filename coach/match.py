@@ -165,6 +165,10 @@ class Match():
         self.stop=False
         self.engagement=False
         self.freeze=False
+        self.blue.passe = False
+        self.blue.lob = False
+        self.yellow.passe = False
+        self.yellow.lob = False
         print('GO')
         
     def but_jaune(self):
@@ -212,6 +216,7 @@ class Match():
         if 'B' in self.controlledTeams:
             self.blue.changementDePoste()
             self.blue.action()
+            
         
         #Controle des jaunes
         if 'Y' in self.controlledTeams:

@@ -80,31 +80,35 @@ class Coach():
                             if ((self.side=='L')&(balle.x<0))|((self.side=='R')&(balle.x>0)):
                                 # joueur.defPoste('TACKLE')
                                 # joueur.defPoste('DEF')
-                                defense = random.random()
-                                # print(defense)
-                                if defense<0:
-                                    joueur.defPoste('DEF')
-                                elif defense < 0.3:
-                                    joueur.defPoste('DEF1')
-                                elif defense < 0.4:
-                                    joueur.defPoste('DEF2')
-                                else:
-                                    joueur.defPoste('DEF3')
+                                
+                                joueur.goDef(danger=True)
+                                # defense = random.random()
+                                # # print(defense)
+                                # if defense<0:
+                                #     joueur.defPoste('DEF')
+                                # elif defense < 0.3:
+                                #     joueur.defPoste('DEF1')
+                                # elif defense < 0.4:
+                                #     joueur.defPoste('DEF2')
+                                # else:
+                                #     joueur.defPoste('DEF3')
                                 
                             else :
-                                defense = random.random()
-                                # print(defense)
-                                if defense<0:
-                                    joueur.defPoste('DEF')
-                                elif defense < 0.3:
-                                    joueur.defPoste('DEF1')
-                                elif defense < 4:
-                                    joueur.defPoste('DEF2')
-                                else:
-                                    joueur.defPoste('DEF3')
+                                joueur.goDef(danger=False)
+                                
+                                # defense = random.random()
+                                # # print(defense)
+                                # if defense<0:
+                                #     joueur.defPoste('DEF')
+                                # elif defense < 0.3:
+                                #     joueur.defPoste('DEF1')
+                                # elif defense < 4:
+                                #     joueur.defPoste('DEF2')
+                                # else:
+                                #     joueur.defPoste('DEF3')
                                     
                 else :
-                    if (closer.team!=self.nom) & (balle.vitesse()<800):
+                    if (closer.team!=self.nom) & (not self.passe or self.lob):
                         if (self.whoIsTheGoal()==joueur)&(joueur.teammate().poste[-1]!='GOAL'):
                             joueur.defPoste('GOAL')
                     
@@ -114,7 +118,8 @@ class Coach():
                             joueur.teammate().defPoste('GOAL')
                         
                         else :
-                            joueur.defPoste('DEF2')
+                            # joueur.defPoste('DEF2')
+                            joueur.goDef(danger=False)
                             joueur.teammate().defPoste('GOAL')
                             
                     # elif (closer==joueur)&(joueur.teammate().poste[-1]!='RECEVEUR'):
@@ -146,7 +151,7 @@ class Coach():
                     elif not self.openGoal(joueur.teammate()) :
                         # print('here')
                         alea = random.random()
-                        if alea<0.750:
+                        if alea<0.550:
                             field = joueur.create_game()
                             final_pos_joueur,score_joueur,fail,_ = ia.play_game_3(agent=self.ia,game=field)
                             
@@ -196,16 +201,17 @@ class Coach():
                         else :
                             joueur.defPoste('LOB')
             
-            elif joueur.poste[-1]=='SHOOTER':
-                if not ball:
+            elif joueur.poste[-1] == 'SHOOTER':
+                if not joueur.hasTheBall():
                     joueur.defPoste('ATT')
-                if joueur.status=='DONE':
+                    
+                if joueur.status == 'DONE':
                     joueur.defPoste('WAIT')
                     if joueur.teammate().poste[-1]=='DEMARQUE':
                         joueur.teammate().defPoste('WAIT')
                 
-            elif joueur.poste[-1]=='DEMARQUE':
-                if ball & (balle.vitesse()<800):
+            elif joueur.poste[-1] == 'DEMARQUE':
+                if ball & (balle.vitesse() < 800):
                     if baller in joueur.opponents():
                         joueur.defPoste('WAIT')
                         
@@ -254,17 +260,20 @@ class Coach():
                    
             
             elif (joueur.poste[-1]=='RECEVEUR'): #procédure pendant la passe pour ajuster la position du receveur
-                if not self.lob: 
-                    if ball:    
-                        if baller.team!=self.nom:
-                                joueur.defPoste('WAIT')
-                        elif baller==joueur:
-                            joueur.defPoste('ATT')
+
+                if ball:    
+                    if (baller.team != self.nom) and (not self.lob):
+                            joueur.defPoste('WAIT')
+                    elif baller == joueur:
+                        joueur.defPoste('ATT')
+                        self.passe = False
                 else: 
-                    self.lob = False
+                
                     if joueur.distanceToXY(balle.positionc)<200:
                         joueur.defPoste('CHASER')
                         joueur.teammate().defPoste('DEMARQUE')
+                        self.lob = False
+                        self.passe = False
             
             elif joueur.poste[-1]=='CHASER':
                 if ball:        
@@ -386,6 +395,7 @@ class Coach():
             
     #Réalisation des actions en fonction des postes attribués aux joueurs        
     def action(self):
+        # print(self.passe, self.lob)
         balle = self.joueurs[0].match.balle
         for joueur in self.joueurs:
             # print(joueur.poste)
@@ -564,6 +574,7 @@ class Coach():
         self.joueurs[1].commande_position(x, -500, -x, -500)
         self.joueurs[0].defPoste('CHASER')
         self.joueurs[1].defPoste('GOAL')
+        
         
         
     def engagement(self):

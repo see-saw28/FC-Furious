@@ -24,7 +24,7 @@ ymax=largeur
 ##ROBOT
 r_robot=115
 K_max=0.9 #facteur prop vitesse
-seuil_distance=250
+seuil_distance=200
 sat_vitesse_angulaire=6
 K_angulaire=3
 sat_orientation_balle=3

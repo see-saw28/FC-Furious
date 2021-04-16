@@ -12,7 +12,7 @@ from psl_package import paris_saclay_league as psl
 import cmath as c
 import time
 import numpy as np
-
+import random
 
 
 import match as match
@@ -249,6 +249,8 @@ class Robot():
                 vitesse_tangente = min(p.saturation_vitesse_tangente,p.K_max*(np.sin(self.orientation)*Ey[yd,xd]+np.cos(self.orientation)*Ex[yd,xd]))
                 vitesse_normale = min(p.saturation_vitesse_normale,p.K_max*(-np.sin(self.orientation)*Ex[yd,xd]+np.cos(self.orientation)*Ey[yd,xd]))
                 
+                if self.poste[-1] == 'GOAL':
+                    seuil = p.seuil_distance
                 if distance < p.seuil_distance:
                     vitesse_tangente = vitesse_tangente * distance / p.seuil_distance
                     vitesse_normale = vitesse_normale * distance / p.seuil_distance
@@ -399,7 +401,7 @@ class Robot():
             self.commande_robot(0, 0, 0,tir=puissance)
             mate.origine_passe = self.match.balle.positionc
             print('Passe')
-            self.myTeam().lob = True
+            self.myTeam().passe = True
             self.defPoste('DEMARQUE')
             self.teammate().defPoste('RECEVEUR')
             return 'DONE'
@@ -458,6 +460,7 @@ class Robot():
             self.grSim.send(pr)
             mate.origine_passe = self.match.balle.positionc
             print('Passe lobée')
+            self.myTeam().lob = True
             self.defPoste('DEMARQUE')
             self.teammate().defPoste('RECEVEUR')
             return 'DONE'
@@ -498,12 +501,15 @@ class Robot():
         # print(dot)
         
         
-        #passe effectuée
+        #passe ratée
         if (self.teammate().poste[-1] not in ['PASSEUR','LOB']):
             passeur_no_balle = mate.distanceToXY(ballon.positionc) > 300
             #Si on observe un trop gros écart angulaire alors la passe a rebondit ou elle est ratée
             if ((abs(omega) > 1.0) & (vitesse_balle > 300) & passeur_no_balle) or ((vitesse_balle < 100) & passeur_no_balle) or (dot < 0):
                 self.defPoste('WAIT')
+                self.myTeam().passe = False
+                self.myTeam().lob = False
+                
                 
             
             else : 
@@ -660,6 +666,30 @@ class Robot():
         else:
             self.commande_position(self.goto.real, self.goto.imag, balleX,balleY)
     
+    def goDef(self,danger):
+        defense = random.random()
+        # print(defense)
+        if danger:
+            if defense < 0.15:
+                self.defPoste('DEF1')
+            elif defense < 0.5:
+                self.defPoste('DEF2')
+            elif defense < 0.85:
+                self.defPoste('DEF3')
+            else:
+                self.defPoste('DEF4')
+                
+        else:
+            if defense < 0.3:
+                self.defPoste('DEF1')
+            elif defense < 0.6:
+                self.defPoste('DEF2')
+            elif defense < 0.7:
+                self.defPoste('DEF3')
+            else:
+                self.defPoste('DEF4')
+            
+    
     def def1(self,balle):
         adversaires = self.opponents()
         adv1 = adversaires[0].positionc
@@ -759,24 +789,30 @@ class Robot():
         adversaires = self.opponents()
         adv1 = adversaires[0].positionc
         adv2 = adversaires[1].positionc
-        milieu = (adv1 + adv2) / 2
+        d1 = adversaires[0].distanceToXY(balle.positionc)
+        d2 = adversaires[1].distanceToXY(balle.positionc)
         
-        dU=200 * (adv1 - adv2) / abs((adv1 - adv2)) * np.exp(complex(0,np.pi/2))
+        if d2<d1:
+            adv1,adv2 = adv2,adv1
+        interception = 0.75 * adv2 + 0.25 * adv1
+        
+        dU=250 * (adv1 - adv2) / abs((adv1 - adv2)) * np.exp(complex(0,np.pi/2))
         
         but = complex(self.myTeam().but[0],self.myTeam().but[1])
-        placement1 = milieu + dU
-        placement2 = milieu - dU
+        placement1 = interception + dU
+        placement2 = interception - dU
         
         if adversaires[0].hasTheBall() or adversaires[1].hasTheBall():
-            
+            spin = False
             if abs(placement1 - but) < abs(placement2 - but):
                 self.goto = placement1
             else:
                 self.goto = placement2
         else:
-            self.goto = milieu
+            self.goto = interception
+            spin = True
         
-        self.commande_position(self.goto.real,self.goto.imag,balle.x,balle.y)
+        self.commande_position(self.goto.real,self.goto.imag,balle.x,balle.y,spin=spin)
         self.defPoste('DEF4')
         
         
