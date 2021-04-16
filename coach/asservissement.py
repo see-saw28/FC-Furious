@@ -159,7 +159,8 @@ if __name__ == "__main__":
                 
                 #asservissement du robot en position ou chaser
                 # match_test.blue.joueurs[0].commande_balle() 
-                match_test.yellow.joueurs[0].commande_position(500,500,0,0)
+                balle=match_test.balle
+                match_test.yellow.joueurs[0].commande_position(match_test.yellow.joueurs[0].x,match_test.yellow.joueurs[0].y,balle.x,balle.y)
                 # match_test.blue.joueurs[0].commande_robot(0, -0.1, 0)
                 
             

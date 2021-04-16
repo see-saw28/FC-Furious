@@ -260,6 +260,7 @@ class Balle():
             
     #Calcul du vecteur correspodant à la trajectoire de la balle    
     def trajectoire(self):
+        
         a,b=np.polyfit(self.x10,self.y10,1)
         vect_balle=complex(1,a)
         if (self.x10[-1]-self.x10[0])<0:

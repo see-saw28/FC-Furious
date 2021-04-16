@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Created on Fri Apr 16 17:01:18 2021
+
+@author: psl
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
 Created on Fri Apr  2 16:55:40 2021
 
 @author: psl
@@ -15,6 +23,7 @@ import serial
 import serial.tools.list_ports
 import time
 import os
+import numpy as np
 
 from psl_package import paris_saclay_league as psl
 
@@ -126,8 +135,8 @@ if __name__ == "__main__":
          
     
         
-    match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='BY', blueSide='L', start='B')
-    
+    match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='Y', blueSide='L', start='B')
+    match_test.engagement=False
     
     
     if match_test.disp > 0:
@@ -140,15 +149,16 @@ if __name__ == "__main__":
             if match_test.disp > 0:
                 fig.canvas.restore_region(axbackground)  
             
-            #Lecture des commandes depuis la manette
-            if manette :
-                quit = m.refresh(match_test)
             
+            # print(match_test.stop,match_test.engagement)
             if match_test.freeze:
+                
                 pass
             
             elif match_test.stop:
                 match_test.Reset()
+                
+                
             
                 
             elif match_test.engagement:
@@ -158,10 +168,24 @@ if __name__ == "__main__":
                     match_test.Go()
     
             else : 
-                #MATCH 2V2
+                #JAUNES CONTROLLES PAR LE COACH
                 match_test.Play()
+                # print(match_test.stop,match_test.engagement)
                 
+                #BLEUS CONTROLLES A LA MANETTE + COACH
+                idr,Vx,Vy,Vo,spin,tir,quit=m.controle2(match_test)
                 
+                orientation = match_test.blue.joueurs[idr].orientation
+                
+                #Relatif terrain
+                Vtang = Vx * np.cos(orientation) + Vy * np.sin(orientation)
+                Vnorm = -Vx * np.sin(orientation) + Vy * np.cos(orientation)
+                
+                # #Relatif robot
+                # Vtang,Vnorm,Vo=Vy,-Vx,Vo
+                
+                match_test.blue.joueurs[idr].commande_robot(Vtang, Vnorm, Vo,spin,tir)
+                match_test.blue.joueurs[1-idr].goal()
                 # #Actualisation des positions + detection but 
                 # match_test.Vision()
                 

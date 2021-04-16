@@ -33,8 +33,8 @@ from collections import deque
 import copy
 
 flatten = lambda l: [item for sublist in l for item in sublist]
-longueur=1350
-largeur=1000
+longueur = 1350
+largeur = 1000
 
 
 class Game:
@@ -66,19 +66,19 @@ class Game:
             self.generate_game()
         else:
             self.position = terrain[0]
-            xb,yb=self.position_to_xy(terrain[0][0],terrain[0][1])
-            self.positionxy=(xb,yb)
+            xb,yb = self.position_to_xy(terrain[0][0],terrain[0][1])
+            self.positionxy = (xb,yb)
             
             self.goal = terrain[1]
-            self.goalxy=(terrain[2][0],terrain[2][1])
+            self.goalxy = (terrain[2][0],terrain[2][1])
             
             self.defenseur = terrain[3]
-            xdef,ydef=self.position_to_xy(terrain[3][0], terrain[3][1])
-            self.defenseurxy=(xdef,ydef)
+            xdef,ydef = self.position_to_xy(terrain[3][0], terrain[3][1])
+            self.defenseurxy = (xdef,ydef)
             
             self.mate = terrain[4]
-            xm,ym=self.position_to_xy(terrain[4][0], terrain[4][1])
-            self.matexy=(xm,ym)
+            xm,ym = self.position_to_xy(terrain[4][0], terrain[4][1])
+            self.matexy = (xm,ym)
            
             self.start = terrain[0]
             
@@ -96,11 +96,11 @@ class Game:
                 if case in cases:
                     cases.remove(case)
                     
-            other_cases=[(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6)]
+            other_cases = [(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6)]
             for case in other_cases:
                 if case in cases:
                     cases.remove(case)
-            self.cases=cases
+            self.cases = cases
             
 
     def _position_to_id(self, x, y):
@@ -140,51 +140,56 @@ class Game:
         baller = random.choice(cases_prime)
         cases.remove(baller)
         
-        xb,yb=self.position_to_xy(baller[0], baller[1])
-        a,b=np.polyfit([xb,xbut],[yb,ybut],1)
+        xb,yb = self.position_to_xy(baller[0], baller[1])
+        a,b = np.polyfit([xb,xbut],[yb,ybut],1)
         if baller[0]<7:
-            xdg=random.randrange(baller[0]+1,self.n-1)
+            xdg = random.randrange(baller[0]+1,self.n-1)
             xg,yg=self.position_to_xy(xdg,0)
-            yg=a*xg+b
-            xdg,ydg=self.xy_to_position(xg, yg)
+            yg = a*xg+b
+            xdg,ydg = self.xy_to_position(xg, yg)
+        
         else :
             if baller[1]<3:
-                ydg=2
+                ydg = 2
+                
             elif baller[1]>5:
-                ydg=6
-            xg,yg=self.position_to_xy(0,ydg)
-            xg=(yg-b)/a
-            xdg,ydg=self.xy_to_position(xg, yg)
-        goal=(xdg,ydg)
+                ydg = 6
+                
+            xg,yg = self.position_to_xy(0,ydg)
+            xg = (yg-b)/a
+            xdg,ydg = self.xy_to_position(xg, yg)
+            
+        goal = (xdg,ydg)
         
         cases.remove(goal)
         
         defenseur = random.choice(cases)
         cases.remove(defenseur)
-        xdef,ydef=self.position_to_xy(defenseur[0], defenseur[1])
+        xdef,ydef = self.position_to_xy(defenseur[0], defenseur[1])
        
         mate = random.choice(cases)
         cases.remove(mate)
-        xm,ym=self.position_to_xy(mate[0], mate[1])
+        xm,ym = self.position_to_xy(mate[0], mate[1])
         
-        other_cases=[(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6),(8,1)(8,7)]
+        other_cases = [(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6),(8,1)(8,7)]
         for case in other_cases:
             if case in cases:
                 cases.remove(case)
         
-        self.cases=cases
+        self.cases = cases
         self.position = baller
-        self.positionxy=(xb,yb)
+        self.positionxy = (xb,yb)
         self.goal = goal
-        self.goalxy=(xg,yg)
+        self.goalxy = (xg,yg)
         self.defenseur = defenseur
-        self.defenseurxy=(xdef,ydef)
+        self.defenseurxy = (xdef,ydef)
         self.mate = mate
-        self.matexy=(xm,ym)
+        self.matexy = (xm,ym)
         self.counter = 0
         
         if not self.alea:
             self.start = baller
+            
         return self._get_state()
     
     def reset(self):
@@ -192,6 +197,7 @@ class Game:
             self.position = self.start
             self.counter = 0
             return self._get_state()
+        
         else:
             return self.generate_game()
 
@@ -214,19 +220,19 @@ class Game:
         return random.choice(self.ACTIONS)
     
     def openGoal(self,xd,yd):
-        openGoal=True
-        x,y=self.position_to_xy(xd,yd)
+        openGoal = True
+        x,y = self.position_to_xy(xd,yd)
         
-        xbut=1350
-        ybut=0
+        xbut = 1350
+        ybut = 0
          
-        r_robot=170
+        r_robot = 170
         
-        a,b=np.polyfit([x,xbut],[y,ybut],1)    
+        a,b = np.polyfit([x,xbut],[y,ybut],1)    
         for robot in [self.defenseur,self.goal,self.mate]:
-            xr,yr=self.position_to_xy(robot[0], robot[1])
+            xr,yr = self.position_to_xy(robot[0], robot[1])
             if abs(yr-(xr*a+b))<r_robot:
-                   openGoal=False
+                   openGoal = False
                    break
         return openGoal
     
@@ -247,7 +253,7 @@ class Game:
         d_x, d_y = self.MOVEMENTS[action]
         x, y = self.position
         new_x, new_y = x + d_x, y + d_y
-        new_X,new_Y=self.position_to_xy(new_x, new_y)
+        new_X,new_Y = self.position_to_xy(new_x, new_y)
         
 
         if (new_x, new_y) not in self.cases:
@@ -280,8 +286,8 @@ class Game:
         fig=plt.figure()
         ax = fig.add_subplot(111)
         ax.axis([-longueur,longueur,-largeur,largeur])
-        grid_x=np.arange(-longueur,longueur,2*longueur/self.m)
-        grid_y=np.arange(-largeur,largeur,2*largeur/self.n)
+        grid_x = np.arange(-longueur,longueur,2*longueur/self.m)
+        grid_y = np.arange(-largeur,largeur,2*largeur/self.n)
         ax.set_xticks(grid_x)
         ax.set_yticks(grid_y)
         ax.grid()
@@ -304,25 +310,25 @@ class Game:
         ax.text(self.defenseurxy[0],self.defenseurxy[1],'D',horizontalalignment='center',verticalalignment='center',color='w')
     
     def soft_print(self):
-        terrain=''
+        terrain = ''
         for j in range (self.n):
-            ligne=''
+            ligne = ''
             for i in range (self.m):
                 if self.defenseur==(i,j):
-                    car='-D-'
+                    car = '-D-'
                 elif self.goal==(i,j):
-                    car='-G-'
+                    car = '-G-'
                 elif self.mate==(i,j):
-                    car='-M-'
+                    car = '-M-'
                 elif self.position==(i,j):
-                    car='-X-'
+                    car = '-X-'
                 elif (i,j) in self.cases:
-                    car='---'
+                    car = '---'
                 else :
                     car='***'
-                ligne+=car
-            terrain+=ligne
-            terrain+='\n'
+                ligne += car
+            terrain += ligne
+            terrain += '\n'
         print(terrain)
         
     def save(self):
@@ -342,7 +348,7 @@ class Agent:
         self.batch_size = batch_size
         
         self.name = name
-        self.mse=tf.keras.losses.MeanSquaredError()
+        self.mse = tf.keras.losses.MeanSquaredError()
 
         if name is not None and os.path.isdir("model-" + name):
             
@@ -402,9 +408,9 @@ class Agent:
         
         
         for i, (state, action, reward, next_state, done) in enumerate(minibatch):
-            state=tf.convert_to_tensor([state],dtype=tf.float32)
-            l=self.optimize(state, action, reward, next_state, done)
-            losses[i]=l    
+            state = tf.convert_to_tensor([state],dtype=tf.float32)
+            l = self.optimize(state, action, reward, next_state, done)
+            losses[i] = l    
         return np.mean(losses)
     
     @tf.function
@@ -416,8 +422,8 @@ class Agent:
             if done:
                 target1 = tf.constant(reward,dtype=tf.float32)
             else:
-                act=self.target_network(next_state)
-                ind=tf.math.argmax(act[0])
+                act = self.target_network(next_state)
+                ind = tf.math.argmax(act[0])
                 target1 = tf.constant(reward,dtype=tf.float32) + self.gamma* act[0][ind]
                 
                 
@@ -425,7 +431,7 @@ class Agent:
             # print(target[action])
             # print('target',target)
             # print('target1',target1)
-            loss=(target-target1)**2
+            loss = (target-target1)**2
             # print(loss)
       
             gradients = tape.gradient(loss,self.q_network.trainable_variables)
@@ -461,7 +467,7 @@ class Agent:
         # if self.name is not None :
         #     name += '-' + self.name
         # else:
-        name += '-' +'gamma'+ str(self.gamma) +'-'+'lr'+ str(self.learning_rate)+'-'+ 'method' + str(training) +'-' + 'episodes'+str(nb)
+        name += '-' +'gamma'+ str(self.gamma) + '-' + 'lr' + str(self.learning_rate) + '-' + 'method' + str(training) + '-' + 'episodes' + str(nb)
         if id:
             name = str(time.time())+'-' + id
         self.q_network.save(name, overwrite=overwrite)
@@ -470,7 +476,7 @@ class Agent:
         self.target_network.set_weights(self.q_network.get_weights())
         
     def train(self,episodes, alea, collecting=False, snapshot=5000):
-        self.epsilon_iteration=episodes
+        self.epsilon_iteration = episodes
         batch_size = 32
         g = Game(9, 9, alea=alea)
         # counter = 1
@@ -478,7 +484,7 @@ class Agent:
         global_counter = 0
         losses = [0]
         epsilons = []
-        update=100
+        update = 100
     
         # we start with a sequence to collect information, without learning
         if collecting:
@@ -498,7 +504,7 @@ class Agent:
 
         print("Starting training")  
         global_counter = 0
-        fail=0
+        fail = 0
         for step in range(episodes+1):
             #print('Episode :',step)
             state = g.generate_game()
@@ -522,11 +528,11 @@ class Agent:
                     
                
                 if steps > 50:
-                    fail+=1
+                    fail += 1
                     print(fail)
                     break
                 
-                if global_counter%4==0:
+                if global_counter%4 == 0:
                     l = self.replay(batch_size)
                     # print(l)
                     losses.append(l)
@@ -543,7 +549,7 @@ class Agent:
             
             
             # print('Episode :',step, 'score:',score)    
-            if (step % 50 == 0)&(step!=0):
+            if (step % 50 == 0)&(step != 0):
                 print("episode: {}/{}, moves: {}, score: {}, epsilon: {}, loss: {}"
                       .format(step, episodes, steps, score, self.epsilon, losses[-1]))
                 print('SCORE :',np.mean(scores[-51:-1]),' LOSS :',np.mean(losses[-51:-1]))
@@ -557,7 +563,7 @@ class Agent:
         return scores, losses, epsilons
     
     def train_2(self,episodes, alea, collecting=False, snapshot=5000):
-        self.epsilon_iteration=episodes
+        self.epsilon_iteration = episodes
         batch_size = 32
         g = Game(9, 9, alea=alea)
         # counter = 1
@@ -634,27 +640,27 @@ def smooth(vector, width=30):
 
 
 def play_game(name_trainer=None,agent=None,game=False,disp=False):
-    if name_trainer!=None:
-        trainer=Agent(name=name_trainer)
-    elif agent!=None:
-        trainer=agent
+    if name_trainer != None:
+        trainer = Agent(name=name_trainer)
+    elif agent != None:
+        trainer = agent
     
-    if game==False:
-        g=Game(9,9,alea=True)
-        state=g.generate_game()
+    if game == False:
+        g = Game(9,9,alea=True)
+        state = g.generate_game()
         state = np.reshape(state, (1,trainer.action_size*g.n*g.m))
     else :
-        g=Game(9,9,terrain=game)
+        g = Game(9,9,terrain=game)
         g.reset()
     done = False
-    positions=[g.positionxy]
-    score=0
-    counter=0
+    positions = [g.positionxy]
+    score = 0
+    counter = 0
     while not (done or (counter>20)):
         action = trainer.get_best_action(g._get_state(), rand=False)
         next_state, reward, done, _ = g.move(action)
-        score+=reward
-        counter+=1
+        score += reward
+        counter += 1
         positions.append(g.positionxy)
         # if counter>20:
         #     g.print()
@@ -662,15 +668,15 @@ def play_game(name_trainer=None,agent=None,game=False,disp=False):
     print('score:',score)
     
     if disp:
-        fig=plt.figure()
+        fig = plt.figure()
         ax = fig.add_subplot(111)
          
     
         for i in range(1*len(positions)):
             ax.clear()
             ax.axis([-longueur,longueur,-largeur,largeur])
-            grid_x=np.arange(-longueur,longueur,2*longueur/9)
-            grid_y=np.arange(-largeur,largeur,2*largeur/9)
+            grid_x = np.arange(-longueur,longueur,2*longueur/9)
+            grid_y = np.arange(-largeur,largeur,2*largeur/9)
             ax.set_xticks(grid_x)
             ax.set_yticks(grid_y)
             ax.grid()
@@ -692,26 +698,26 @@ def play_game(name_trainer=None,agent=None,game=False,disp=False):
     return (positions[-1],score)
 
 def play_game_2(name_trainer=None,agent=None,game=False,disp=False):
-    if name_trainer!=None:
-        trainer=Agent(name=name_trainer)
-    elif agent!=None:
-        trainer=agent
-    if game==False:
-        g=Game(alea=True)
-        state=g.generate_game()
+    if name_trainer != None:
+        trainer = Agent(name=name_trainer)
+    elif agent != None:
+        trainer = agent
+    if game == False:
+        g = Game(alea=True)
+        state = g.generate_game()
         state = np.reshape(state, (1,trainer.action_size*g.n*g.m))
     else :
-        g=Game(terrain=game)
+        g = Game(terrain=game)
         g.reset()
     done = False
-    positions=[g.positionxy]
-    score=0
-    counter=0
+    positions = [g.positionxy]
+    score = 0
+    counter = 0
     while not (done or (counter>20)):
         action = np.argmax(trainer.q_network(g._get_state()).numpy())
         next_state, reward, done, _ = g.move(action)
-        score+=reward
-        counter+=1
+        score += reward
+        counter += 1
         positions.append(g.positionxy)
         # if counter>20:
         #     g.print()
@@ -719,15 +725,15 @@ def play_game_2(name_trainer=None,agent=None,game=False,disp=False):
     print('score:',score)
     
     if disp:
-        fig=plt.figure()
+        fig = plt.figure()
         ax = fig.add_subplot(111)
          
     
         for i in range(1*len(positions)):
             ax.clear()
             ax.axis([-longueur,longueur,-largeur,largeur])
-            grid_x=np.arange(-longueur,longueur,2*longueur/11)
-            grid_y=np.arange(-largeur,largeur,2*largeur/11)
+            grid_x = np.arange(-longueur,longueur,2*longueur/11)
+            grid_y = np.arange(-largeur,largeur,2*largeur/11)
             ax.set_xticks(grid_x)
             ax.set_yticks(grid_y)
             ax.grid()
@@ -749,53 +755,53 @@ def play_game_2(name_trainer=None,agent=None,game=False,disp=False):
     return (positions[-1],score)
 
 def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
-    if name_trainer!=None:
-        trainer=Agent(name=name_trainer)
-    elif agent!=None:
-        trainer=agent
-    if game==False:
-        g=Game(9,9,alea=True)
-        state=g.generate_game()
+    if name_trainer != None:
+        trainer = Agent(name=name_trainer)
+    elif agent != None:
+        trainer = agent
+    if game == False:
+        g = Game(9,9,alea=True)
+        state = g.generate_game()
         state = np.reshape(state, (1,trainer.action_size*g.n*g.m))
     else :
-        g=Game(9,9,terrain=game)
+        g = Game(9,9,terrain=game)
         g.reset()
     done = False
-    positions=[g.positionxy]
-    score=0
+    positions = [g.positionxy]
+    score = 0
     counter=0
-    random_action=False
-    fail=False
-    while not (done or (counter>20)):
-        state=g._get_state()
+    random_action = False
+    fail = False
+    while not (done or (counter > 20)):
+        state = g._get_state()
         if not random_action:
              action = np.argmax(trainer.predict(state).numpy())
         else:
-            action=random.randint(0,3)
+            action = random.randint(0,3)
         next_state, reward, done, _ = g.move(action)
         
-        if list(next_state[0])==list(state[0]):
-            random_action=True
+        if list(next_state[0]) == list(state[0]):
+            random_action = True
         else :
-            random_action=False
-        score+=reward
-        counter+=1
+            random_action = False
+        score += reward
+        counter += 1
         positions.append(g.positionxy)
-        if counter>20:
-            fail=True
+        if counter > 20:
+            fail = True
         
     # print('score:',score)
     
     if disp:
-        fig=plt.figure()
+        fig = plt.figure()
         ax = fig.add_subplot(111)
          
     
         for i in range(1*len(positions)):
             ax.clear()
             ax.axis([-longueur,longueur,-largeur,largeur])
-            grid_x=np.arange(-longueur,longueur,2*longueur/9)
-            grid_y=np.arange(-largeur,largeur,2*largeur/9)
+            grid_x = np.arange(-longueur,longueur,2*longueur/9)
+            grid_y = np.arange(-largeur,largeur,2*largeur/9)
             ax.set_xticks(grid_x)
             ax.set_yticks(grid_y)
             ax.grid()
@@ -817,8 +823,8 @@ def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
     return (positions[-1],score,fail,counter)
 
 def train_ia(nb=2000,training=1):
-    trainer =Agent(learning_rate=0.001,epsilon_iteration=nb)
-    if training==1:
+    trainer = Agent(learning_rate=0.001,epsilon_iteration=nb)
+    if training == 1:
         scores, losses, epsilons = trainer.train(nb,  True,True, snapshot=2500)
     else:
         scores, losses, epsilons = trainer.train_2(nb,  True,True, snapshot=2500)
@@ -827,10 +833,10 @@ def train_ia(nb=2000,training=1):
     sc = smooth(scores, width=500)
     los= smooth(losses, width=500)
     
-    fig=plt.figure()
-    ax1=fig.add_subplot(211)
+    fig = plt.figure()
+    ax1 = fig.add_subplot(211)
     ax1.plot(sc)
-    ax3= ax1.twinx()
+    ax3 = ax1.twinx()
     ax3.plot(epsilons,color='r')
     ax3.tick_params('y', colors='r')
     ax2 = fig.add_subplot(212)
@@ -848,25 +854,25 @@ def train_ia(nb=2000,training=1):
 def comparaison_ia(name_ia1,name_ia2,nombre_de_parties,disp=False):
     start_time = time.time()  
   
-    ia1=Agent(name_ia1)
-    ia2=Agent(name_ia2)
-    score1=[]
-    score2=[]
-    game=[]
-    final_pos1=[]
-    final_pos2=[]
-    echec1=0
-    echec2=0
+    ia1 = Agent(name_ia1)
+    ia2 = Agent(name_ia2)
+    score1 = []
+    score2 = []
+    game = []
+    final_pos1 = []
+    final_pos2 = []
+    echec1 = 0
+    echec2 = 0
     for i in range(nombre_de_parties):
-        g=Game(9,9)
-        terrain=g.save()
+        g = Game(9,9)
+        terrain = g.save()
         game.append(g)
-        pos1,sc1,fail1=play_game_3(agent=ia1,game=terrain)
-        pos2,sc2,fail2=play_game_3(agent=ia2,game=terrain)
+        pos1,sc1,fail1 = play_game_3(agent=ia1,game=terrain)
+        pos2,sc2,fail2 = play_game_3(agent=ia2,game=terrain)
         if fail1:
-            echec1+=1
+            echec1 += 1
         if fail2:
-            echec2+=1
+            echec2 += 1
         score1.append(sc1)
         score2.append(sc2)
         final_pos1.append(pos1)
@@ -880,15 +886,15 @@ def comparaison_ia(name_ia1,name_ia2,nombre_de_parties,disp=False):
     
     
     if disp:
-        fig=plt.figure()
+        fig = plt.figure()
         ax = fig.add_subplot(111)
          
     
         for i in range(nombre_de_parties):
             ax.clear()
             ax.axis([-longueur,longueur,-largeur,largeur])
-            grid_x=np.arange(-longueur,longueur,2*longueur/9)
-            grid_y=np.arange(-largeur,largeur,2*largeur/9)
+            grid_x = np.arange(-longueur,longueur,2*longueur/9)
+            grid_y = np.arange(-largeur,largeur,2*largeur/9)
             ax.set_xticks(grid_x)
             ax.set_yticks(grid_y)
             ax.grid()
