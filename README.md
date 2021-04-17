@@ -1,7 +1,7 @@
 # Partie Coach
 ##  A faire  
 Améliorer défense    
--attribution du poste défensive à voir aussi  
+-RAS   
 
 
 bug attaque  
