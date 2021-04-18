@@ -1,7 +1,8 @@
 # Partie Coach
 ##  A faire  
 Améliorer défense    
--RAS   
+-goal qui attrape la balle  
+-dosage interception def2
 
 
 bug attaque  
