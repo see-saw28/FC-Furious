@@ -23,6 +23,7 @@ ymax=largeur
 
 ##ROBOT
 r_robot=115
+r_spinner=105
 K_max=0.9 #facteur prop vitesse
 seuil_distance=200
 sat_vitesse_angulaire=6

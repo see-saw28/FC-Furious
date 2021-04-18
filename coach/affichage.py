@@ -19,8 +19,8 @@ def init(disp):
     if disp==2:
         fig = plt.figure(figsize=[6,6])
         ax = fig.add_subplot(1, 1, 1)
-        ax.set_xlim(-p.longueur,p.longueur)
-        ax.set_ylim(-p.largeur,p.largeur+500)
+        ax.set_xlim(-p.longueur-500,p.longueur+500)
+        ax.set_ylim(-p.largeur-500,p.largeur+500)
         #tracage des lignes du terrain
         ax.add_artist(lines.Line2D((-p.longueur, +p.longueur), (p.largeur, p.largeur), color = 'green'))
         ax.add_artist(lines.Line2D((-p.longueur, -p.longueur+350, -p.longueur+350,-p.longueur), (-350, -350,350,350), color = 'green'))
@@ -62,13 +62,7 @@ def refresh(match,ax,score):
     #affichage complet
     if match.disp==2:
         for joueur in match.joueurs:
-            #affichage de son point de destination
-            if joueur.poste[-1]=='RECEVEUR':
-                tag='mo'
-            else :
-                tag='go'
-            goto,=ax.plot(joueur.goto.real,joueur.goto.imag,tag)
-            ax.draw_artist(goto)
+            
             
             
             #affichage du robot avec son status
@@ -88,17 +82,23 @@ def refresh(match,ax,score):
             ax.draw_artist(draw_joueur)
             ax.draw_artist(text_joueur)
             ax.draw_artist(text2_joueur)
-            if match.blueSide=='L':
-                tx = f'BLEU : {match.score_bleu} - {match.score_jaune} : JAUNE'
-            else:
-                tx = f'JAUNE : {match.score_jaune} - {match.score_bleu} : BLEU'
-            score.set_text(tx)
-            ax.draw_artist(score)
+            #affichage de son point de destination
+            if joueur.poste[-1]=='RECEVEUR':
+                tag='mo'
+            else :
+                tag='go'
+            goto,=ax.plot(joueur.goto.real,joueur.goto.imag,tag)
+            ax.draw_artist(goto)
+        
+        #affichage score
+        if match.blueSide=='L':
+            tx = f'BLEU : {match.score_bleu} - {match.score_jaune} : JAUNE'
+        else:
+            tx = f'JAUNE : {match.score_jaune} - {match.score_bleu} : BLEU'
+        score.set_text(tx)
+        ax.draw_artist(score)
             
-            
-            
-            
-            
+  
         
         #affichage de la balle
         draw_ball,=ax.plot(match.balle.x10,match.balle.y10,'ro')

@@ -338,7 +338,7 @@ class Robot():
         passeur = self.positionc
         mate = self.teammate()
         mate.origine_passe = passeur
-        receveur = complex(mate.goto.real,mate.goto.imag)+p.r_robot*np.exp(complex(0,mate.orientation))
+        receveur = complex(mate.goto.real,mate.goto.imag)+p.r_spinner*np.exp(complex(0,mate.orientation))
         direction = receveur-passeur
         distance,phi = c.polar(direction)
         
@@ -359,7 +359,7 @@ class Robot():
         # print(theta)
         
         if theta < np.pi/3:
-            status = self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(angle_but),mate.goto.imag+p.r_robot*np.sin(angle_but))
+            status = self.orientation_with_ball(mate.goto.real+p.r_spinner*np.cos(angle_but),mate.goto.imag+p.r_spinner*np.sin(angle_but))
             # mate.commande_position(mate.goto.real, mate.goto.imag,but_adv[0],but_adv[1] )
             delta1 = angle_but-mate.orientation
             mate.orientation_but = True
@@ -373,7 +373,7 @@ class Robot():
             # print(delta1)
         else:    
             #orientation du receveur vers le passeur
-            status = self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
+            status = self.orientation_with_ball(mate.goto.real+p.r_spinner*np.cos(mate.orientation),mate.goto.imag+p.r_spinner*np.sin(mate.orientation))
             # mate.commande_position(mate.goto.real, mate.goto.imag,self.x,self.y )
             delta1 = angle-mate.orientation
             if delta1 < -np.pi:
@@ -424,12 +424,12 @@ class Robot():
         passeur = self.positionc
         mate = self.teammate()
         mate.origine_passe = passeur
-        receveur = complex(mate.goto.real,mate.goto.imag)+p.r_robot*np.exp(complex(0,mate.orientation))
+        receveur = complex(mate.goto.real,mate.goto.imag)+p.r_spinner*np.exp(complex(0,mate.orientation))
         direction = receveur-passeur
         distance,phi = c.polar(direction)
         
         #orientation du passeur vers le receveur
-        self.orientation_with_ball(mate.goto.real+p.r_robot*np.cos(mate.orientation),mate.goto.imag+p.r_robot*np.sin(mate.orientation))
+        self.orientation_with_ball(mate.goto.real+p.r_spinner*np.cos(mate.orientation),mate.goto.imag+p.r_spinner*np.sin(mate.orientation))
         
         angle = (phi+np.pi)%(2*np.pi)
         if angle > np.pi:
@@ -475,7 +475,7 @@ class Robot():
         
         #calcul vecteur directeur entre le receveur et le passeur
         mate = self.teammate()
-        receveur = self.positionc + p.r_robot * np.exp(complex(0,self.orientation))
+        receveur = self.positionc + p.r_spinner * np.exp(complex(0,self.orientation))
         passeur = self.origine_passe
         direction = receveur-passeur
         distance,phi = c.polar(direction)
@@ -608,11 +608,13 @@ class Robot():
             # print('flip going to the left')
         else:
             y_prediction = balle.y + vect_balle.imag * (x - balle.x)
-            
+        
+        spin = False
         if abs(y_prediction) < 175 and balle.vitesse() > 800:
             # print(y_prediction,balle.vitesse())
             alpha = 1
-            y=y_prediction
+            y = y_prediction
+            spin = True
                 
         if type(objectif) == complex:
             balleX = objectif.real
@@ -664,7 +666,7 @@ class Robot():
         if type(objectif) == complex:
             pass
         else:
-            self.commande_position(self.goto.real, self.goto.imag, balleX,balleY)
+            self.commande_position(self.goto.real, self.goto.imag, balleX,balleY,spin=spin)
     
     def goDef(self,danger):
         defense = random.random()
@@ -680,11 +682,11 @@ class Robot():
                 self.defPoste('DEF4')
                 
         else:
-            if defense < 0.3:
+            if defense < 0.2:
                 self.defPoste('DEF1')
-            elif defense < 0.6:
+            elif defense < 0.5:
                 self.defPoste('DEF2')
-            elif defense < 0.7:
+            elif defense < 0.6:
                 self.defPoste('DEF3')
             else:
                 self.defPoste('DEF4')

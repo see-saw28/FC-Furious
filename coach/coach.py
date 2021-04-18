@@ -203,7 +203,7 @@ class Coach():
             
             elif joueur.poste[-1] == 'SHOOTER':
                 if not joueur.hasTheBall():
-                    joueur.defPoste('ATT')
+                    joueur.defPoste('WAIT')
                     
                 if joueur.status == 'DONE':
                     joueur.defPoste('WAIT')
@@ -283,6 +283,7 @@ class Coach():
                         joueur.teammate().defPoste('DEMARQUE')
                     else :
                         joueur.defPoste('WAIT')
+                
                 #on évite d'avoir les deux robots qui chassent la balle
                 if joueur.teammate().poste[-1]=='CHASER':
             
@@ -297,7 +298,7 @@ class Coach():
                         joueur.defPoste('ATT')
                         joueur.teammate().defPoste('DEMARQUE')
                 #Si la balle est pas loin, on va la récupérer
-                if (joueur==closer) and (not ball) and(balle.vitesse()<200):
+                if (joueur==closer) and (not ball) and(balle.vitesse()<400):
                     joueur.defPoste('CHASER')
                 
             elif joueur.poste[-1]=='DEF':
