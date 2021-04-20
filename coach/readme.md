@@ -22,14 +22,17 @@ RUN  master_all.py
 
 ## Contrôles manette
 Si une manette est détectée:
-* CARRE : stopper tous les robots
+* CARRE : remise en formation PSL des robots
 * CROIX : relance les robots
+* ROND : freeze, arrête tous les joueurs sans arrêter le programme
 * R1 : but pour les jaunes
 * L1 : but pour les bleus
 * R2 : préparation engagement pour les jaunes
 * L2 : préparation engagement pour les bleus
 * OPTIONS : reset match
 * flèche du bas : arrêt du programme python
+* flèche droite : stratégie + offensive
+* flèche de gauche : stratégie + défensive
 
 
 ## IA  
