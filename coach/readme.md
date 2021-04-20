@@ -11,7 +11,11 @@
 
 ## Lancement d'une partie
 ### Sélection équipe
-commenter/decommenter les équipes à jouer dans master_all.py (env.L150)
+sélectionner le(s) équipe(s) à jouer dans master_all.py (env.L130) en modifiant le paramètre :  
+-controlledTeams:  
+* 'B' to control blue  
+* 'Y' to control yellow  
+* 'BY' to control both   
 
 ### Lancement match
 RUN  master_all.py
