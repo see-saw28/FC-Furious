@@ -145,6 +145,7 @@ Detection tir cadré.
 ### Stratégies 'cheatées' 
 * DEF1 rend totalement impossible les passes si les passes lobées sont interdites
 * DEF3 + GOAL : 2 joueurs devant la surface qui bloquent toute possibilité de tir adverse
+* DEF4 à voir face aux autres 
 
 --------------
 ## Intelligence artificielle
