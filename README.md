@@ -13,6 +13,7 @@ bug attaque
 -passeur  
 
 surface repulsive sauf si la balle est statique dedans  
+évitement prop à la vitesse relative des robots..
 
 
 ## Commandes élémentaires :
