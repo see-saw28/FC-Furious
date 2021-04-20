@@ -97,7 +97,10 @@ Maintenant, le coach réalise 2 actions:
 * Lecture des données du terrain et éventuels changements de poste 
 * Ordre aux robots en fonction de leur poste  
 
- 
+Implémentation de différentes stratégies:  
+* Defensif : défense proche de la zone (protection de but)
+* Normal 
+* Offensif : défense orientée vers l'interception, + aggressif
 
 Une amélioration possible serait d'adapter la stratégie en fonction du score et du temps restant.  
 
