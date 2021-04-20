@@ -91,6 +91,7 @@ Visualisation en direct des positions ainsi que les états des robots, plusieurs
 * mode  1: affichage sur un graphique des postes et du status des robots
 * mode  2: affichage sur un graphique d'une reproduction du terrain 
 
+Affichage du score, de la stratégie en cours et des FPS en plus.  
 ## Stratégie:
 Pas encore totalement définie.  
 &nbsp;  
