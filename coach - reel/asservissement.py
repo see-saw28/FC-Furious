@@ -30,11 +30,11 @@ from psl_package import paris_saclay_league as psl
 import match as match
 import affichage
 
-if os.name=='nt':
+if os.name == 'nt':
     import manette_win as m
     print('WINDOWS')
     
-elif os.name=='posix':
+elif os.name == 'posix':
     import manette_linux as m
     print('LINUX')
 
@@ -64,19 +64,19 @@ if __name__ == "__main__":
         # print(list(serial.tools.list_ports.comports()))
         
         #LINUX
-        if os.name=='posix':
+        if os.name == 'posix':
             ser = serial.Serial("/dev/ttyACM0",baudrate=115200,bytesize = 8, parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )  # open first serial port
         
         #WINDOWS
-        elif os.name=='nt':
+        elif os.name == 'nt':
             ser = serial.Serial("COM6",baudrate=115200,bytesize = 8,parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )
         
         
-        communication=ser
+        communication = ser
         print('Carte communication détectée')
         
     except:
-        communication=None
+        communication = None
         print('Pas de carte communication détectée')
         
     #%% Connexion à la vision
@@ -91,12 +91,12 @@ if __name__ == "__main__":
     
     
     if simulateur:
-        if os.name=='nt':
+        if os.name == 'nt':
             grSim = psl.SSLgrSimClient('192.168.1.11', 20011)
             # grSim = psl.SSLgrSimClient('192.168.56.1', 20011)
             
             
-        elif os.name=='posix':
+        elif os.name == 'posix':
             grSim = psl.SSLgrSimClient('127.0.0.1', 20011)
         grSim.connect()
         sim = grSim
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     #%%Boucle
     while not quit:
         
-        start=time.time()
+        start = time.time()
         #test interruption crtl+C pour arrêter tous les robots
         try:
             
@@ -143,7 +143,7 @@ if __name__ == "__main__":
             #controle du robot à la manette
             if match_test.stop:
                 match_test.Vision()
-                Vnorm,Vtang,Vang=m.controle()
+                Vnorm,Vtang,Vang = m.controle()
                 print(Vtang)
                 match_test.yellow.joueurs[0].commande_robot(Vtang, Vnorm, Vang)
                 
@@ -162,7 +162,7 @@ if __name__ == "__main__":
                 # match_test.blue.joueurs[0].commande_balle() 
                 # match_test.yellow.joueurs[0].commande_position(500,500,0,0)
                 # match_test.blue.joueurs[0].commande_robot(0, -0.1, 0)
-                balle=match_test.balle
+                balle = match_test.balle
                 # match_test.yellow.joueurs[0].commande_position(match_test.yellow.joueurs[0].x,match_test.yellow.joueurs[0].y,balle.x,balle.y)
                 match_test.yellow.joueurs[0].commande_position(balle.x,balle.y,balle.x,balle.y)
                 
@@ -178,7 +178,7 @@ if __name__ == "__main__":
                 
                 #affichage des FPS
                 t_list = affichage.t_update(t_list)
-                tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
+                tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps = (len(t_list) / (t_list[-1] - t_list[0]) )) 
                 # print(tx)     
                 text.set_text(tx)
                 ax.draw_artist(text)

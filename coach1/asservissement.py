@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 16 17:01:18 2021
+Created on Wed Apr  7 11:46:00 2021
 
 @author: psl
 """
@@ -23,7 +23,6 @@ import serial
 import serial.tools.list_ports
 import time
 import os
-import numpy as np
 
 from psl_package import paris_saclay_league as psl
 
@@ -77,17 +76,18 @@ if __name__ == "__main__":
         print('Carte communication détectée')
         
     except:
-        communication=None
+        communication = None
         print('Pas de carte communication détectée')
         
     #%% Connexion à la vision
     
-    vision = psl.SSLVisionClient(ip='224.5.23.2', port=10020)
+    # vision = psl.SSLVisionClient(ip='224.5.23.2', port=10020)
+    vision = psl.SSLVisionClient(ip='224.5.23.2', port=10006)
     vision.connect3()
     
     #%% Connexion simulateur
     
-    simulateur = True
+    simulateur = False
     
     
     if simulateur:
@@ -111,104 +111,74 @@ if __name__ == "__main__":
         
    #%%Création match
 
-    '''parametres :
-       -disp :
-           -1 : aucun affichage
-            0 : affichage dans la console des changements de postes
-            1 : affichage dans un plot des status des robots
-            2 : affichage dans un plot du terrain avec les robots et leur status
-         
-        -controlledTeams:
-            'B' to control blue
-            'Y' to control yellow
-            'BY' to control both 
+    '''parametre disp :
+        -1 : aucun affichage
+         0 : affichage dans la console des changements de postes
+         1 : affichage dans un plot des status des robots
+         2 : affichage dans un plot du terrain avec les robots et leur status'''
         
-        -blueSide:
-            'L' if blue plays on the left
-            'R' if blue plays on the right
-            
-        -start:
-            'B' if blue engages first
-            'Y' if yellow engages first
-            
-            '''
-         
-    
-        
-    match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='Y', blueSide='L', start='B')
+    match_test = match.Match('test', vision, sim, communication, disp=2, blueSide='R', start='B')
     match_test.engagement=False
     
     
-    if match_test.disp > 0:
+    if match_test.disp>0:
         fig,ax,axbackground,text,score = affichage.init(match_test.disp)
         t_list = [time.time()]
 
     #%%Boucle
     while not quit:
+        
+        start = time.time()
+        #test interruption crtl+C pour arrêter tous les robots
         try:
-            if match_test.disp > 0:
+            
+            
+            if match_test.disp>0:
                 fig.canvas.restore_region(axbackground)  
             
+            #Lecture des commandes depuis la manette
+            if manette :
+                quit = m.refresh(match_test)
+                
+            #controle du robot à la manette
+            if match_test.stop:
+                match_test.Vision()
+                Vnorm,Vtang,Vang = m.controle()
+                print(Vtang)
+                match_test.yellow.joueurs[0].commande_robot(Vtang, Vnorm, Vang)
+                
             
-            # print(match_test.stop,match_test.engagement)
-            if match_test.freeze:
                 
-                pass
+                
+                
+            else: 
+                
+                
+                #Actualisation des positions + detection but 
+                match_test.Vision()
+                
+                
+                #asservissement du robot en position ou chaser
+                # match_test.blue.joueurs[0].commande_balle() 
+                # match_test.yellow.joueurs[0].commande_position(500,500,0,0)
+                # match_test.blue.joueurs[0].commande_robot(0, -0.1, 0)
+                balle = match_test.balle
+                # match_test.yellow.joueurs[0].commande_position(match_test.yellow.joueurs[0].x,match_test.yellow.joueurs[0].y,balle.x,balle.y)
+                match_test.yellow.joueurs[0].commande_position(balle.x,balle.y,balle.x,balle.y)
+                
+                # print(match_test.yellow.joueurs[0].orientation)
+                
             
-            elif match_test.stop:
-                match_test.Reset()
-                
-                
             
-                
-            elif match_test.engagement:
-                match_test.Engagement()
-                # print(match_test.blue.joueurs[1].orientation)
-                if (time.time()-match_test.start_pause > 5) and (not manette):
-                    match_test.Go()
-    
-            else : 
-                #JAUNES CONTROLLES PAR LE COACH
-                match_test.Play()
-                # print(match_test.stop,match_test.engagement)
-                
-                #BLEUS CONTROLLES A LA MANETTE + COACH
-                idr,Vx,Vy,Vo,spin,tir,quit=m.controle2(match_test)
-                
-                orientation = match_test.blue.joueurs[idr].orientation
-                
-                #Relatif terrain
-                Vtang = Vx * np.cos(orientation) + Vy * np.sin(orientation)
-                Vnorm = -Vx * np.sin(orientation) + Vy * np.cos(orientation)
-                
-                # #Relatif robot
-                # Vtang,Vnorm,Vo=Vy,-Vx,Vo
-                
-                match_test.blue.joueurs[idr].commande_robot(Vtang, Vnorm, Vo,spin,tir)
-                match_test.blue.joueurs[1-idr].goal()
-                # #Actualisation des positions + detection but 
-                # match_test.Vision()
-                
-                # #Controle des bleus
-                # match_test.blue.changementDePoste()
-                # match_test.blue.action()
-                
-                # #Controle des jaunes
-                # match_test.yellow.changementDePoste()
-                # match_test.yellow.action()
-                
-                # # #Controle des jaunes
-                # match_test.yellow.joueurs[0].defPoste('DEF2')
-                # match_test.yellow.joueurs[1].defPoste('GOAL')
-                # match_test.yellow.action()
-                
+           
               
             
             if match_test.disp>0:
                 affichage.refresh(match_test,ax,score) 
                 
+                #affichage des FPS
                 t_list = affichage.t_update(t_list)
-                tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
+                tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps = (len(t_list) / (t_list[-1] - t_list[0]) )) 
                 # print(tx)     
                 text.set_text(tx)
                 ax.draw_artist(text)
@@ -216,14 +186,28 @@ if __name__ == "__main__":
                 #actualisation du plot
                 fig.canvas.blit(ax.bbox)
                 fig.canvas.flush_events()
-        except KeyboardInterrupt:
+            
+            
+                
+                
+        except KeyboardInterrupt :#mise à zéro de tous les robots lors de l'interruption du programme
             print('INTERRUPTION')
+            # for joueur in match_test.joueurs:
+            #     joueur.commande_robot(0,0,0)
             break
         
-        
+        # print(1/(time.time()-start))
     #%%Arrêt du programme
     
-    match_test.Freeze()
+    for joueur in match_test.joueurs:
+        joueur.commande_robot(0,0,0)
+        if joueur.com:
+            # start=time.time()
+            joueur.commande_com(joueur.id,0,0,0,0,0)
+        time.sleep(0.05)
+        # joueur.commande_robot(0,0,0)
+        # joueur.commande_robot(0,0,0)
+        # joueur.commande_robot(0,0,0)
     
     #ferme la fenetre pyplot
     plt.close("all")

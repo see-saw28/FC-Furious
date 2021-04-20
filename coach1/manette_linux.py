@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Apr  2 10:29:46 2021
-
-@author: paulg
-"""
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -13,47 +7,38 @@ Created on Sat Mar 27 13:59:23 2021
 """
 import pygame
 
-# Labels for DS4 controller axes
 
-#%%WINDOWS
 # Labels for DS4 controller axes
 AXIS_LEFT_STICK_X = 0
 AXIS_LEFT_STICK_Y = 1
-AXIS_RIGHT_STICK_X = 2
-AXIS_RIGHT_STICK_Y = 3
+AXIS_RIGHT_STICK_X = 3
+AXIS_RIGHT_STICK_Y = 4
 AXIS_R2 = 5
-AXIS_L2 = 4
+AXIS_L2 = 2
 
 # Labels for DS4 controller buttons
 # Note that there are 14 buttons (0 to 13 for pygame, 1 to 14 for Windows setup)
-BUTTON_SQUARE = 2
+BUTTON_SQUARE = 3
 BUTTON_CROSS = 0
 BUTTON_CIRCLE = 1
-BUTTON_TRIANGLE = 3
+BUTTON_TRIANGLE = 2
 
-BUTTON_L1 = 9
-BUTTON_R1 = 10
-BUTTON_L2 = 5
-BUTTON_R2 = 14
+BUTTON_L1 = 4
+BUTTON_R1 = 5
+BUTTON_L2 = 6
+BUTTON_R2 = 7
 
-BUTTON_SHARE = 4
-BUTTON_OPTIONS = 6
+BUTTON_SHARE = 8
+BUTTON_OPTIONS = 9
 
-BUTTON_LEFT_STICK = 7
-BUTTON_RIGHT_STICK = 8
+BUTTON_LEFT_STICK = 11
+BUTTON_RIGHT_STICK = 12
 
-BUTTON_PS = 12
-BUTTON_PAD = 13
+BUTTON_PS = 10
+BUTTON_PAD = 5
 
 # Labels for DS4 controller hats (Only one hat control)
 HAT_1 = 0
-
-
-
-
-
-
-
 
 #initialisation de pygame et de la manette
 def init():
@@ -67,7 +52,6 @@ def init():
     global opt
     global stop
     global go
-    global freeze
     global controller
     
     pygame.init()
@@ -92,14 +76,14 @@ def init():
     for i in range(controller.get_numhats()):
     	hat[i] = (0, 0)
         
-    r1=False
-    l1=False
-    r2=False
-    l2=False
-    opt=False
-    stop=False
-    go=False
-    freeze=False
+    r1 = False
+    l1 = False
+    r2 = False
+    l2 = False
+    opt = False
+    stop = False
+    go = False
+    
     
     
     
@@ -121,8 +105,8 @@ def refresh(match):
     global opt
     global stop
     global go
-    global freeze
- 
+    
+    
 
     
     #lecture des entrées de la manette
@@ -138,51 +122,46 @@ def refresh(match):
         	hat[event.hat] = event.value
         
     #fleche du bas pour arreter le programme
-    quit = button[BUTTON_TRIANGLE]
+    quit = hat[HAT_1][1]==-1
     
     #carré pour stoper le match
     if (button[BUTTON_SQUARE]) & (not(stop)):
         match.Stop()
-    stop=  button[BUTTON_SQUARE] 
+    stop = button[BUTTON_SQUARE] 
     
     #croix pour reprendre le match
     if (button[BUTTON_CROSS]) & (not go):
         match.Go()
-    go=button[BUTTON_CROSS]  
-    
-    #rond pour freeze le match
-    if (button[BUTTON_CIRCLE]) & (not freeze):
-        match.Freeze()
-    freeze = button[BUTTON_CIRCLE] 
+    go = button[BUTTON_CROSS]   
     
     #R1 pour but jaune
-    if (not (r1 ))& (button[BUTTON_R1]):
+    if (not (r1))& (button[BUTTON_R1]):
         match.but_jaune()
-    r1=button[BUTTON_R1]
+    r1 = button[BUTTON_R1]
     
     #L1 pour but bleu
     if( not (l1) )& (button[BUTTON_L1]):
         match.but_bleu()
-    l1=button[BUTTON_L1]
+    l1 = button[BUTTON_L1]
     
     #option pour rejouer un match
     if( not (opt) )& (button[BUTTON_OPTIONS]):
         match.regame()
-    opt=button[BUTTON_OPTIONS]
+    opt = button[BUTTON_OPTIONS]
     
     if match.Stop:
         if (not (l2))&(button[BUTTON_L2]):
-            match.team_engagement='B'
+            match.team_engagement = 'B'
             print('Balle Bleu')
-            match.engagement=True
-            match.stop=False
+            match.engagement = True
+            match.stop = False
         elif (not (r2))&(button[BUTTON_R2]):
-            match.team_engagement='Y'
-            match.engagement=True
-            match.stop=False
+            match.team_engagement = 'Y'
+            match.engagement = True
+            match.stop = False
             print('Balle Jaune')
-    l2=button[BUTTON_L2]
-    r2=button[BUTTON_R2]
+    l2 = button[BUTTON_L2]
+    r2 = button[BUTTON_R2]
     
     return quit
 
@@ -214,13 +193,23 @@ def controle():
         	hat[event.hat] = event.value
             
     #VITESSE NORMALE
-    vn=-axis[AXIS_LEFT_STICK_X]
+    vn = -axis[AXIS_LEFT_STICK_X]
     
     #VITESSE TANGENTE
-    vt=-axis[AXIS_LEFT_STICK_Y]
+    vt = -axis[AXIS_LEFT_STICK_Y]
     
     #VITESSE ANGULAIRE
-    va=axis[AXIS_RIGHT_STICK_X]
+    va = -axis[AXIS_RIGHT_STICK_X]
+    
+    
+    #CONTROLE DIFFERENT
+    # #VITESSE NORMALE
+    # va=-axis[AXIS_LEFT_STICK_X]
+    
+    # #VITESSE TANGENTE
+    # vt=-axis[AXIS_LEFT_STICK_Y]
+    
+    # #VITESSE ANGULAIRE
+    # vn=-axis[AXIS_RIGHT_STICK_X]
     
     return vn,vt,va*5
-    

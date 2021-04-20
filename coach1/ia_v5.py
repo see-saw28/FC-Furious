@@ -19,24 +19,26 @@ Created on Sun Feb  7 16:03:46 2021
 """
 import random
 import numpy as np
-import tensorflow as tf #module ia
+import tensorflow as tf
+# from keras.models import Sequential, load_model
+# from keras.layers.core import Dense, Activation
+# from keras.optimizers import Adam
+import random
 import time
 import os
-import matplotlib.animation as anim
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.lines as lines
-
-from collections import deque #module pour créer une pile
+from collections import deque
 import copy
 
-# flatten = lambda l: [item for sublist in l for item in sublist]
+flatten = lambda l: [item for sublist in l for item in sublist]
 longueur=1350
 largeur=1000
 
-#class qui permet de modéliser l'environnement de l'agent
-class Game:
 
+class Game:
+    ACTION_PASSE = 4
     ACTION_UP = 0
     ACTION_LEFT = 1
     ACTION_DOWN = 2
@@ -57,18 +59,11 @@ class Game:
     num_actions = len(ACTIONS)
 
     def __init__(self, n=9, m=9, alea=False,terrain=None):
-        #dimmension de la grille
-        self.n = n 
+        self.n = n
         self.m = m
-        
-        #paramètre si on veut s'entrainer sur un terrain aléatoire ou non
         self.alea = alea
-        
-        #Le terrain et donc l'emplacement des différents robots peut être généré aléatoirement (utile pour l'entrainement)
-        if terrain==None: 
+        if terrain==None:
             self.generate_game()
-        
-        #ou il est possible de donner un terrain (obligatoire dans le cas pratique de la robocup)
         else:
             self.position = terrain[0]
             xb,yb=self.position_to_xy(terrain[0][0],terrain[0][1])
@@ -88,11 +83,8 @@ class Game:
             self.start = terrain[0]
             
             self.counter = 0
-            
-            #création de l'ensemble des cases du terrrain (grille de 9x9)
             cases = [(x, y) for x in range(self.n) for y in range(self.m)]
-            
-            #on enlève toutes les cases correspondant aux surfaces
+       
             cases.remove((0,3))
             cases.remove((0,4))
             cases.remove((0,5))
@@ -100,27 +92,35 @@ class Game:
             cases.remove((8,4))
             cases.remove((8,5))
             
-            #puis on enlève les cases correspondant aux autres robots
             for case in (self.goal,self.defenseur,self.mate,self.start):
+                if case in cases:
+                    cases.remove(case)
+                    
+            other_cases=[(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6)]
+            for case in other_cases:
                 if case in cases:
                     cases.remove(case)
             self.cases=cases
             
-            
+
+    def _position_to_id(self, x, y):
+        """Donne l'identifiant de la position entre 0 et 15"""
+        return x + y * self.n
+
+    def _id_to_position(self, id):
+        """Réciproque de la fonction précédente"""
+        return (id % self.n, id // self.n)
     
-    #fonction pour obtenir les cordonnées x,y d'un robot à partir de ses coordonées discrètes sur la grille
     def position_to_xy(self,xd,yd):
         return(-longueur+(xd+0.5)*(2*longueur)/self.m,-largeur+(yd+0.5)*(2*largeur)/self.n)
     
-    #fonction inverse de la précédente
     def xy_to_position(self,x,y):
         return(int(int(x+longueur)//(2*longueur/self.m)),int(int(y+largeur)//(2*largeur/self.n)))
     
-    #fonction qui génère aléatoirement une disposition des robots sur le terrain
     def generate_game(self):
-        #création de l'ensemble des cases pas interdites
         cases = [(x, y) for x in range(self.n) for y in range(self.m)]
-        
+        xbut=1350
+        ybut=0
         cases.remove((0,3))
         cases.remove((0,4))
         cases.remove((0,5))
@@ -128,8 +128,6 @@ class Game:
         cases.remove((8,4))
         cases.remove((8,5))
         
-        #On enlève les cases au bord de la surface adverse, si le robot avec la balle s'y trouve 
-        #c'est que le but est ouvert car le gardien ne peut pas se placer entre l'attaquant et la surface
         cases_prime=copy.deepcopy(cases)
         cases_prime.remove((8,2))
         cases_prime.remove((7,2))
@@ -139,32 +137,17 @@ class Game:
         cases_prime.remove((7,6))
         cases_prime.remove((8,6))
         
-        #on choisit aléatoirement la position de l'attaquant parmis les cases possibles pour lui
         baller = random.choice(cases_prime)
-        
-        #on enlève la case pour que les autres robots ne puissent y aller
         cases.remove(baller)
         
-        #DETERMINATION DE LA POSITION DU GARDIEN POUR EMPECHER LE TIR
-        xbut=1350
-        ybut=0
-        
         xb,yb=self.position_to_xy(baller[0], baller[1])
-        
-        #coefficients de la droite entre le but et l'attaquant
         a,b=np.polyfit([xb,xbut],[yb,ybut],1)
-        
         if baller[0]<7:
-            #on détermine la position x du goal aléatoirement entre l'attaquant et la surface
             xdg=random.randrange(baller[0]+1,self.n-1)
             xg,yg=self.position_to_xy(xdg,0)
-            
-            #on détermine la position y du goal grace aux coefficients de la droite, ainsi le gardien empeche l'attaquant de marquer
             yg=a*xg+b
             xdg,ydg=self.xy_to_position(xg, yg)
-        
-        
-        else :#on regarde si l'attaquant est proche des corners, situation un peu particulière
+        else :
             if baller[1]<3:
                 ydg=2
             elif baller[1]>5:
@@ -172,12 +155,10 @@ class Game:
             xg,yg=self.position_to_xy(0,ydg)
             xg=(yg-b)/a
             xdg,ydg=self.xy_to_position(xg, yg)
-        
-        
         goal=(xdg,ydg)
+        
         cases.remove(goal)
         
-        #DETERMINATION DES POSITIONS DES DEUX DERNIERS ROBOTS
         defenseur = random.choice(cases)
         cases.remove(defenseur)
         xdef,ydef=self.position_to_xy(defenseur[0], defenseur[1])
@@ -185,6 +166,11 @@ class Game:
         mate = random.choice(cases)
         cases.remove(mate)
         xm,ym=self.position_to_xy(mate[0], mate[1])
+        
+        other_cases=[(8,2),(7,2),(7,3),(7,4),(7,5),(7,6),(8,6),(8,1)(8,7)]
+        for case in other_cases:
+            if case in cases:
+                cases.remove(case)
         
         self.cases=cases
         self.position = baller
@@ -197,12 +183,10 @@ class Game:
         self.matexy=(xm,ym)
         self.counter = 0
         
-        #si la partie n'est pas aléatoire on conserve la position de départ pour recommencer une partie
         if not self.alea:
             self.start = baller
         return self._get_state()
     
-    #reinitialisation du terrain
     def reset(self):
         if not self.alea:
             self.position = self.start
@@ -210,25 +194,25 @@ class Game:
             return self._get_state()
         else:
             return self.generate_game()
-    
-    #fonction qui retourne la grille complète 9x9 en indiquant la postion x,y donnée
+
     def _get_grille(self, x, y):
         grille = [
             [0] * self.n for i in range(self.m)
         ]
         grille[x][y] = 1
         return grille
-    
-    #fonction qui recupère les 4 grilles correspondant aux positions des 4 robots et qui renvoie un vecteur, ce vecteur est l'ETAT de l'environnement
-    def _get_state(self):
 
+    def _get_state(self):
+        # x, y = self.position
+        
         return np.reshape([self._get_grille(x, y) for (x, y) in
                     [self.position, self.goal, self.defenseur, self.mate]],(1,4*self.n*self.m))
-       
+        # else:
+        #     return np.reshape(self._get_grille(x, y),(1,4*self.n*self.m))
+    
     def get_random_action(self):
         return random.choice(self.ACTIONS)
     
-    #fonction pour savoir si le but est ouvert et donc si l'attaquant a reussi son objectif
     def openGoal(self,xd,yd):
         openGoal=True
         x,y=self.position_to_xy(xd,yd)
@@ -246,8 +230,6 @@ class Game:
                    break
         return openGoal
     
-    #fonction qui gère le deplacement du robot en fonction de l'action entrée
-    #elle renvoie l'état suivant, la récompense, si la  partie est finie
     def move(self, action):
         """
         takes an action parameter
@@ -261,36 +243,39 @@ class Game:
             raise Exception("Invalid action")
 
        
-        #obtention de la nouvelle position
+
         d_x, d_y = self.MOVEMENTS[action]
         x, y = self.position
         new_x, new_y = x + d_x, y + d_y
+        new_X,new_Y=self.position_to_xy(new_x, new_y)
         
-        
-        #on vérifie que le deplacement est accepté (respect des limites du terrain, des surfaces et anti collision)
-        if (new_x, new_y) not in self.cases:
-            return self._get_state(), -3, False, self.ACTIONS 
 
-        #on regarde si le but est libre dans la nouvelle position
-        elif self.openGoal(new_x,new_y):
+        if (new_x, new_y) not in self.cases:
+            return self._get_state(), -3, False, self.ACTIONS
+        
+              
+        
+        elif (self.openGoal(new_x,new_y))&(new_X>100):
             self.position = new_x, new_y
             self.positionxy = self.position_to_xy(new_x, new_y)
-            return self._get_state(), 10, True, self.ACTIONS
+            
+            return self._get_state(), 20, True, self.ACTIONS
         
+        # elif not self.openGoal(new_x,new_y):
+        #     self.position = new_x, new_y
+        #     self.positionxy = self.position_to_xy(new_x, new_y)
+        #     return self._get_state(), -1, False, self.ACTIONS
         
-        #pour éviter d'avoir des parties trop longues
         elif self.counter > 100:
             self.position = new_x, new_y
             self.positionxy = self.position_to_xy(new_x, new_y)
             return self._get_state(), -1, True, self.ACTIONS
         
-        #sinon on continu, récompense négative pour favoriser les plus courts chemins
         else:
             self.position = new_x, new_y
             self.positionxy = self.position_to_xy(new_x, new_y)
             return self._get_state(), -1, False, self.ACTIONS
-    
-    #fonction d'affichage du terrain (plot)
+
     def print(self):
         fig=plt.figure()
         ax = fig.add_subplot(111)
@@ -318,8 +303,6 @@ class Game:
         ax.plot(self.defenseurxy[0],self.defenseurxy[1],'ro',ms=20)
         ax.text(self.defenseurxy[0],self.defenseurxy[1],'D',horizontalalignment='center',verticalalignment='center',color='w')
     
-    
-    #fonction d'affichage moins lourde
     def soft_print(self):
         terrain=''
         for j in range (self.n):
@@ -333,26 +316,24 @@ class Game:
                     car='-M-'
                 elif self.position==(i,j):
                     car='-X-'
-                else:
+                elif (i,j) in self.cases:
                     car='---'
+                else :
+                    car='***'
                 ligne+=car
             terrain+=ligne
             terrain+='\n'
         print(terrain)
-    
-    #sauvegarde du terrain grâce à un vecteur pour pouvoir réutiliser le terrain
+        
     def save(self):
         return[self.position,self.goal,self.goalxy,self.defenseur,self.mate]
         
 
-#definition de la classe de l'agent qui fera les prédictions  
 class Agent:
     def __init__(self, name=None, learning_rate=0.001, epsilon_iteration=5000, batch_size=32, memory_size=10000):
         self.state_size = 4*81
         self.action_size = 4
-        
-        #Ensemble des hyperparamètres
-        self.gamma = 0.8
+        self.gamma = 0.9
         self.epsilon = 1.0
         self.epsilon_min = 0.1
         self.epsilon_iteration = epsilon_iteration
@@ -362,22 +343,21 @@ class Agent:
         
         self.name = name
         self.mse=tf.keras.losses.MeanSquaredError()
-        
-        #on peut charger un modèle sauvegardé précédement
+
         if name is not None and os.path.isdir("model-" + name):
             
             self.q_network = tf.keras.models.load_model("model-" + name)
-            self.target_network = self.creation_reseau_de_neurone()
+            self.target_network = self.creation_agent()
             # self.update_target() 
             
         else:
-            #création des 2 reseaux de neurone utiles pour l'algorithme de deep Q learning
-            self.q_network = self.creation_reseau_de_neurone() 
-            self.target_network = self.creation_reseau_de_neurone()
+            
+            self.q_network = self.creation_agent() 
+            self.target_network = self.creation_agent()
             self.update_target()      
    
-    #creation d'un reseau de neurone multicouche 'deep' (le nombre de couche et de neurone par couche sont aussi des hyperparamètres)
-    def creation_reseau_de_neurone(self):
+    
+    def creation_agent(self):
         model = tf.keras.models.Sequential()
         # model.add(tf.keras.layers.Flatten())
         model.add(tf.keras.layers.Dense(256,input_dim=self.state_size, activation='relu'))
@@ -388,53 +368,44 @@ class Agent:
         model.compile(loss='mse', optimizer=tf.keras.optimizers.Adam(lr=self.learning_rate))
         return model
     
-    #update d'epsilon de détermine le rapport exploration/exploitation
     def decay_epsilon(self,i):
         self.epsilon = np.exp(i/self.epsilon_iteration*np.log(self.epsilon_min))
-    
-    #choix de l'action à faire en fonction d'epsilon et de l'état
+       
     def get_best_action(self, state, rand=True):
-        #EXPLORATION avec une proba de epsilon
         if rand and np.random.rand() <= self.epsilon:
             # The agent acts randomly
             return random.randrange(self.action_size)
         
-        #EXPLOITATION sinon ie on choisit la meilleure action grace au reseau de neurone
         # Predict the reward value based on the given state
         act_values = self.q_network.predict_step(tf.constant(state))
         # print(tf.constant(state).shape)
-       
         # Pick the action based on the predicted reward
         action =  np.argmax(act_values[0])  
         return action
     
-    @tf.function #décorateur de fonction qui permet une prédiction plus rapide
+    @tf.function
     def predict(self,state):
         prediction = self.q_network(state)
         return prediction
     
     
-    #on ajoute une transition dans la mémoire
     def remember(self, state, action, reward, next_state, done):
         self.memory.append([state, action, reward, next_state, done])
     
-    #fonction qui permet à partir d'un batch de données d'améliorer le modèle
+   
     def replay(self, batch_size):
         batch_size = min(batch_size, len(self.memory))
 
         minibatch = random.sample(self.memory, batch_size)
 
         losses=np.zeros(batch_size)
-       
+        
+        
         for i, (state, action, reward, next_state, done) in enumerate(minibatch):
             state=tf.convert_to_tensor([state],dtype=tf.float32)
             l=self.optimize(state, action, reward, next_state, done)
             losses[i]=l    
         return np.mean(losses)
-    
-    
-    #fonction qui calcule l'erreur du modèle suivant l'équation de Bellman
-    #puis on applique une descente de gradient pour réduire cette erreur
     
     @tf.function
     def optimize(self,state, action, reward, next_state, done):
@@ -454,21 +425,15 @@ class Agent:
             # print(target[action])
             # print('target',target)
             # print('target1',target1)
-            
-            #calcul de l'erreur suivant la methode MeanSquaredError
-            loss=(target-target1)**2 
+            loss=(target-target1)**2
             # print(loss)
-            
-            
-            #calcul des gradients
-            gradients = tape.gradient(loss,self.q_network.trainable_variables) 
+      
+            gradients = tape.gradient(loss,self.q_network.trainable_variables)
             # print(gradients)
-            
-            #optimisation du modele 'q_network' suivant les gradients
+           
             self.q_network.optimizer.apply_gradients(zip(gradients,self.q_network.trainable_variables))
         return loss
-    
-    #methode beaucoup plus lente
+   
     def replay_2(self, batch_size):
         batch_size = min(batch_size, len(self.memory))
 
@@ -490,9 +455,7 @@ class Agent:
         
         # self.model.optimizer.minimize(model_loss(inputs,outputs,actions))
         return self.q_network.fit(inputs, outputs, epochs=1, verbose=0, batch_size=batch_size)
-    
-    
-    #sauvegarde d'un modèle
+
     def save(self, id=None, overwrite=False,training=1,nb=2000):
         name = 'model'
         # if self.name is not None :
@@ -502,13 +465,10 @@ class Agent:
         if id:
             name = str(time.time())+'-' + id
         self.q_network.save(name, overwrite=overwrite)
-    
-    #mis à jour des poids du 'target_network' avec ceux du 'q_network'
+
     def update_target(self):
         self.target_network.set_weights(self.q_network.get_weights())
-    
         
-    #fonction d'entrainement de l'agent
     def train(self,episodes, alea, collecting=False, snapshot=5000):
         self.epsilon_iteration=episodes
         batch_size = 32
@@ -520,7 +480,7 @@ class Agent:
         epsilons = []
         update=100
     
-        # we start with a sequence to collect information, without learning pour remplir la mémoire
+        # we start with a sequence to collect information, without learning
         if collecting:
             collecting_steps = 10000
             print("Collecting game without learning")
@@ -531,15 +491,14 @@ class Agent:
                 print(steps)
                 while not done:
                     steps += 1
-                    action = g.get_random_action() #les actions sont choisies aléatoirement
+                    action = g.get_random_action()
                     next_state, reward, done, _ = g.move(action)
                     self.remember(state, action, reward, next_state, done)
                     state = next_state
-        
-        
-        #début du véritable entrainement
+
         print("Starting training")  
         global_counter = 0
+        fail=0
         for step in range(episodes+1):
             #print('Episode :',step)
             state = g.generate_game()
@@ -563,19 +522,20 @@ class Agent:
                     
                
                 if steps > 50:
+                    fail+=1
+                    print(fail)
                     break
                 
-                if global_counter%4==0: #toutes les 4 actions on réalise une optimisation du modèle, la fréquence d'optimisation est aussi un hyperparamètre
+                if global_counter%4==0:
                     l = self.replay(batch_size)
                     # print(l)
                     losses.append(l)
                 #print('Pas:',steps, 'Loss=',losses[-1])
                 
                
-                if global_counter % update == 0: #toutes les n actions on met à jour le q_network, hyperparamètre
+                if global_counter % update == 0:
                     self.update_target()
-                
-                #les 2 paramètres précedents ont une forte influence sur la convergence du modèle
+            
             
             scores.append(score)
             self.decay_epsilon(step)
@@ -596,9 +556,6 @@ class Agent:
             
         return scores, losses, epsilons
     
-    
-    
-    #fonction plus lente et moins efficace
     def train_2(self,episodes, alea, collecting=False, snapshot=5000):
         self.epsilon_iteration=episodes
         batch_size = 32
@@ -669,8 +626,6 @@ class Agent:
             
         return scores, losses, epsilons
 
-
-#fonction pour lisser les résultats car très fortes dispersion
 def smooth(vector, width=30):
     return np.convolve(vector, [1/width]*width, mode='valid')
     
@@ -695,28 +650,16 @@ def play_game(name_trainer=None,agent=None,game=False,disp=False):
     positions=[g.positionxy]
     score=0
     counter=0
-    random_action=False
-    fail=False
-    while not (done or (counter>15)):
-        state=g._get_state()
-        if not random_action:
-             action = trainer.get_best_action(state, rand=False)
-        else:
-            action=random.randint(0,3)
+    while not (done or (counter>20)):
+        action = trainer.get_best_action(g._get_state(), rand=False)
         next_state, reward, done, _ = g.move(action)
-        
-        #si le robot execute une action interdite alors il revient au meme état, donc il prédira la même action
-        #donc dans ce cas on choisit une action aléatoire pour le débloquer
-        if list(next_state[0])==list(state[0]):
-            random_action=True
-        else :
-            random_action=False
         score+=reward
         counter+=1
         positions.append(g.positionxy)
-        if counter>15:
-            fail=True    
-    # print('score:',score)
+        # if counter>20:
+        #     g.print()
+        
+    print('score:',score)
     
     if disp:
         fig=plt.figure()
@@ -746,7 +689,7 @@ def play_game(name_trainer=None,agent=None,game=False,disp=False):
             
         # ani=animation.FuncAnimation(fig,animate,frames=len(positions),interval=10)
         plt.show()
-    return (positions[-1],score,fail)
+    return (positions[-1],score)
 
 def play_game_2(name_trainer=None,agent=None,game=False,disp=False):
     if name_trainer!=None:
@@ -805,8 +748,6 @@ def play_game_2(name_trainer=None,agent=None,game=False,disp=False):
         plt.show()
     return (positions[-1],score)
 
-
-#fonction qui permet de jouer une partie jusqu'à ce que l'attaquant est le but libre
 def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
     if name_trainer!=None:
         trainer=Agent(name=name_trainer)
@@ -833,8 +774,6 @@ def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
             action=random.randint(0,3)
         next_state, reward, done, _ = g.move(action)
         
-        #si le robot execute une action interdite alors il revient au meme état, donc il prédira la même action
-        #donc dans ce cas on choisit une action aléatoire pour le débloquer
         if list(next_state[0])==list(state[0]):
             random_action=True
         else :
@@ -845,15 +784,14 @@ def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
         if counter>20:
             fail=True
         
-    print('score:',score)
+    # print('score:',score)
     
-    #on peut afficher les deplacements du robot
-    if disp & (score<8):
+    if disp:
         fig=plt.figure()
         ax = fig.add_subplot(111)
          
     
-        def animate(i):
+        for i in range(1*len(positions)):
             ax.clear()
             ax.axis([-longueur,longueur,-largeur,largeur])
             grid_x=np.arange(-longueur,longueur,2*longueur/9)
@@ -872,23 +810,12 @@ def play_game_3(name_trainer=None,agent=None,game=False,disp=False):
             
             ax.plot(g.defenseurxy[0],g.defenseurxy[1],'ro',ms=20)
             ax.text(g.defenseurxy[0],g.defenseurxy[1],'D',horizontalalignment='center',verticalalignment='center',color='w')
-            
-            ax.add_artist(lines.Line2D((-longueur, -longueur+350, -longueur+350,-longueur), (-350, -350,350,350), color = 'green'))
-            ax.add_artist(lines.Line2D((longueur, longueur-350, longueur-350,longueur), (-350, -350,350,350), color = 'green'))
-            ax.add_artist(lines.Line2D((0,0), (largeur,-largeur), color = 'green'))
-            ax.add_artist(patches.Circle((0, 0), 500,facecolor='None', edgecolor = 'green'))
-       
-        ani = anim.FuncAnimation(fig, animate,interval=len(positions))
-        writer = anim.PillowWriter(fps=5)  
-        ani.save("demo_sine.gif", writer=writer)
-            
+            plt.pause(0.5)
             
         # ani=animation.FuncAnimation(fig,animate,frames=len(positions),interval=10)
         plt.show()
-    return (positions[-1],score,fail,counter)#on retourne la position finale, le score total et si l'objectif a été atteint
+    return (positions[-1],score,fail,counter)
 
-
-#fonction pour entrainer un agent et afficher sa progression
 def train_ia(nb=2000,training=1):
     trainer =Agent(learning_rate=0.001,epsilon_iteration=nb)
     if training==1:
@@ -914,12 +841,10 @@ def train_ia(nb=2000,training=1):
     plt.title("Score, and Epsilon over training")
     ax1.set_xlabel("Episodes")
     
-         
-
     plt.savefig(str(time.time())+'.png')
     plt.show()
   
-#fonction pour comparer 2 ia sur un ensemble de partie identique
+
 def comparaison_ia(name_ia1,name_ia2,nombre_de_parties,disp=False):
     start_time = time.time()  
   
@@ -932,14 +857,12 @@ def comparaison_ia(name_ia1,name_ia2,nombre_de_parties,disp=False):
     final_pos2=[]
     echec1=0
     echec2=0
-    moves1=[]
-    moves2=[]
     for i in range(nombre_de_parties):
         g=Game(9,9)
         terrain=g.save()
         game.append(g)
-        pos1,sc1,fail1,move1=play_game_3(agent=ia1,game=terrain)
-        pos2,sc2,fail2,move2=play_game_3(agent=ia2,game=terrain)
+        pos1,sc1,fail1=play_game_3(agent=ia1,game=terrain)
+        pos2,sc2,fail2=play_game_3(agent=ia2,game=terrain)
         if fail1:
             echec1+=1
         if fail2:
@@ -948,19 +871,14 @@ def comparaison_ia(name_ia1,name_ia2,nombre_de_parties,disp=False):
         score2.append(sc2)
         final_pos1.append(pos1)
         final_pos2.append(pos2)
-        moves1.append(move1)
-        moves2.append(move2)
     
     interval = time.time()-start_time  
     print ('Total time in seconds:', interval)    
     
-    #on compare le cumul des scores, + il grand,+l'ia est rapide et efficace
-    #De plus, on calcul de pourcentage d'echec
     print('Score total ia1:',sum(score1),'Score total ia2:',sum(score2))
-    print('Déplacements moyen ia1:',np.mean(moves1),'Déplacements moyen ia2:',np.mean(moves2))
     print('Echec ia1:',100*echec1/nombre_de_parties,'% ','Echec ia2:',100*echec2/nombre_de_parties,'%')
     
-    #affichage des 2 positions finales pour pouvoir les comparer
+    
     if disp:
         fig=plt.figure()
         ax = fig.add_subplot(111)

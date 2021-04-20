@@ -22,11 +22,11 @@ from psl_package import paris_saclay_league as psl
 import match as match
 import affichage
 
-if os.name == 'nt':
+if os.name=='nt':
     import manette_win as m
     print('WINDOWS')
     
-elif os.name == 'posix':
+elif os.name=='posix':
     import manette_linux as m
     print('LINUX')
 
@@ -56,15 +56,15 @@ if __name__ == "__main__":
         # print(list(serial.tools.list_ports.comports()))
         
         #LINUX
-        if os.name == 'posix':
+        if os.name=='posix':
             ser = serial.Serial("/dev/ttyACM0",baudrate=115200,bytesize = 8, parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )  # open first serial port
         
         #WINDOWS
-        elif os.name == 'nt':
+        elif os.name=='nt':
             ser = serial.Serial("COM6",baudrate=115200,bytesize = 8,parity='N', stopbits=1, timeout=None,  write_timeout=None, xonxoff=False, rtscts=False, dsrdtr=False )
         
         
-        communication = ser
+        communication=ser
         print('Carte communication détectée')
         
     except:
@@ -82,12 +82,12 @@ if __name__ == "__main__":
     
     
     if simulateur:
-        if os.name == 'nt':
+        if os.name=='nt':
             grSim = psl.SSLgrSimClient('192.168.1.11', 20011)
             # grSim = psl.SSLgrSimClient('192.168.56.1', 20011)
             
             
-        elif os.name == 'posix':
+        elif os.name=='posix':
             grSim = psl.SSLgrSimClient('127.0.0.1', 20011)
         grSim.connect()
         sim = grSim
@@ -127,79 +127,75 @@ if __name__ == "__main__":
     
         
     match_test = match.Match('test', vision, sim, communication, disp=0, controlledTeams='BY', blueSide='L', start='B')
+    match_test.engagement=manette
     
     
-    
-    if match_test.disp > 0:
+    if match_test.disp>0:
         fig,ax,axbackground,text,score = affichage.init(match_test.disp)
         t_list = [time.time()]
 
     #%%Boucle
     while not quit:
-        try:
-            if match_test.disp > 0:
-                fig.canvas.restore_region(axbackground)  
+   
+        if match_test.disp>0:
+            fig.canvas.restore_region(axbackground)  
+        
+        #Lecture des commandes depuis la manette
+        if manette :
+            quit = m.refresh(match_test)
             
-            #Lecture des commandes depuis la manette
-            if manette :
-                quit = m.refresh(match_test)
+        
+        if match_test.stop:
+            match_test.Reset()
             
-            if match_test.freeze:
-                pass
             
-            elif match_test.stop:
-                match_test.Reset()
+        elif match_test.engagement:
+            match_test.Engagement()
             
-                
-            elif match_test.engagement:
-                match_test.Engagement()
-                # print(match_test.blue.joueurs[1].orientation)
-                if (time.time()-match_test.start_pause > 5) and (not manette):
-                    match_test.Go()
-    
-            else : 
-                #MATCH 2V2
-                match_test.Play()
-                
-                
-                # #Actualisation des positions + detection but 
-                # match_test.Vision()
-                
-                # #Controle des bleus
-                # match_test.blue.changementDePoste()
-                # match_test.blue.action()
-                
-                # #Controle des jaunes
-                # match_test.yellow.changementDePoste()
-                # match_test.yellow.action()
-                
-                # # #Controle des jaunes
-                # match_test.yellow.joueurs[0].defPoste('DEF2')
-                # match_test.yellow.joueurs[1].defPoste('GOAL')
-                # match_test.yellow.action()
-                
-              
+
+        else: 
+            #MATCH 2V2
+            match_test.Play()
             
-            if match_test.disp>0:
-                affichage.refresh(match_test,ax,score) 
-                
-                t_list = affichage.t_update(t_list)
-                tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
-                # print(tx)     
-                text.set_text(tx)
-                ax.draw_artist(text)
-                
-                #actualisation du plot
-                fig.canvas.blit(ax.bbox)
-                fig.canvas.flush_events()
-        except KeyboardInterrupt:
-            print('INTERRUPTION')
-            break
+            
+            # #Actualisation des positions + detection but 
+            # match_test.Vision()
+            
+            # #Controle des bleus
+            # match_test.blue.changementDePoste()
+            # match_test.blue.action()
+            
+            # #Controle des jaunes
+            # match_test.yellow.changementDePoste()
+            # match_test.yellow.action()
+            
+            # # #Controle des jaunes
+            # match_test.yellow.joueurs[0].defPoste('DEF1')
+            # match_test.yellow.joueurs[1].defPoste('GOAL')
+            # match_test.yellow.action()
+            
+          
+        
+        if match_test.disp>0:
+            affichage.refresh(match_test,ax,score) 
+            
+            t_list = affichage.t_update(t_list)
+            tx = 'Mean Frame Rate:\n {fps:.3f}FPS'.format(fps= (len(t_list) / (t_list[-1] - t_list[0]) )) 
+            # print(tx)     
+            text.set_text(tx)
+            ax.draw_artist(text)
+            
+            #actualisation du plot
+            fig.canvas.blit(ax.bbox)
+            fig.canvas.flush_events()
+        
+
         
         
     #%%Arrêt du programme
     
-    match_test.Freeze()
+    for joueur in match_test.joueurs:
+        joueur.commande_robot(0,0,0)
     
     #ferme la fenetre pyplot
     plt.close("all")

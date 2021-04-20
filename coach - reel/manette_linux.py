@@ -76,13 +76,13 @@ def init():
     for i in range(controller.get_numhats()):
     	hat[i] = (0, 0)
         
-    r1=False
-    l1=False
-    r2=False
-    l2=False
-    opt=False
-    stop=False
-    go=False
+    r1 = False
+    l1 = False
+    r2 = False
+    l2 = False
+    opt = False
+    stop = False
+    go = False
     
     
     
@@ -127,41 +127,41 @@ def refresh(match):
     #carré pour stoper le match
     if (button[BUTTON_SQUARE]) & (not(stop)):
         match.Stop()
-    stop=  button[BUTTON_SQUARE] 
+    stop = button[BUTTON_SQUARE] 
     
     #croix pour reprendre le match
     if (button[BUTTON_CROSS]) & (not go):
         match.Go()
-    go=button[BUTTON_CROSS]   
+    go = button[BUTTON_CROSS]   
     
     #R1 pour but jaune
-    if (not (r1 ))& (button[BUTTON_R1]):
+    if (not (r1))& (button[BUTTON_R1]):
         match.but_jaune()
-    r1=button[BUTTON_R1]
+    r1 = button[BUTTON_R1]
     
     #L1 pour but bleu
     if( not (l1) )& (button[BUTTON_L1]):
         match.but_bleu()
-    l1=button[BUTTON_L1]
+    l1 = button[BUTTON_L1]
     
     #option pour rejouer un match
     if( not (opt) )& (button[BUTTON_OPTIONS]):
         match.regame()
-    opt=button[BUTTON_OPTIONS]
+    opt = button[BUTTON_OPTIONS]
     
     if match.Stop:
         if (not (l2))&(button[BUTTON_L2]):
-            match.team_engagement='B'
+            match.team_engagement = 'B'
             print('Balle Bleu')
-            match.engagement=True
-            match.stop=False
+            match.engagement = True
+            match.stop = False
         elif (not (r2))&(button[BUTTON_R2]):
-            match.team_engagement='Y'
-            match.engagement=True
-            match.stop=False
+            match.team_engagement = 'Y'
+            match.engagement = True
+            match.stop = False
             print('Balle Jaune')
-    l2=button[BUTTON_L2]
-    r2=button[BUTTON_R2]
+    l2 = button[BUTTON_L2]
+    r2 = button[BUTTON_R2]
     
     return quit
 
@@ -193,13 +193,13 @@ def controle():
         	hat[event.hat] = event.value
             
     #VITESSE NORMALE
-    vn=-axis[AXIS_LEFT_STICK_X]
+    vn = -axis[AXIS_LEFT_STICK_X]
     
     #VITESSE TANGENTE
-    vt=-axis[AXIS_LEFT_STICK_Y]
+    vt = -axis[AXIS_LEFT_STICK_Y]
     
     #VITESSE ANGULAIRE
-    va=-axis[AXIS_RIGHT_STICK_X]
+    va = -axis[AXIS_RIGHT_STICK_X]
     
     
     #CONTROLE DIFFERENT
