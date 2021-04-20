@@ -128,6 +128,9 @@ Pour ce sortir de situation avec un marquage aggressif ie DEF1 pour notre coach,
 Lorsque la passe est effectuée, le receveur passe en mode "reception", c'est à dire qu'on adapte sa position en fonction de la trajectoire de la balle pour assurer la reception.
 
 ## Défense
+### Attribution des postes  
+Le plus proche du but est gardien et l'autre se voit attribuer un poste aléatoirement avec des coef qui varient en fonction de la situation (stratégie + balle dans notre camp ou pas).
+
 ### Changements de poste   
 Inversion des postes GOAL et DEF2/3 lorsque les attaquants font une passe car le DEF2/3 est déjà positionné entre le but et le receveur. On regarde la distance entre les joueurs et la droite qui relie la balle et le but. Le joueur le plus proche devient le gardien et l'autre prend son poste.
 
