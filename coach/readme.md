@@ -11,8 +11,7 @@
 
 ## Lancement d'une partie
 ### Sélection équipe
-sélectionner le(s) équipe(s) à jouer dans master_all.py (env.L130) en modifiant le paramètre :  
--controlledTeams:  
+sélectionner le(s) équipe(s) à jouer dans master_all.py (env.L130) en modifiant le paramètre 'controlledTeams':  
 * 'B' to control blue  
 * 'Y' to control yellow  
 * 'BY' to control both   
