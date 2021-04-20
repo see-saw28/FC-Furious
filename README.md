@@ -2,7 +2,9 @@
 ##  A faire  
 Améliorer défense    
 -goal qui attrape la balle  
--dosage interception def2
+-dosage interception def2  
+-rendre le goal plus rapide lorsqu'un joueur dribble devant lui (ie le goal est dans la zone linéaire (car son goto évolue continument et donc la distance est faible) et donc pas rapide)
+
 
 
 bug attaque  
