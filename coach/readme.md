@@ -20,7 +20,7 @@ sélectionner le(s) équipe(s) à jouer dans master_all.py (env.L130) en modifia
 RUN  master_all.py
 
 
-## Contrôles manette
+## Contrôles manette (DualShock4)
 Si une manette est détectée:
 * CARRE : remise en formation PSL des robots
 * CROIX : relance les robots
@@ -35,6 +35,6 @@ Si une manette est détectée:
 * flèche de gauche : stratégie + défensive
 
 
-## Lancement d'un affrontement contre le coach
+## Lancement d'un affrontement à la manette contre le coach
 RUN  player_vs_ordi.py
 
