@@ -35,7 +35,6 @@ Si une manette est détectée:
 * flèche de gauche : stratégie + défensive
 
 
-## IA  
-ia_v3 + model-ia3: dribble tout terrain  
-ia_v4 + model-ia7: dribble moitié adverse  
-ia_v5 + model-ia8: dribble moitié adverse pas trop proche de la surface (évite d'être trop proche du goal adverse)
+## Lancement d'un affrontement contre le coach
+RUN  player_vs_ordi.py
+
