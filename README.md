@@ -254,3 +254,9 @@ Prise en compte de :
 * Engagement
 * Côtés des équipes
 * Utilisation d'une manette de PS4 pour contrôler les faits de matchs (coup d'envoi, buts, engagements, arrêts du jeu)
+
+
+## Résultats
+Match en 2v2 avec les deux équipes coachées en integrant l'IA.
+
+[lien youtube](https://youtu.be/6elPKzRos6Y?si=7Mv-up8nwqv7VMHA)
